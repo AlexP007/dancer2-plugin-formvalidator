@@ -3,6 +3,7 @@ package Dancer2::Plugin::FormValidator;
 use Data::FormValidator;
 use Moo;
 use Types::Standard qw(HashRef);
+use Dancer2::Plugin::FormValidator::Result;
 # use Dancer2::Plugin;
 
 our $VERSION = '0.1';
@@ -17,6 +18,8 @@ has validator => (
             my $name = $object->meta->name;
             Carp::croak "$name should implement $role\n";
         }
+
+        return;
     },
     required => 1,
 );
@@ -28,13 +31,11 @@ has input => (
 );
 
 has profile => (
-    is       => 'rwp',
+    is       => 'ro',
     isa      => HashRef,
     lazy     => 1,
     builder  => sub {
-        my $self = shift;
-
-        $self->_set_profile($self->validator->profile);
+        return shift->validator->profile;
     }
 );
 
@@ -45,6 +46,13 @@ sub validate {
         $self->input,
         $self->profile,
     );
+
+    my $result = Dancer2::Plugin::FormValidator::Result->new(
+        input   => $self->input,
+        results => $results,
+    );
+
+    return $result;
 }
 
 1;
