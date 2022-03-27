@@ -51,7 +51,7 @@ sub result {
                 $msg_errors = {};
 
                 for my $item (@missing) {
-                    $msg_errors->{$item} = sprintf('%s is missing', ucfirst($item));
+                    $msg_errors->{$item} = sprintf('%s is missing.', ucfirst($item));
                 }
 
                 for my $item (@invalid) {
