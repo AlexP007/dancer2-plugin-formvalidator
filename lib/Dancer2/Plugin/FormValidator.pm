@@ -12,7 +12,7 @@ has validator => (
     is       => 'ro',
     isa      => sub {
         my $validator = shift;
-        my $role = 'Dancer2::Plugin::FormValidator::Role::Validator';
+        my $role = 'Dancer2::Plugin::FormValidator::Role::HasProfile';
 
         if (not $validator->does($role)) {
             my $name = $validator->meta->name;

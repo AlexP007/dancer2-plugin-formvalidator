@@ -20,7 +20,7 @@ use_ok('Dancer2::Plugin::FormValidator::Result');
 # TEST 4.
 ## Dancer2::Plugin::FormValidator::Role::Validator.
 
-use_ok('Dancer2::Plugin::FormValidator::Role::Validator');
+use_ok('Dancer2::Plugin::FormValidator::Role::HasProfile');
 
 # TEST 5.
 ## Dancer2::Plugin::FormValidator::Role::HasMessages.

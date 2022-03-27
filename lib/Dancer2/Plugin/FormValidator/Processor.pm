@@ -16,7 +16,7 @@ has validator => (
     is       => 'ro',
     isa      => sub {
         my $validator = shift;
-        my $role = 'Dancer2::Plugin::FormValidator::Role::Validator';
+        my $role = 'Dancer2::Plugin::FormValidator::Role::HasProfile';
 
         if (not $validator->does($role)) {
             my $name = $validator->meta->name;
@@ -42,10 +42,10 @@ sub result {
 
     if ($validator->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
         if ($success) {
-            $msg_success = $validator->msgs->{success};
+            $msg_success = $validator->messages->{success};
         }
         else {
-            my $validator_msg_errors = $validator->msgs->{errors};
+            my $validator_msg_errors = $validator->messages->{errors};
 
             if (ref $validator_msg_errors eq 'HASH') {
                 $msg_errors = {};

@@ -2,6 +2,6 @@ package Dancer2::Plugin::FormValidator::Role::HasMessages;
 
 use Moo::Role;
 
-requires 'msgs';
+requires 'messages';
 
 1;

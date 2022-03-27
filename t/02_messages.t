@@ -9,7 +9,7 @@ package Validator {
     use Moo;
     use Data::FormValidator::Constraints qw(:closures);
 
-    with 'Dancer2::Plugin::FormValidator::Role::Validator',
+    with 'Dancer2::Plugin::FormValidator::Role::HasProfile',
          'Dancer2::Plugin::FormValidator::Role::HasMessages';
 
     sub profile {
@@ -21,7 +21,7 @@ package Validator {
         };
     };
 
-    sub msgs {
+    sub messages {
         return {
             success => 'All is good',
             errors  => {
