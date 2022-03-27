@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 5;
+use Test::More tests => 6;
 
 # TEST 1.
 ## Dancer2::Plugin::FormValidator.
@@ -26,3 +26,8 @@ use_ok('Dancer2::Plugin::FormValidator::Role::HasProfile');
 ## Dancer2::Plugin::FormValidator::Role::HasMessages.
 
 use_ok('Dancer2::Plugin::FormValidator::Role::HasMessages');
+
+# TEST 6.
+## Dancer2::Plugin::FormValidator::Role::HasAll.
+
+use_ok('Dancer2::Plugin::FormValidator::Role::HasAll');
