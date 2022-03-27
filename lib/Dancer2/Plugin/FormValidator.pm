@@ -1,9 +1,9 @@
 package Dancer2::Plugin::FormValidator;
 
-use Data::FormValidator;
 use Moo;
+use Dancer2::Plugin::FormValidator::Processor;
+use Data::FormValidator;
 use Types::Standard qw(HashRef);
-use Dancer2::Plugin::FormValidator::Result;
 # use Dancer2::Plugin;
 
 our $VERSION = '0.1';
@@ -11,11 +11,11 @@ our $VERSION = '0.1';
 has validator => (
     is       => 'ro',
     isa      => sub {
-        my $object = shift;
+        my $validator = shift;
         my $role = 'Dancer2::Plugin::FormValidator::Role::Validator';
 
-        if (not $object->does($role)) {
-            my $name = $object->meta->name;
+        if (not $validator->does($role)) {
+            my $name = $validator->meta->name;
             Carp::croak "$name should implement $role\n";
         }
 
@@ -47,10 +47,12 @@ sub validate {
         $self->profile,
     );
 
-    my $result = Dancer2::Plugin::FormValidator::Result->new(
-        input   => $self->input,
-        results => $results,
+    my $processor = Dancer2::Plugin::FormValidator::Processor->new(
+        results   => $results,
+        validator => $self->validator,
     );
+
+    my $result = $processor->result;
 
     return $result;
 }
