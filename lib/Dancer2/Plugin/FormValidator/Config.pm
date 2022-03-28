@@ -1,7 +1,7 @@
 package Dancer2::Plugin::FormValidator::Config;
 
 use Moo;
-use Types::Standard qw(HashRef Bool Str Undef);
+use Types::Standard qw(HashRef Bool);
 use Types::Common::String qw(NonEmptyStr);
 use namespace::clean;
 
@@ -34,7 +34,7 @@ has messages => (
 
 has messages_missing => (
     is       => 'ro',
-    isa      => Undef | NonEmptyStr,
+    isa      => NonEmptyStr,
     lazy     => 1,
     builder  => sub {
         return shift->messages->{missing} // '%s is missing.';
@@ -43,7 +43,7 @@ has messages_missing => (
 
 has messages_invalid => (
     is       => 'ro',
-    isa      => Undef | NonEmptyStr,
+    isa      => NonEmptyStr,
     lazy     => 1,
     builder  => sub {
         return shift->messages->{invalid} // '%s is invalid.';
@@ -52,7 +52,7 @@ has messages_invalid => (
 
 has messages_ucfirst => (
     is       => 'ro',
-    isa      => Undef | NonEmptyStr,
+    isa      => Bool,
     lazy     => 1,
     builder  => sub {
         return shift->messages->{ucfirst} // 1;
