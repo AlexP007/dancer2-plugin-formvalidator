@@ -6,6 +6,12 @@ use Data::FormValidator::Results;
 use Types::Standard qw(InstanceOf);
 use namespace::clean;
 
+has config => (
+    is       => 'ro',
+    isa      => InstanceOf['Dancer2::Plugin::FormValidator::Config'],
+    required => 1,
+);
+
 has results => (
     is       => 'ro',
     isa      => InstanceOf['Data::FormValidator::Results'],
@@ -30,7 +36,6 @@ has validator => (
 
 sub result {
     my $self      = shift;
-    my $validator = $self->validator;
 
     my $success   = $self->results->success;
     my $valid     = $self->results->valid;
@@ -39,26 +44,45 @@ sub result {
 
     my $messages;
 
-    if (
-        $success != 1 and
-        $validator->does('Dancer2::Plugin::FormValidator::Role::HasMessages')
-    ) {
-        my $validator_msg_errors = $validator->messages;
-        if (ref $validator_msg_errors eq 'HASH') {
-            $messages = {};
+    if ($success != 1) {
+        $messages     = {};
+        my $config    = $self->config;
+        my $validator = $self->validator;
 
-            for my $item (@missing) {
-                $messages->{$item} = sprintf('%s is missing.', ucfirst($item));
-            }
+        my $messages_missing = $config->messages_missing;
+        my $messages_invalid = $config->messages_invalid;
+        my $ucfirst          = $config->messages_ucfirst;
 
-            for my $item (@invalid) {
-                if (my $value = $validator_msg_errors->{$item}) {
-                    $messages->{$item} = sprintf($value, ucfirst($item));
+        for my $item (@missing) {
+            $messages->{$item} = sprintf(
+                $messages_missing,
+                $ucfirst ? ucfirst($item) : $item,
+            );
+        }
+
+        if ($validator->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
+            my $validator_msg_errors = $validator->messages;
+            if (ref $validator_msg_errors eq 'HASH') {
+                for my $item (@invalid) {
+                    if (my $value = $validator_msg_errors->{$item}) {
+                        $messages->{$item} = sprintf(
+                            $value,
+                            $ucfirst ? ucfirst($item) : $item,
+                        );
+                    }
                 }
+            }
+            else {
+                $messages = $validator_msg_errors;
             }
         }
         else {
-            $messages = $validator_msg_errors;
+            for my $item (@invalid) {
+                $messages->{$item} = sprintf(
+                    $messages_invalid,
+                    $ucfirst ? ucfirst($item) : $item,
+                );
+            }
         }
     }
 

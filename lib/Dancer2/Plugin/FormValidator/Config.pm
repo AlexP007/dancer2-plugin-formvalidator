@@ -24,10 +24,11 @@ has session_namespace => (
 );
 
 has messages => (
-    is       => 'ro',
-    isa      => Undef | HashRef,
-    lazy     => 1,
-    builder  => sub {
+    is        => 'ro',
+    isa       => Undef | HashRef,
+    lazy      => 1,
+    predicate => 1,
+    builder   => sub {
         return shift->config->{messages};
     }
 );
@@ -38,7 +39,8 @@ has messages_missing => (
     isa      => Undef | NonEmptyStr,
     lazy     => 1,
     builder  => sub {
-        return shift->messages->{missing};
+        my $self = shift;
+        return $self->has_messages ? $self->messages->{missing} : '%s is missing.';
     }
 );
 
@@ -47,7 +49,8 @@ has messages_invalid => (
     isa      => Undef | NonEmptyStr,
     lazy     => 1,
     builder  => sub {
-        return shift->messages->{invalid};
+        my $self = shift;
+        return $self->has_messages ? $self->messages->{invalid} : '%s is invalid.';
     }
 );
 
@@ -56,7 +59,8 @@ has messages_ucfirst => (
     isa      => Undef | NonEmptyStr,
     lazy     => 1,
     builder  => sub {
-        return shift->messages->{ucfirst};
+        my $self = shift;
+        return $self->has_messages ? $self->messages->{ucfirst} : 1;
     }
 );
 

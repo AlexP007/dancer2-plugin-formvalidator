@@ -1,7 +1,8 @@
 use strict;
 use warnings;
-use Test::More tests => 2;
+use Test::More tests => 3;
 
+use Dancer2::Plugin::FormValidator::Config;
 use Dancer2::Plugin::FormValidator::Processor;
 use Data::FormValidator;
 
@@ -26,13 +27,21 @@ package Validator {
     }
 }
 
+my $config = Dancer2::Plugin::FormValidator::Config->new(
+    config => {
+        session  => {
+            namespace => '_form_validator'
+        },
+    },
+);
+
 my $validator = Validator->new;
 my $result;
 my $results;
 my $processor;
 
 # TEST 1.
-## Check msg_errors string.
+## Check messages string.
 
 $results = Data::FormValidator->check(
     {
@@ -42,16 +51,17 @@ $results = Data::FormValidator->check(
 );
 
 $processor = Dancer2::Plugin::FormValidator::Processor->new(
-    results   => $results,
+    config    => $config,
     validator => $validator,
+    results   => $results,
 );
 
 $result = $processor->result;
 
-is('Error occurred', $result->messages, 'TEST 1: Check msg_errors string');
+is($result->messages, 'Error occurred', 'TEST 1: Check messages string');
 
 # TEST 2.
-## Check msg_errors hash.
+## Check messages hash.
 
 package Validator2 {
     use Moo;
@@ -86,17 +96,63 @@ $results = Data::FormValidator->check(
 );
 
 $processor = Dancer2::Plugin::FormValidator::Processor->new(
-    results   => $results,
+    config    => $config,
     validator => $validator,
+    results   => $results,
 );
 
 $result = $processor->result;
 
 is_deeply(
+    $result->messages,
     {
         'name'  => 'Name is missing.',
         'email' => 'Email should be a valid email.'
     },
+    'TEST 2: Check messages hash'
+);
+
+# TEST 3.
+## Check default missing message hash.
+
+package Validator3 {
+    use Moo;
+    use Data::FormValidator::Constraints qw(:closures);
+
+    with 'Dancer2::Plugin::FormValidator::Role::HasProfile';
+
+    sub profile {
+        return {
+            required => [qw(name email)],
+            constraint_methods => {
+                email => email,
+            },
+        };
+    };
+}
+
+$validator = Validator3->new;
+
+$results = Data::FormValidator->check(
+    {
+        email => 'alexpan.org',
+    },
+    $validator->profile,
+);
+
+$processor = Dancer2::Plugin::FormValidator::Processor->new(
+    config    => $config,
+    validator => $validator,
+    results   => $results,
+);
+
+$result = $processor->result;
+
+is_deeply(
     $result->messages,
-    'TEST 2: Check msg_errors hash'
+    {
+        'name'  => 'Name is missing.',
+        'email' => 'Email is invalid.'
+    },
+    'TEST 3: Check default missing message hash'
 );
