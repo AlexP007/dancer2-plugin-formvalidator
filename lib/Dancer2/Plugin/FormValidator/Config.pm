@@ -24,9 +24,12 @@ has session_namespace => (
 );
 
 has messages => (
-    is        => 'ro',
-    isa       => HashRef,
-    predicate => 1,
+    is       => 'ro',
+    isa      => HashRef,
+    required => 1,
+    builder  => sub {
+        return shift->config->{messages} // {};
+    }
 );
 
 has messages_missing => (
@@ -34,8 +37,7 @@ has messages_missing => (
     isa      => Undef | NonEmptyStr,
     lazy     => 1,
     builder  => sub {
-        my $self = shift;
-        return $self->has_messages ? $self->messages->{missing} : '%s is missing.';
+        return shift->messages->{missing} // '%s is missing.';
     }
 );
 
@@ -44,8 +46,7 @@ has messages_invalid => (
     isa      => Undef | NonEmptyStr,
     lazy     => 1,
     builder  => sub {
-        my $self = shift;
-        return $self->has_messages ? $self->messages->{invalid} : '%s is invalid.';
+        return shift->messages->{invalid} // '%s is invalid.';
     }
 );
 
@@ -54,8 +55,7 @@ has messages_ucfirst => (
     isa      => Undef | NonEmptyStr,
     lazy     => 1,
     builder  => sub {
-        my $self = shift;
-        return $self->has_messages ? $self->messages->{ucfirst} : 1;
+        return shift->messages->{ucfirst} // 1;
     }
 );
 
@@ -63,13 +63,8 @@ sub BUILDARGS {
     my ($self, %args) = @_;
 
     if (my $config = $args{config}) {
-        $args{session} = $config->{session};
-
-        if (my $messages = $config->{messages}) {
-            $args{messages} = $messages;
-        }
-
-        if (my $session = $args{session}) {
+        if (my $session = $config->{session}) {
+            $args{session}           = $session;
             $args{session_namespace} = $session->{namespace};
         }
     }
