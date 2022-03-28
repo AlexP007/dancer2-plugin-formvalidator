@@ -28,14 +28,10 @@ has valid => (
     required => 1,
 );
 
-has msg_errors => (
+has messages => (
     is       => 'ro',
     isa      => Undef | Str | HashRef,
-);
-
-has msg_success => (
-    is       => 'ro',
-    isa      => Undef | Str,
+    required => 1,
 );
 
 1;

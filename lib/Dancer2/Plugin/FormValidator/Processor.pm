@@ -37,42 +37,37 @@ sub result {
     my @missing   = $self->results->missing;
     my @invalid   = $self->results->invalid;
 
-    my $msg_errors;
-    my $msg_success;
+    my $messages;
 
-    if ($validator->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
-        if ($success) {
-            $msg_success = $validator->messages->{success};
+    if (
+        $success != 1 and
+        $validator->does('Dancer2::Plugin::FormValidator::Role::HasMessages')
+    ) {
+        my $validator_msg_errors = $validator->messages;
+        if (ref $validator_msg_errors eq 'HASH') {
+            $messages = {};
+
+            for my $item (@missing) {
+                $messages->{$item} = sprintf('%s is missing.', ucfirst($item));
+            }
+
+            for my $item (@invalid) {
+                if (my $value = $validator_msg_errors->{$item}) {
+                    $messages->{$item} = sprintf($value, ucfirst($item));
+                }
+            }
         }
         else {
-            my $validator_msg_errors = $validator->messages->{errors};
-
-            if (ref $validator_msg_errors eq 'HASH') {
-                $msg_errors = {};
-
-                for my $item (@missing) {
-                    $msg_errors->{$item} = sprintf('%s is missing.', ucfirst($item));
-                }
-
-                for my $item (@invalid) {
-                    if (my $value = $validator_msg_errors->{$item}) {
-                        $msg_errors->{$item} = sprintf($value, ucfirst($item));
-                    }
-                }
-            }
-            else {
-                $msg_errors = $validator_msg_errors;
-            }
+            $messages = $validator_msg_errors;
         }
     }
 
     return Dancer2::Plugin::FormValidator::Result->new(
-        success     => $success,
-        valid       => $valid,
-        missing     => \@missing,
-        invalid     => \@invalid,
-        msg_success => $msg_success,
-        msg_errors  => $msg_errors,
+        success  => $success,
+        valid    => $valid,
+        missing  => \@missing,
+        invalid  => \@invalid,
+        messages => $messages,
     );
 }
 
