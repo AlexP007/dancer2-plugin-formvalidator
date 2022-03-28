@@ -25,14 +25,9 @@ has session_namespace => (
 
 has messages => (
     is        => 'ro',
-    isa       => Undef | HashRef,
-    lazy      => 1,
+    isa       => HashRef,
     predicate => 1,
-    builder   => sub {
-        return shift->config->{messages};
-    }
 );
-
 
 has messages_missing => (
     is       => 'ro',
@@ -69,6 +64,10 @@ sub BUILDARGS {
 
     if (my $config = $args{config}) {
         $args{session} = $config->{session};
+
+        if (my $messages = $config->{messages}) {
+            $args{messages} = $messages;
+        }
 
         if (my $session = $args{session}) {
             $args{session_namespace} = $session->{namespace};

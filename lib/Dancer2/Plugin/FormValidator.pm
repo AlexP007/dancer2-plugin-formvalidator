@@ -1,60 +1,46 @@
 package Dancer2::Plugin::FormValidator;
 
-use Moo;
+use Dancer2::Plugin;
+use Dancer2::Plugin::FormValidator::Config;
 use Dancer2::Plugin::FormValidator::Processor;
 use Data::FormValidator;
-use Types::Standard qw(HashRef);
-# use Dancer2::Plugin;
+use Types::Standard qw(InstanceOf HashRef);
 
 our $VERSION = '0.1';
 
-has validator => (
+plugin_keywords qw(validate);
+
+has config => (
     is       => 'ro',
-    isa      => sub {
-        my $validator = shift;
-        my $role = 'Dancer2::Plugin::FormValidator::Role::HasProfile';
-
-        if (not $validator->does($role)) {
-            my $name = $validator->meta->name;
-            Carp::croak "$name should implement $role\n";
-        }
-
-        return;
-    },
+    isa      => InstanceOf['Dancer2::Plugin::FormValidator::Config'],
     required => 1,
-);
-
-has input => (
-    is       => 'ro',
-    isa      => HashRef,
-    required => 1,
-);
-
-has profile => (
-    is       => 'ro',
-    isa      => HashRef,
-    lazy     => 1,
     builder  => sub {
-        return shift->validator->profile;
+        return Dancer2::Plugin::FormValidator::Config->new(
+            config => shift->app->config->{plugins}->{FormValidator},
+        );
     }
 );
 
 sub validate {
-    my $self = shift;
+    my ($self, $input, $validator) = @_;
 
-    my $results = Data::FormValidator->check(
-        $self->input,
-        $self->profile,
-    );
+    if (ref $input ne 'HASH') {
+        Carp::croak "Input data should be a hash reference\n";
+    }
+
+    my $role = 'Dancer2::Plugin::FormValidator::Role::HasProfile';
+    if (not $validator->does($role)) {
+        my $name = $validator->meta->name;
+        Carp::croak "$name should implement $role\n";
+    }
 
     my $processor = Dancer2::Plugin::FormValidator::Processor->new(
-        results   => $results,
-        validator => $self->validator,
+        config    => $self->config,
+        validator => $validator,
+        results   => Data::FormValidator->check($input, $validator->profile),
     );
 
-    my $result = $processor->result;
-
-    return $result;
+    return $processor->result;
 }
 
 1;
