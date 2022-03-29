@@ -39,8 +39,7 @@ package App {
 
     post '/' => sub {
         if (not validate_form 'login') {
-            my $errors = deferred '_form_validator';
-            return to_json $errors->{messages};
+            to_json errors;
         }
     };
 }

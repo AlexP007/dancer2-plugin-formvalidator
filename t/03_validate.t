@@ -42,7 +42,7 @@ package App {
     post '/' => sub {
         my $result = validate body_parameters->as_hashref => Validator->new;
 
-        return to_json $result->messages;
+        to_json $result->messages;
     };
 }
 
