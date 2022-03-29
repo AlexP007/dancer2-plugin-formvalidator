@@ -22,7 +22,6 @@ package App {
     use Dancer2;
 
     BEGIN {
-        set show_errors => 1;
         set plugins => {
             FormValidator => {
                 session => {
