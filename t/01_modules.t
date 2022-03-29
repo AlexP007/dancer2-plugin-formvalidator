@@ -35,5 +35,5 @@ use_ok('Dancer2::Plugin::FormValidator::Role::HasMessages');
 # TEST 7.
 ## Dancer2::Plugin::FormValidator::Role::HasAll.
 
-use_ok('Dancer2::Plugin::FormValidator::Role::HasAll');
+use_ok('Dancer2::Plugin::FormValidator::Role::HasProfileMessages');
 

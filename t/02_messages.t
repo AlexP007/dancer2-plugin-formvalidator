@@ -10,8 +10,7 @@ package Validator {
     use Moo;
     use Data::FormValidator::Constraints qw(:closures);
 
-    with 'Dancer2::Plugin::FormValidator::Role::HasProfile',
-         'Dancer2::Plugin::FormValidator::Role::HasMessages';
+    with 'Dancer2::Plugin::FormValidator::Role::HasProfileMessages';
 
     sub profile {
         return {
@@ -67,8 +66,7 @@ package Validator2 {
     use Moo;
     use Data::FormValidator::Constraints qw(:closures);
 
-    with 'Dancer2::Plugin::FormValidator::Role::HasProfile',
-        'Dancer2::Plugin::FormValidator::Role::HasMessages';
+    with 'Dancer2::Plugin::FormValidator::Role::HasProfileMessages';
 
     sub profile {
         return {

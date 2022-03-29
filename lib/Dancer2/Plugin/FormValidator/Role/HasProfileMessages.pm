@@ -1,4 +1,4 @@
-package Dancer2::Plugin::FormValidator::Role::HasAll;
+package Dancer2::Plugin::FormValidator::Role::HasProfileMessages;
 
 use Moo::Role;
 
