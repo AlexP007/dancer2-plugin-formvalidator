@@ -35,7 +35,6 @@ package App {
     }
 
     use Dancer2::Plugin::FormValidator;
-    use Dancer2::Plugin::Deferred;
 
     post '/' => sub {
         if (not validate_form 'login') {
