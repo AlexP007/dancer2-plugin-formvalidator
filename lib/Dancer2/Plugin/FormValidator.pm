@@ -31,7 +31,7 @@ sub BUILD {
             name => 'before_template_render',
             code => sub {
                 my $tokens   = shift;
-                my $deferred = $self->_get_deferred;
+                my $deferred = $tokens->{deferred}->{$self->config_obj->session_namespace};
 
                 $tokens->{errors} = $deferred->{messages};
                 $tokens->{old}    = $deferred->{old};
