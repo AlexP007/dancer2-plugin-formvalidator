@@ -1,3 +1,10 @@
+0.01 2022-03-30 22:42:14 Europe/Moscow
+    [BUGS]
+    * Fix deferred template tokens bug
+
+    [FEATURES]
+    * Implement old parameters template token
+
 0.01 2022-03-30 19:58:02 Europe/Moscow
     [BUGS]
     * Fix before_template hook wrong name
