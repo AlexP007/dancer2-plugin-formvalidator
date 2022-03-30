@@ -8,7 +8,7 @@ use Dancer2::Plugin::FormValidator::Processor;
 use Data::FormValidator;
 use Types::Standard qw(InstanceOf);
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 plugin_keywords qw(validate validate_form errors);
 
@@ -28,7 +28,7 @@ sub BUILD {
 
     $self->app->add_hook(
         Dancer2::Core::Hook->new(
-            name => 'before_template',
+            name => 'before_template_render',
             code => sub {
                 shift->{errors} = $self->errors;
                 return;
@@ -104,11 +104,12 @@ Dancer2::Plugin::FormValidator - validate incoming request in declarative way.
 
 =head1 VERSION
 
-version 0.01
+version 0.02
 
 =head1 SYNOPSIS
 
     use Dancer2::Plugin::FormValidator;
+    use App::Http::Validators::Form;
 
     post '/form' => sub {
         if (my $valid_hash_ref = validate_form 'form') {
@@ -124,7 +125,7 @@ version 0.01
 This is not stable version!
 
 Please dont rely on it.
-Interfaces would be changed if future, except of dsl keywords signatures.
+Interfaces would be changed in future, except of dsl keywords signatures.
 
 If you like it - add it to your bookmarks. I intend to complete the development by the summer 2022.
 
@@ -145,17 +146,19 @@ at least one main role: Dancer2::Plugin::FormValidator::Role::HasProfile.
 
 This role requires profile method which should return a HashRef Data::FormValidator accepts:
 
-    package App::App::Http::Validators::RegisterForm {
+    package App::Http::Validators::RegisterForm {
         use Moo;
         use Data::FormValidator::Constraints qw(:closures);
 
         with 'Dancer2::Plugin::FormValidator::Role::HasProfile';
 
         sub profile {
-            required => [qw(name email)],
-            constraint_methods => {
-                email => email,
-            },
+            return {
+                required => [qw(name email)],
+                constraint_methods => {
+                    email => email,
+                }
+            };
         };
     }
 
@@ -176,7 +179,8 @@ Then you need to set an form => validator association in config:
 
 Now you can validate POST parameters in your controller:
 
-   use Dancer2::Plugin::FormValidator;
+    use Dancer2::Plugin::FormValidator;
+    use App::Http::Validators::RegisterForm;
 
     post '/register' => sub {
         if (my $valid_hash_ref = validate_form 'register_form') {
