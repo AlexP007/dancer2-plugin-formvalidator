@@ -8,7 +8,7 @@ use Dancer2::Plugin::FormValidator::Processor;
 use Data::FormValidator;
 use Types::Standard qw(InstanceOf);
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 
 plugin_keywords qw(validate validate_form errors);
 
@@ -30,12 +30,17 @@ sub BUILD {
         Dancer2::Core::Hook->new(
             name => 'before_template_render',
             code => sub {
-                my $tokens   = shift;
+                my $tokens = shift;
+                my $errors = {};
+                my $old    = {};
 
                 if (my $deferred = $tokens->{deferred}->{$self->config_obj->session_namespace}) {
-                    $tokens->{errors} = delete $deferred->{messages};
-                    $tokens->{old}    = delete $deferred->{old};
+                    $errors = delete $deferred->{messages};
+                    $old    = delete $deferred->{old};
                 }
+
+                $tokens->{errors} = $errors;
+                $tokens->{old}    = $errors;
 
                 return;
             },
@@ -114,7 +119,7 @@ Dancer2::Plugin::FormValidator - validate incoming request in declarative way.
 
 =head1 VERSION
 
-version 0.11
+version 0.12
 
 =head1 SYNOPSIS
 

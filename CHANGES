@@ -1,3 +1,7 @@
+0.12 2022-03-31 12:24:41 Europe/Moscow
+    [IMPROVEMENTS]
+    * Default template tokens values as HashRef
+
 0.11 2022-03-30 23:15:44 Europe/Moscow
     [IMPROVEMENTS]
     * Delete plugin keys in deferred token
