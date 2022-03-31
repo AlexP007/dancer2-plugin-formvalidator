@@ -1,6 +1,7 @@
 package Dancer2::Plugin::FormValidator::Config;
 
 use Moo;
+use Carp;
 use Types::Standard qw(HashRef Bool);
 use Types::Common::String qw(NonEmptyStr);
 use namespace::clean;
@@ -66,6 +67,12 @@ has forms => (
     builder => sub {
         return shift->config->{forms} // {};
     }
+);
+
+has language => (
+    is       => 'rw',
+    isa      => NonEmptyStr,
+    default  => 'en',
 );
 
 sub BUILDARGS {
