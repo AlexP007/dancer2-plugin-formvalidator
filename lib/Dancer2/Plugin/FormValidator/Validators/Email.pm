@@ -13,7 +13,7 @@ sub message {
 }
 
 sub validate {
-    my ($field, $input) = @_;
+    my ($self, $field, $input) = @_;
     my $email = $input->{$field};
 
     return $email eq Email::Valid->address($email);

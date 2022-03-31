@@ -11,7 +11,7 @@ sub message {
 }
 
 sub validate {
-    my ($field, $input) = @_;
+    my ($self, $field, $input) = @_;
 
     return exists $input->{$field};
 }
