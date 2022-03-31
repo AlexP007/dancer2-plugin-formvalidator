@@ -10,7 +10,7 @@ sub get {
     my ($self, $name) = @_;
 
     if (defined %validators{$name}) {
-        return %validators{$name};
+        return $validators{$name};
     }
 
     if (my $class = $self->_validators->{$name}) {
@@ -23,7 +23,7 @@ sub get {
             Carp::croak "Validator: $class should implement $role\n";
         }
 
-        %validators{$name} = $validator;
+        $validators{$name} = $validator;
 
         return $validator;
     }
