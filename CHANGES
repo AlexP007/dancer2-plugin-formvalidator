@@ -1,3 +1,7 @@
+0.13 2022-03-31 13:03:59 Europe/Moscow
+    [BUGS]
+    * Fix old token has errors
+
 0.12 2022-03-31 12:24:41 Europe/Moscow
     [IMPROVEMENTS]
     * Default template tokens values as HashRef

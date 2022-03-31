@@ -8,7 +8,7 @@ use Dancer2::Plugin::FormValidator::Processor;
 use Data::FormValidator;
 use Types::Standard qw(InstanceOf);
 
-our $VERSION = '0.12';
+our $VERSION = '0.13';
 
 plugin_keywords qw(validate validate_form errors);
 
@@ -40,7 +40,7 @@ sub BUILD {
                 }
 
                 $tokens->{errors} = $errors;
-                $tokens->{old}    = $errors;
+                $tokens->{old}    = $old;
 
                 return;
             },
@@ -119,7 +119,7 @@ Dancer2::Plugin::FormValidator - validate incoming request in declarative way.
 
 =head1 VERSION
 
-version 0.12
+version 0.13
 
 =head1 SYNOPSIS
 
