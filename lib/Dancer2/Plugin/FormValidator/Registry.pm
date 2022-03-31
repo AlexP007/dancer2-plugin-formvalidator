@@ -2,6 +2,7 @@ package Dancer2::Plugin::FormValidator::Registry;
 
 use Moo;
 use Carp;
+use Module::Load;
 use namespace::clean;
 
 my %validators;
@@ -9,12 +10,12 @@ my %validators;
 sub get {
     my ($self, $name) = @_;
 
-    if (defined %validators{$name}) {
+    if (defined $validators{$name}) {
         return $validators{$name};
     }
 
     if (my $class = $self->_validators->{$name}) {
-        require $class;
+        autoload $class;
 
         my $role      = 'Dancer2::Plugin::FormValidator::Role::Validator';
         my $validator = $class->new;
