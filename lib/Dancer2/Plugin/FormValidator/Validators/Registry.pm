@@ -6,23 +6,29 @@ use namespace::clean;
 
 my %validators;
 
-sub validator {
-    my ($self, $validator_name) = @_;
+sub get {
+    my ($self, $name) = @_;
 
-    if (defined %validators{$validator_name}) {
-        return %validators{$validator_name};
+    if (defined %validators{$name}) {
+        return %validators{$name};
     }
 
-    if (my $class = $self->_validators->{$validator_name}) {
+    if (my $class = $self->_validators->{$name}) {
         require $class;
 
+        my $role      = 'Dancer2::Plugin::FormValidator::Role::Validator';
         my $validator = $class->new;
-        %validators{$validator_name} = $validator;
+
+        if (not $validator->does($role)) {
+            Carp::croak "Validator: $class should implement $role\n";
+        }
+
+        %validators{$name} = $validator;
 
         return $validator;
     }
 
-    Carp::croak("$validator_name is not defined\n");
+    Carp::croak("$name is not defined\n");
 }
 
 sub _validators {
