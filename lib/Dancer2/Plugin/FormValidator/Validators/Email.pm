@@ -14,9 +14,15 @@ sub message {
 
 sub validate {
     my ($self, $field, $input) = @_;
-    my $email = $input->{$field};
+    return $self->_is_valid_email($input->{$field});
+}
 
-    return $email eq Email::Valid->address($email);
+sub _is_valid_email {
+    if (my $valid_email = Email::Valid->address($_[1])) {
+        return $_[1] eq $valid_email;
+    }
+
+    return 0;
 }
 
 1;
