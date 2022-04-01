@@ -93,6 +93,7 @@ sub result {
 
 sub _validate {
     my $self    = shift;
+    my $success = 0;
     my %input   = %{ $self->input };
     my $profile = $self->validator->profile;
     my $is_valid;
@@ -102,9 +103,8 @@ sub _validate {
     for my $field (keys %input) {
         $is_valid = 1;
         my @validators = @{ $profile->{$field} };
-        print "field: $field\n";
+
         for my $validator (@validators) {
-            print "validator: $validator\n";
             if (not $self->_validate_field($field, $validator)) {
                 push @invalid, [ $field, $validator ];
                 $is_valid = 0;
@@ -116,7 +116,11 @@ sub _validate {
         }
     }
 
-    return ($is_valid, \@valid, \@invalid)
+    if (not @invalid) {
+        $success = 1;
+    }
+
+    return ($success, \@valid, \@invalid)
 }
 
 sub _validate_field {
