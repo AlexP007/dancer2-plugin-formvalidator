@@ -104,7 +104,7 @@ sub _validate {
                 $is_valid = 0;
             }
 
-            if (not $is_valid && $validator->stop_on_fail) {
+            if (!$is_valid && $validator->stop_on_fail) {
                 last;
             }
         }
