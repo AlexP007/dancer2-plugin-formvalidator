@@ -87,6 +87,7 @@ sub validate {
 
     # Copy input to work with isolated HashRef.
     $input = dclone($input);
+
     # Lock input to prevent accidental modifying.
     $input = lock_hashref($input);
 
