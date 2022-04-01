@@ -10,6 +10,7 @@ sub message {
     return {
         en => '%s is required',
         ru => '%s обязательно для заполнения',
+        de => '%s ist erforderlich',
     };
 }
 

@@ -10,6 +10,7 @@ sub message {
     return {
         en => '%s is not a valid email',
         ru => '%s не является валидным email адресом',
+        de => '%s enthält keine gültige E-Mail-Adresse',
     };
 }
 
