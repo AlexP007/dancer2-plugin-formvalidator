@@ -9,6 +9,7 @@ with 'Dancer2::Plugin::FormValidator::Role::Validator';
 sub message {
     return {
         en => '%s is not a valid email',
+        ru => '%s не является валидным email адресом',
     };
 }
 

@@ -43,10 +43,10 @@ has messages_ucfirst => (
 );
 
 has forms => (
-    is      => 'ro',
-    isa     => HashRef,
-    lazy    => 1,
-    builder => sub {
+    is       => 'ro',
+    isa      => HashRef,
+    lazy     => 1,
+    builder  => sub {
         return shift->config->{forms} // {};
     }
 );
@@ -54,7 +54,9 @@ has forms => (
 has language => (
     is       => 'rw',
     isa      => NonEmptyStr,
-    default  => 'en',
+    builder  => sub {
+        return shift->config->{language} // 'en';
+    }
 );
 
 sub BUILDARGS {
