@@ -1,7 +1,7 @@
 package Dancer2::Plugin::FormValidator::Result;
 
 use Moo;
-use Types::Standard qw(ArrayRef HashRef Bool);
+use Types::Standard qw(InstanceOf ArrayRef Bool);
 use namespace::clean;
 
 has success => (
@@ -24,7 +24,7 @@ has valid => (
 
 has messages => (
     is       => 'ro',
-    isa      => HashRef,
+    isa      => InstanceOf['Hash::MultiValue'],
     required => 1,
 );
 

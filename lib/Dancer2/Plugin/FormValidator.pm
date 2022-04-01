@@ -88,10 +88,10 @@ sub validate {
     # Copy input to work with isolated HashRef.
     $input = dclone($input);
     # Lock input to prevent accidental modifying.
-    lock_hashref($input);
+    $input = lock_hashref($input);
 
     my $registry = Dancer2::Plugin::FormValidator::Registry->new(
-        # plugin => $self,
+        plugin => $self,
     );
 
     my $processor = Dancer2::Plugin::FormValidator::Processor->new(

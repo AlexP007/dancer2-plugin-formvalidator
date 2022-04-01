@@ -2,6 +2,7 @@ package Dancer2::Plugin::FormValidator::Processor;
 
 use Moo;
 use List::Util qw(uniqstr);
+use Hash::MultiValue;
 use Dancer2::Plugin::FormValidator::Result;
 use Types::Standard qw(InstanceOf ConsumerOf HashRef);
 use namespace::clean;
@@ -32,7 +33,7 @@ has validator_profile => (
 
 sub result {
     my $self     = shift;
-    my $messages = {};
+    my $messages = Hash::MultiValue->new;
 
     my ($success, $valid, $invalid) = $self->_validate;
 
@@ -61,9 +62,12 @@ sub result {
 
                 my $validator = $self->registry->get($validator_name);
 
-                $messages->{$field} = sprintf(
-                    $validator->message->{$language},
-                    $ucfirst ? ucfirst($field) : $field,
+                $messages->add(
+                    $field,
+                    sprintf(
+                        $validator->message->{$language},
+                        $ucfirst ? ucfirst($field) : $field,
+                    )
                 );
             }
         }
