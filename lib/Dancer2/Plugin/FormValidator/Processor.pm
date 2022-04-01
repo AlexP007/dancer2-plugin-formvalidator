@@ -43,34 +43,29 @@ sub result {
         my $language          = $config->language;
         my $validator_profile = $self->validator_profile;
 
-        if ($validator_profile->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
-            my $validator_msg_errors = $validator_profile->messages;
-            if (ref $validator_msg_errors eq 'HASH') {
-                for my $item (@{ $invalid }) {
-                    if (my $value = $validator_msg_errors->{$item}) {
-                        $messages->{$item} = sprintf(
-                            $value,
-                            $ucfirst ? ucfirst($item) : $item,
-                        );
-                    }
+        for my $item (@{ $invalid }) {
+            my ($field, $validator_name) = @$item;
+
+            my $validator = $self->registry->get($validator_name);
+            my $message   = $self->config->messages_validators->{$validator_name} || $validator->message;
+
+            if ($validator_profile->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
+                my $validator_messages = $validator_profile->messages;
+                if (ref $validator_messages eq 'HASH') {
+                    $message = $validator_messages->{$validator_name} || $message;
+                }
+                else {
+                    Carp::croak("Messages should be a HashRef\n")
                 }
             }
-        }
-        else {
-            for my $item (@{ $invalid }) {
-                my ($field, $validator_name) = @$item;
 
-                my $validator = $self->registry->get($validator_name);
-                my $message   = $self->config->messages_validators->{$validator_name} || $validator->message;
-
-                $messages->add(
-                    $field,
-                    sprintf(
-                        $message->{$language},
-                        $ucfirst ? ucfirst($field) : $field,
-                    )
-                );
-            }
+            $messages->add(
+                $field,
+                sprintf(
+                    $message->{$language},
+                    $ucfirst ? ucfirst($field) : $field,
+                )
+            );
         }
     }
 
