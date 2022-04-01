@@ -33,24 +33,6 @@ has messages => (
     }
 );
 
-has messages_missing => (
-    is       => 'ro',
-    isa      => NonEmptyStr,
-    lazy     => 1,
-    builder  => sub {
-        return shift->messages->{missing} // '%s is missing.';
-    }
-);
-
-has messages_invalid => (
-    is       => 'ro',
-    isa      => NonEmptyStr,
-    lazy     => 1,
-    builder  => sub {
-        return shift->messages->{invalid} // '%s is invalid.';
-    }
-);
-
 has messages_ucfirst => (
     is       => 'ro',
     isa      => Bool,

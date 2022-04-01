@@ -1,6 +1,7 @@
 package Dancer2::Plugin::FormValidator::Processor;
 
 use Moo;
+use List::Util qw(uniqstr);
 use Hash::Util qw(lock_hashref);
 use Dancer2::Plugin::FormValidator::Result;
 use Types::Standard qw(InstanceOf ConsumerOf HashRef);
@@ -24,7 +25,7 @@ has registry => (
     required => 1,
 );
 
-has validator => (
+has validator_profile => (
     is       => 'ro',
     isa      => ConsumerOf['Dancer2::Plugin::FormValidator::Role::HasProfile'],
     required => 1,
@@ -41,61 +42,60 @@ sub BUILDARGS {
 }
 
 sub result {
-    my $self    = shift;
+    my $self     = shift;
+    my $messages = {};
 
     my ($success, $valid, $invalid) = $self->_validate;
 
-    return ($success, $valid, $invalid);
+    if ($success != 1) {
+        my $config            = $self->config;
+        my $ucfirst           = $config->messages_ucfirst;
+        my $language          = $config->language;
+        my $validator_profile = $self->validator_profile;
 
-    # my $messages;
-    #
-    # if ($success != 1) {
-    #     $messages     = {};
-    #     my $config    = $self->config;
-    #     my $validator = $self->validator;
-    #
-    #     my $messages_invalid = $config->messages_invalid;
-    #     my $ucfirst          = $config->messages_ucfirst;
-    #
-    #     if ($validator->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
-    #         my $validator_msg_errors = $validator->messages;
-    #         if (ref $validator_msg_errors eq 'HASH') {
-    #             for my $item (@invalid) {
-    #                 if (my $value = $validator_msg_errors->{$item}) {
-    #                     $messages->{$item} = sprintf(
-    #                         $value,
-    #                         $ucfirst ? ucfirst($item) : $item,
-    #                     );
-    #                 }
-    #             }
-    #         }
-    #         else {
-    #             $messages = $validator_msg_errors;
-    #         }
-    #     }
-    #     else {
-    #         for my $item (@invalid) {
-    #             $messages->{$item} = sprintf(
-    #                 $messages_invalid,
-    #                 $ucfirst ? ucfirst($item) : $item,
-    #             );
-    #         }
-    #     }
-    # }
+        if ($validator_profile->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
+            my $validator_msg_errors = $validator_profile->messages;
+            if (ref $validator_msg_errors eq 'HASH') {
+                for my $item (@{ $invalid }) {
+                    if (my $value = $validator_msg_errors->{$item}) {
+                        $messages->{$item} = sprintf(
+                            $value,
+                            $ucfirst ? ucfirst($item) : $item,
+                        );
+                    }
+                }
+            }
+        }
+        else {
+            for my $item (@{ $invalid }) {
+                my ($field, $validator_name) = @$item;
 
-    # return Dancer2::Plugin::FormValidator::Result->new(
-    #     success  => $success,
-    #     valid    => $valid,
-    #     invalid  => \@invalid,
-    #     messages => $messages,
-    # );
+                my $validator = $self->registry->get($validator_name);
+
+                $messages->{$field} = sprintf(
+                    $validator->message->{$language},
+                    $ucfirst ? ucfirst($field) : $field,
+                );
+            }
+        }
+    }
+
+    # Flatten $invalid array ref and leave only unique fields.
+    my @invalid = uniqstr map { $_->[0] } @ { $invalid };
+
+    return Dancer2::Plugin::FormValidator::Result->new(
+        success  => $success,
+        valid    => $valid,
+        invalid  => \@invalid,
+        messages => $messages,
+    );
 }
 
 sub _validate {
     my $self    = shift;
     my $success = 0;
     my %input   = %{ $self->input };
-    my $profile = $self->validator->profile;
+    my $profile = $self->validator_profile->profile;
     my $is_valid;
     my @valid;
     my @invalid;
