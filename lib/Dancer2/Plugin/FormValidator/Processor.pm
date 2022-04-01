@@ -96,10 +96,16 @@ sub _validate {
         $is_valid = 1;
         my @validators = @{ $profile{$field} };
 
-        for my $validator (@validators) {
-            if (not $self->_validate_field($field, $validator)) {
-                push @invalid, [ $field, $validator ];
+        for my $validator_name (@validators) {
+            my $validator = $self->registry->get($validator_name);
+
+            if (not $validator->validate($field, $self->input)) {
+                push @invalid, [ $field, $validator_name ];
                 $is_valid = 0;
+            }
+
+            if (not $is_valid && $validator->stop_on_fail) {
+                last;
             }
         }
 
@@ -113,14 +119,6 @@ sub _validate {
     }
 
     return ($success, \@valid, \@invalid)
-}
-
-sub _validate_field {
-    my ($self, $field, $validator_name) = @_;
-
-    my $validator = $self->registry->get($validator_name);
-
-    return $validator->validate($field, $self->input);
 }
 
 1;
