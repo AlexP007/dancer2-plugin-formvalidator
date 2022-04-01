@@ -61,11 +61,12 @@ sub result {
                 my ($field, $validator_name) = @$item;
 
                 my $validator = $self->registry->get($validator_name);
+                my $message   = $self->config->messages_validators->{$validator_name} || $validator->message;
 
                 $messages->add(
                     $field,
                     sprintf(
-                        $validator->message->{$language},
+                        $message->{$language},
                         $ucfirst ? ucfirst($field) : $field,
                     )
                 );

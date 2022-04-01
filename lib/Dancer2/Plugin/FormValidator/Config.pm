@@ -33,6 +33,15 @@ has messages => (
     }
 );
 
+has messages_validators => (
+    is       => 'ro',
+    isa      => HashRef,
+    required => 1,
+    builder  => sub {
+        return shift->messages->{validators} // {};
+    }
+);
+
 has messages_ucfirst => (
     is       => 'ro',
     isa      => Bool,
