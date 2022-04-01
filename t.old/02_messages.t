@@ -4,7 +4,6 @@ use Test::More tests => 3;
 
 use Dancer2::Plugin::FormValidator::Config;
 use Dancer2::Plugin::FormValidator::Processor;
-use Data::FormValidator;
 
 package Validator {
     use Moo;
@@ -70,10 +69,8 @@ package Validator2 {
 
     sub profile {
         return {
-            required => [qw(name email)],
-            constraint_methods => {
-                email => email,
-            },
+            name  => [qw(required)],
+            email => [qw(required email)],
         };
     };
 
