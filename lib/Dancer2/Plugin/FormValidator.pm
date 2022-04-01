@@ -1,16 +1,21 @@
 package Dancer2::Plugin::FormValidator;
 
+use 5.20.0;
+
 use Dancer2::Plugin;
 use Dancer2::Core::Hook;
 use Dancer2::Plugin::Deferred;
 use Dancer2::Plugin::FormValidator::Config;
+use Dancer2::Plugin::FormValidator::Registry;
 use Dancer2::Plugin::FormValidator::Processor;
-use Data::FormValidator;
+use Storable qw(dclone);
+use Hash::Util qw(lock_hashref);
 use Types::Standard qw(InstanceOf);
+use namespace::clean;
 
-our $VERSION = '0.13';
+our $VERSION = '0.20';
 
-plugin_keywords qw(validate validate_form errors);
+plugin_keywords qw(validate_form validate errors set_language);
 
 has config_obj => (
     is       => 'ro',
@@ -48,12 +53,17 @@ sub BUILD {
     );
 }
 
+sub set_language {
+    shift->config_obj->set_language(shift);
+    return;
+}
+
 sub validate_form {
     my ($self, $form) = @_;
 
-    if (my $validator = $self->config_obj->form($form)) {
+    if (my $validator_profile = $self->config_obj->form($form)) {
         my $input  = $self->dsl->body_parameters->as_hashref;
-        my $result = $self->validate($input, $validator->new);
+        my $result = $self->validate($input, $validator_profile->new);
 
         return $result->success ? $result->valid : undef;
     }
@@ -63,22 +73,32 @@ sub validate_form {
 }
 
 sub validate {
-    my ($self, $input, $validator) = @_;
+    my ($self, $input, $validator_profile) = @_;
 
     if (ref $input ne 'HASH') {
         Carp::croak "Input data should be a hash reference\n";
     }
 
     my $role = 'Dancer2::Plugin::FormValidator::Role::HasProfile';
-    if (not $validator->does($role)) {
-        my $name = $validator->meta->name;
+    if (not $validator_profile->does($role)) {
+        my $name = $validator_profile->meta->name;
         Carp::croak "$name should implement $role\n";
     }
 
+    # Copy input to work with isolated HashRef.
+    $input = dclone($input);
+    # Lock input to prevent accidental modifying.
+    lock_hashref($input);
+
+    my $registry = Dancer2::Plugin::FormValidator::Registry->new(
+        # plugin => $self,
+    );
+
     my $processor = Dancer2::Plugin::FormValidator::Processor->new(
-        config    => $self->config_obj,
-        validator => $validator,
-        results   => Data::FormValidator->check($input, $validator->profile),
+        input             => $input,
+        config            => $self->config_obj,
+        registry          => $registry,
+        validator_profile => $validator_profile,
     );
 
     my $result = $processor->result;
@@ -119,7 +139,7 @@ Dancer2::Plugin::FormValidator - validate incoming request in declarative way.
 
 =head1 VERSION
 
-version 0.13
+version 0.20
 
 =head1 SYNOPSIS
 

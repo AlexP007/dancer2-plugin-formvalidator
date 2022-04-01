@@ -14,7 +14,12 @@ sub message {
 
 sub validate {
     my ($self, $field, $input) = @_;
-    return $self->_is_valid_email($input->{$field});
+
+    if (exists $input->{$field}) {
+        return $self->_is_valid_email($input->{$field});
+    }
+
+    return 0;
 }
 
 sub _is_valid_email {

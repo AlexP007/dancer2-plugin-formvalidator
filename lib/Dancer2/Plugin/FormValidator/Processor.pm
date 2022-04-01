@@ -2,7 +2,6 @@ package Dancer2::Plugin::FormValidator::Processor;
 
 use Moo;
 use List::Util qw(uniqstr);
-use Hash::Util qw(lock_hashref);
 use Dancer2::Plugin::FormValidator::Result;
 use Types::Standard qw(InstanceOf ConsumerOf HashRef);
 use namespace::clean;
@@ -30,16 +29,6 @@ has validator_profile => (
     isa      => ConsumerOf['Dancer2::Plugin::FormValidator::Role::HasProfile'],
     required => 1,
 );
-
-sub BUILDARGS {
-    my ($self, %args) = @_;
-
-    if (my $input = $args{input}) {
-        $args{input} = lock_hashref($input);
-    }
-
-    return \%args;
-}
 
 sub result {
     my $self     = shift;
@@ -94,15 +83,14 @@ sub result {
 sub _validate {
     my $self    = shift;
     my $success = 0;
-    my %input   = %{ $self->input };
-    my $profile = $self->validator_profile->profile;
+    my %profile = %{ $self->validator_profile->profile };
     my $is_valid;
     my @valid;
     my @invalid;
 
-    for my $field (keys %input) {
+    for my $field (keys %profile) {
         $is_valid = 1;
-        my @validators = @{ $profile->{$field} };
+        my @validators = @{ $profile{$field} };
 
         for my $validator (@validators) {
             if (not $self->_validate_field($field, $validator)) {
