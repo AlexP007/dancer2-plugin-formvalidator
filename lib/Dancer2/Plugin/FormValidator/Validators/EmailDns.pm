@@ -19,7 +19,7 @@ sub validate {
         return $self->_is_valid_email_and_dns($input->{$field});
     }
 
-    return 0;
+    return 1;
 }
 
 sub _is_valid_email_and_dns {
