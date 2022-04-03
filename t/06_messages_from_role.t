@@ -11,7 +11,7 @@ package Validator {
     use Moo;
     use Data::FormValidator::Constraints qw(:closures);
 
-    with 'Dancer2::Plugin::FormValidator::Role::HasProfileMessages';
+    with 'Dancer2::Plugin::FormValidator::Role::ProfileHasMessages';
 
     sub profile {
         return {

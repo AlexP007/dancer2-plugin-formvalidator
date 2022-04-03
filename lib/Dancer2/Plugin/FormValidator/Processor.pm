@@ -27,7 +27,7 @@ has registry => (
 
 has validator_profile => (
     is       => 'ro',
-    isa      => ConsumerOf['Dancer2::Plugin::FormValidator::Role::HasProfile'],
+    isa      => ConsumerOf['Dancer2::Plugin::FormValidator::Role::Profile'],
     required => 1,
 );
 

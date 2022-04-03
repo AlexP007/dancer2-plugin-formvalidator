@@ -7,7 +7,7 @@ package Validator {
     use Moo;
     use Data::FormValidator::Constraints qw(:closures);
 
-    with 'Dancer2::Plugin::FormValidator::Role::HasProfile';
+    with 'Dancer2::Plugin::FormValidator::Role::Profile';
 
     sub profile {
         return {

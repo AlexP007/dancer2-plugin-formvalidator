@@ -18,13 +18,13 @@ use_ok('Dancer2::Plugin::FormValidator::Registry');
 use_ok('Dancer2::Plugin::FormValidator::Result');
 
 # TEST 6.
-use_ok('Dancer2::Plugin::FormValidator::Role::HasProfile');
+use_ok('Dancer2::Plugin::FormValidator::Role::Profile');
 
 # TEST 7.
 use_ok('Dancer2::Plugin::FormValidator::Role::HasMessages');
 
 # TEST 8.
-use_ok('Dancer2::Plugin::FormValidator::Role::HasProfileMessages');
+use_ok('Dancer2::Plugin::FormValidator::Role::ProfileHasMessages');
 
 # TEST 9.
 use_ok('Dancer2::Plugin::FormValidator::Role::Validator');
