@@ -10,7 +10,7 @@ use Dancer2::Plugin::FormValidator::Registry;
 use Dancer2::Plugin::FormValidator::Processor;
 use Storable qw(dclone);
 use Hash::Util qw(lock_hashref);
-use Types::Standard qw(InstanceOf);
+use Types::Standard qw(InstanceOf ArrayRef);
 use namespace::clean;
 
 our $VERSION = '0.20';
@@ -25,6 +25,14 @@ has config_obj => (
         return Dancer2::Plugin::FormValidator::Config->new(
             config => shift->config,
         );
+    }
+);
+
+has extensions => (
+    is       => 'ro',
+    isa      => ArrayRef,
+    default  => sub {
+        return shift->config->{extensions} // [],
     }
 );
 
@@ -54,7 +62,7 @@ sub BUILD {
 }
 
 sub set_language {
-    shift->config_obj->set_language(shift);
+    shift->config_obj->language(shift);
     return;
 }
 
@@ -79,26 +87,16 @@ sub validate {
         Carp::croak "Input data should be a hash reference\n";
     }
 
-    my $role = 'Dancer2::Plugin::FormValidator::Role::HasProfile';
+    my $role = 'Dancer2::Plugin::FormValidator::Role::Profile';
     if (not $validator_profile->does($role)) {
         my $name = $validator_profile->meta->name;
         Carp::croak "$name should implement $role\n";
     }
 
-    # Copy input to work with isolated HashRef.
-    $input = dclone($input);
-
-    # Lock input to prevent accidental modifying.
-    $input = lock_hashref($input);
-
-    my $registry = Dancer2::Plugin::FormValidator::Registry->new(
-        plugin => $self,
-    );
-
     my $processor = Dancer2::Plugin::FormValidator::Processor->new(
-        input             => $input,
+        input             => $self->_clone_and_lock_input($input),
         config            => $self->config_obj,
-        registry          => $registry,
+        registry          => $self->_registry,
         validator_profile => $validator_profile,
     );
 
@@ -115,6 +113,23 @@ sub validate {
     }
 
     return $result;
+}
+
+sub _clone_and_lock_input {
+    # Copy input to work with isolated HashRef.
+    my $input = dclone($_[1]);
+
+    # Lock input to prevent accidental modifying.
+    return lock_hashref($input);
+}
+
+sub _registry {
+    my $self = shift;
+
+    return Dancer2::Plugin::FormValidator::Registry->new(
+        plugin     => $self,
+        extensions => $self->extensions,
+    );
 }
 
 sub errors {
