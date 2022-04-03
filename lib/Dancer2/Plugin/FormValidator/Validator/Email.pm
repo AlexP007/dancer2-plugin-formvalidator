@@ -1,4 +1,4 @@
-package Dancer2::Plugin::FormValidator::Validators::Email;
+package Dancer2::Plugin::FormValidator::Validator::Email;
 
 use Moo;
 use Email::Valid;

@@ -1,4 +1,4 @@
-package Dancer2::Plugin::FormValidator::Validators::EmailDns;
+package Dancer2::Plugin::FormValidator::Validator::EmailDns;
 
 use Moo;
 use utf8;

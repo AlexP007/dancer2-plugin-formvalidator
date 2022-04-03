@@ -3,96 +3,96 @@ use warnings;
 use utf8::all;
 use Test::More tests => 12;
 
-use Dancer2::Plugin::FormValidator::Validators::Required;
-use Dancer2::Plugin::FormValidator::Validators::Email;
-use Dancer2::Plugin::FormValidator::Validators::EmailDns;
+use Dancer2::Plugin::FormValidator::Validator::Required;
+use Dancer2::Plugin::FormValidator::Validator::Email;
+use Dancer2::Plugin::FormValidator::Validator::EmailDns;
 
 my $validator;
 
 # TEST 1.
 ## Check Dancer2::Plugin::FormValidator::Validators::Required.
 
-$validator = Dancer2::Plugin::FormValidator::Validators::Required->new;
+$validator = Dancer2::Plugin::FormValidator::Validator::Required->new;
 
 is_deeply(
     ref $validator->message,
     'HASH',
-    'TEST 1: Dancer2::Plugin::FormValidator::Validators::Required messages hash'
+    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required messages hash'
 );
 
 is(
     $validator->stop_on_fail,
     1,
-    'TEST 1: Dancer2::Plugin::FormValidator::Validators::Required stop_on_fail',
+    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required stop_on_fail',
 );
 
 isnt(
     $validator->validate('email', {}),
     1,
-    'TEST 1: Dancer2::Plugin::FormValidator::Validators::Required: not valid',
+    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required: not valid',
 );
 
 
 is(
     $validator->validate('email', {email => ''}),
     1,
-    'TEST 1: Dancer2::Plugin::FormValidator::Validators::Required: valid',
+    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required: valid',
 );
 
 # TEST 2.
 ## Check Dancer2::Plugin::FormValidator::Validators::Email.
 
-$validator = Dancer2::Plugin::FormValidator::Validators::Email->new;
+$validator = Dancer2::Plugin::FormValidator::Validator::Email->new;
 
 is_deeply(
     ref $validator->message,
     'HASH',
-    'TEST 2: Dancer2::Plugin::FormValidator::Validators::Email messages hash'
+    'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email messages hash'
 );
 
 is(
     $validator->stop_on_fail,
     0,
-    'TEST 2: Dancer2::Plugin::FormValidator::Validators::Email stop_on_fail',
+    'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email stop_on_fail',
 );
 
 isnt(
     $validator->validate('email', {email => 'alexpan.org'}),
     1,
-    'TEST 2: Dancer2::Plugin::FormValidator::Validators::Email: not valid',
+    'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email: not valid',
 );
 
 is(
     $validator->validate('email', {email => 'alex@cpan.org'}),
     1,
-    'TEST 2: Dancer2::Plugin::FormValidator::Validators::Email: valid',
+    'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email: valid',
 );
 
 # TEST 3.
 ## Check Dancer2::Plugin::FormValidator::Validators::EmailDns.
 
-$validator = Dancer2::Plugin::FormValidator::Validators::EmailDns->new;
+$validator = Dancer2::Plugin::FormValidator::Validator::EmailDns->new;
 
 is_deeply(
     ref $validator->message,
     'HASH',
-    'TEST 3: Dancer2::Plugin::FormValidator::Validators::EmailDns messages hash'
+    'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns messages hash'
 );
 
 is(
     $validator->stop_on_fail,
     0,
-    'TEST 3: Dancer2::Plugin::FormValidator::Validators::EmailDns stop_on_fail',
+    'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns stop_on_fail',
 );
 
 isnt(
     $validator->validate('email', {email => 'alexpan@crfssfd.com'}),
     1,
-    'TEST 3:Dancer2::Plugin::FormValidator::Validators::EmailDns: not valid',
+    'TEST 3:Dancer2::Plugin::FormValidator::Validator::EmailDns: not valid',
 );
 
 is(
     $validator->validate('email', {email => 'alex@cpan.org'}),
     1,
-    'TEST 3:Dancer2::Plugin::FormValidator::Validators::EmailDns: valid',
+    'TEST 3:Dancer2::Plugin::FormValidator::Validator::EmailDns: valid',
 );

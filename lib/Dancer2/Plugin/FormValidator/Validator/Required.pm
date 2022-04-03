@@ -1,4 +1,4 @@
-package Dancer2::Plugin::FormValidator::Validators::Required;
+package Dancer2::Plugin::FormValidator::Validator::Required;
 
 use Moo;
 use utf8;

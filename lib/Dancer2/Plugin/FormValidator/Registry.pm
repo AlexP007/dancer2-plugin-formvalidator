@@ -43,9 +43,9 @@ sub get {
 
 sub _validators {
     return {
-        required  => 'Dancer2::Plugin::FormValidator::Validators::Required',
-        email     => 'Dancer2::Plugin::FormValidator::Validators::Email',
-        email_dns => 'Dancer2::Plugin::FormValidator::Validators::EmailDns',
+        required  => 'Dancer2::Plugin::FormValidator::Validator::Required',
+        email     => 'Dancer2::Plugin::FormValidator::Validator::Email',
+        email_dns => 'Dancer2::Plugin::FormValidator::Validator::EmailDns',
     };
 }
 
