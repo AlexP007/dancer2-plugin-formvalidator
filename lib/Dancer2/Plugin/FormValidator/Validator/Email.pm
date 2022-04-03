@@ -1,6 +1,7 @@
 package Dancer2::Plugin::FormValidator::Validator::Email;
 
 use Moo;
+use utf8;
 use Email::Valid;
 use namespace::clean;
 

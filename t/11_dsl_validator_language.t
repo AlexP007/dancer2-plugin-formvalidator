@@ -17,6 +17,7 @@ package Validator {
 
 package App {
     use Dancer2;
+    use URI::Escape;
 
     BEGIN {
         set plugins => {
@@ -33,9 +34,11 @@ package App {
 
     use Dancer2::Plugin::FormValidator;
 
+    validator_language 'ru';
+
     post '/' => sub {
         if (not validate_form 'login') {
-            to_json errors;
+            to_json errors, {utf8 => 0};
         }
     };
 }
@@ -44,10 +47,10 @@ use Plack::Test;
 use HTTP::Request::Common;
 
 my $app    = Plack::Test->create(App->to_app);
-my $result = $app->request(POST '/', [email => 'alexp.cpan.org']);
+my $result = $app->request(POST '/', [email => 'alex.cpan.org']);
 
 is(
     $result->content,
-    '{"email":["Email is not a valid email"]}',
+    '{"email":["Email не является валидным email адресом"]}',
     'Check dsl: errors'
 );

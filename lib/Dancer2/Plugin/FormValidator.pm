@@ -14,7 +14,7 @@ use Types::Standard qw(InstanceOf ArrayRef);
 
 our $VERSION = '0.20';
 
-plugin_keywords qw(validate_form validate errors set_language);
+plugin_keywords qw(validate_form validate errors validator_language);
 
 has config_obj => (
     is       => 'ro',
@@ -60,7 +60,7 @@ sub BUILD {
     );
 }
 
-sub set_language {
+sub validator_language {
     shift->config_obj->language(shift);
     return;
 }
