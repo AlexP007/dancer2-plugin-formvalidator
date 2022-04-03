@@ -11,7 +11,7 @@ package Validator {
     use Moo;
     use Data::FormValidator::Constraints qw(:closures);
 
-    with 'Dancer2::Plugin::FormValidator::Role::HasProfileMessages';
+    with 'Dancer2::Plugin::FormValidator::Role::HasProfile';
 
     sub profile {
         return {
@@ -19,19 +19,6 @@ package Validator {
             email => [qw(required email)],
         };
     };
-
-    sub messages {
-        return {
-            required => {
-                en => '%s is needed',
-                ru => '%s это нужно',
-            },
-            email    => {
-                en => '%s please use valid email',
-                ru => '%s пожалуйста укажи правильную почту',
-            }
-        }
-    }
 }
 
 my $config = Dancer2::Plugin::FormValidator::Config->new(
@@ -40,7 +27,19 @@ my $config = Dancer2::Plugin::FormValidator::Config->new(
             namespace => '_form_validator'
         },
         language => 'en',
-    },
+        messages => {
+            validators => {
+                required => {
+                    en => '%s is needed from config',
+                    ru => '%s это нужно из конфига',
+                },
+                email    => {
+                    en => '%s please use valid email from config',
+                    ru => '%s пожалуйста укажи правильную почту из конфига',
+                }
+            }
+        }
+    }
 );
 
 my $validator = Validator->new;
@@ -64,13 +63,13 @@ is_deeply(
     $processor->result->messages,
     {
         'name' => [
-            'Name is needed'
+            'Name is needed from config'
         ],
         'email' => [
-            'Email please use valid email'
+            'Email please use valid email from config'
         ]
     },
-    'TEST 1: Check user defined messages(en) from validator class'
+    'TEST 1: Check user defined messages(en) from config'
 );
 
 # TEST 2.
@@ -82,11 +81,11 @@ is_deeply(
     $processor->result->messages,
     {
         'name' => [
-            'Name это нужно'
+            'Name это нужно из конфига'
         ],
         'email' => [
-            'Email пожалуйста укажи правильную почту'
+            'Email пожалуйста укажи правильную почту из конфига'
         ]
     },
-    'TEST 1: Check user defined messages(ru) from validator class'
+    'TEST 2: Check user defined messages(ru) from config'
 );
