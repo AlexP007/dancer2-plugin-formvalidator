@@ -3,15 +3,39 @@ package Dancer2::Plugin::FormValidator::Registry;
 use Moo;
 use Carp;
 use Module::Load;
-use Types::Standard qw(InstanceOf);
+use Types::Standard qw(InstanceOf ConsumerOf ArrayRef HashRef);
 use namespace::clean;
 
 my %validators;
 
 has plugin => (
     is        => 'ro',
-    isa       => InstanceOf [ 'Dancer2::Plugin::FormValidator' ],
+    isa       => InstanceOf['Dancer2::Plugin::FormValidator'],
     predicate => 1,
+);
+
+has extensions => (
+    is        => 'ro',
+    isa       => ArrayRef[ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension']],
+    predicate => 1,
+);
+
+has validators => (
+    is        => 'ro',
+    isa       => HashRef,
+    required  => 1,
+    builder   => sub {
+        my $self       = shift;
+        my $validators = $self->_validators;
+
+        if ($self->has_extensions) {
+            for my $extension (@{ $self->extensions }) {
+                $validators = {%{ $validators }, %{ $extension->validators }};
+            };
+        }
+
+        return $validators;
+    }
 );
 
 sub get {
@@ -21,7 +45,7 @@ sub get {
         return $validators{$name};
     }
 
-    if (my $class = $self->_validators->{$name}) {
+    if (my $class = $self->validators->{$name}) {
         autoload $class;
 
         my $role      = 'Dancer2::Plugin::FormValidator::Role::Validator';
