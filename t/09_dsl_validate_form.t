@@ -10,10 +10,7 @@ package Validator {
 
     sub profile {
         return {
-            required => [qw(email)],
-            constraint_methods => {
-                email => email,
-            },
+            email => [qw(required email)],
         };
     };
 }
@@ -47,4 +44,8 @@ use HTTP::Request::Common;
 my $app    = Plack::Test->create(App->to_app);
 my $result = $app->request(POST '/', [email => 'alexp@cpan.org']);
 
-is($result->content, '{"email":"alexp@cpan.org"}', 'Check response from validated route');
+is(
+    $result->content,
+    '{"email":"alexp@cpan.org"}',
+    'Check dsl: validate',
+);
