@@ -44,28 +44,31 @@ sub result {
         my $validator_profile = $self->validator_profile;
 
         for my $item (@{ $invalid }) {
-            my ($field, $validator_name) = @$item;
+            my ($field, $validator_declaration) = @$item;
 
-            my $validator = $self->registry->get($validator_name);
-            my $message   = $self->config->messages_validators->{$validator_name} || $validator->message;
+            if (my ($validator_name, $validator_params) = $self->_split_validator_declaration($validator_declaration)) {
+                my $validator = $self->registry->get($validator_name);
+                my $message = $self->config->messages_validators->{$validator_name} || $validator->message;
 
-            if ($validator_profile->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
-                my $validator_messages = $validator_profile->messages;
-                if (ref $validator_messages eq 'HASH') {
-                    $message = $validator_messages->{$validator_name} || $message;
+                if ($validator_profile->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
+                    my $validator_messages = $validator_profile->messages;
+                    if (ref $validator_messages eq 'HASH') {
+                        $message = $validator_messages->{$validator_name} || $message;
+                    }
+                    else {
+                        Carp::croak("Messages should be a HashRef\n")
+                    }
                 }
-                else {
-                    Carp::croak("Messages should be a HashRef\n")
-                }
+
+                $messages->add(
+                    $field,
+                    sprintf(
+                        $message->{$language},
+                        $ucfirst ? ucfirst($field) : $field,
+                        split(',', $validator_params),
+                    )
+                );
             }
-
-            $messages->add(
-                $field,
-                sprintf(
-                    $message->{$language},
-                    $ucfirst ? ucfirst($field) : $field,
-                )
-            );
         }
     }
 
@@ -99,7 +102,7 @@ sub _validate {
         my @validators = @{ $profile{$field} };
 
         for my $validator_declaration (@validators) {
-            if (my ($validator_name, $validator_params) = $validator_declaration =~ /([^:]+):?(.*)/) {
+            if (my ($validator_name, $validator_params) = $self->_split_validator_declaration($validator_declaration)) {
                 my $validator = $self->registry->get($validator_name);
 
                 if (not $validator->validate($field, $self->input, split(',', $validator_params))) {
@@ -123,6 +126,10 @@ sub _validate {
     }
 
     return ($success, \@valid, \@invalid)
+}
+
+sub _split_validator_declaration {
+    return ($_[1] =~ /([^:]+):?(.*)/);
 }
 
 1;
