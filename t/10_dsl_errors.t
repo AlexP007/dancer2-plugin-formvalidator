@@ -10,10 +10,7 @@ package Validator {
 
     sub profile {
         return {
-            required => [qw(email)],
-            constraint_methods => {
-                email => email,
-            },
+            email => [qw(required email)],
         };
     };
 }
@@ -49,4 +46,7 @@ use HTTP::Request::Common;
 my $app    = Plack::Test->create(App->to_app);
 my $result = $app->request(POST '/', [email => 'alexp.cpan.org']);
 
-is($result->content, '{"email":"Email is invalid."}', 'Check deferred messages from unvalidated route');
+is(
+    $result->content,
+    '{"email":["Email is not a valid email"]}',
+    'Check dsl: errors');
