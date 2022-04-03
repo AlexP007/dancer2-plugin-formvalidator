@@ -100,5 +100,5 @@ is_deeply(
             'Email пожалуйста укажи правильную почту'
         ]
     },
-    'TEST 1: Check user defined messages(ru) from validator class'
+    'TEST 2: Check user defined messages(ru) from validator class'
 );
