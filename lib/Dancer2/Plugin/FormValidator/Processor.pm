@@ -98,16 +98,18 @@ sub _validate {
         $is_valid = 1;
         my @validators = @{ $profile{$field} };
 
-        for my $validator_name (@validators) {
-            my $validator = $self->registry->get($validator_name);
+        for my $validator_declaration (@validators) {
+            if (my ($validator_name, $validator_params) = $validator_declaration =~ /([^:]+):?(.*)/) {
+                my $validator = $self->registry->get($validator_name);
 
-            if (not $validator->validate($field, $self->input)) {
-                push @invalid, [ $field, $validator_name ];
-                $is_valid = 0;
-            }
+                if (not $validator->validate($field, $self->input, split(',', $validator_params))) {
+                    push @invalid, [ $field, $validator_name ];
+                    $is_valid = 0;
+                }
 
-            if (!$is_valid && $validator->stop_on_fail) {
-                last;
+                if (!$is_valid && $validator->stop_on_fail) {
+                    last;
+                }
             }
         }
 
