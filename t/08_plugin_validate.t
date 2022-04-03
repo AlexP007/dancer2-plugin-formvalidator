@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use Test::More tests => 1;
-use JSON::Tiny qw(decode_json);
+use JSON::MaybeXS;
 
 package Validator {
     use Moo;
@@ -11,10 +11,8 @@ package Validator {
 
     sub profile {
         return {
-            required => [qw(name email)],
-            constraint_methods => {
-                email => email,
-            },
+            name  => [qw(required)],
+            email => [qw(required email)],
         };
     };
 }
@@ -27,11 +25,6 @@ package App {
             FormValidator => {
                 session  => {
                     namespace => '_form_validator'
-                },
-                messages => {
-                    missing => '<span>%s is missing.</span>',
-                    invalid => '<span>%s is invalid.</span>',
-                    ucfirst => 0,
                 },
             },
         };
@@ -55,8 +48,8 @@ my $result = $app->request(POST '/', [email => 'alexpan.org']);
 is_deeply(
     decode_json($result->content),
     {
-        'name'  => '<span>name is missing.</span>',
-        'email' => '<span>email is invalid.</span>'
+        name  => ['Name is required'],
+        email => ['Email is not a valid email'],
     },
-    'Check messages form dancer config'
+    'Check dsl: validate'
 );

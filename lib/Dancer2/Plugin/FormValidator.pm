@@ -11,7 +11,6 @@ use Dancer2::Plugin::FormValidator::Processor;
 use Storable qw(dclone);
 use Hash::Util qw(lock_hashref);
 use Types::Standard qw(InstanceOf ArrayRef);
-use namespace::clean;
 
 our $VERSION = '0.20';
 
