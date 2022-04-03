@@ -72,9 +72,15 @@ sub result {
     # Flatten $invalid array ref and leave only unique fields.
     my @invalid = uniqstr map { $_->[0] } @ { $invalid };
 
+    # Collect valid values from input.
+    my %valid_input;
+    for my $field (@ { $valid }) {
+        $valid_input{$field} = $self->input->{$field};
+    }
+
     return Dancer2::Plugin::FormValidator::Result->new(
         success  => $success,
-        valid    => $valid,
+        valid    => \%valid_input,
         invalid  => \@invalid,
         messages => $messages->as_hashref_multi,
     );

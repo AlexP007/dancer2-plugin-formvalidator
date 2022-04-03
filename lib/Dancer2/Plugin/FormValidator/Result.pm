@@ -18,7 +18,7 @@ has invalid => (
 
 has valid => (
     is       => 'ro',
-    isa      => ArrayRef,
+    isa      => HashRef,
     required => 1,
 );
 
