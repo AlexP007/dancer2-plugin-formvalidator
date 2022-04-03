@@ -105,7 +105,9 @@ my $config = Dancer2::Plugin::FormValidator::Config->new(
         session  => {
             namespace => '_form_validator'
         },
-        language => 'en',
+        messages => {
+            language => 'en',
+        }
     },
 );
 

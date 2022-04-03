@@ -39,7 +39,7 @@ sub result {
 
     if ($success != 1) {
         my $config            = $self->config;
-        my $ucfirst           = $config->messages_ucfirst;
+        my $ucfirst           = $config->ucfirst;
         my $language          = $config->language;
         my $validator_profile = $self->validator_profile;
 

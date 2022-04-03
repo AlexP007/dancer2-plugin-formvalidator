@@ -42,12 +42,21 @@ has messages_validators => (
     }
 );
 
-has messages_ucfirst => (
+has ucfirst => (
     is       => 'ro',
     isa      => Bool,
     lazy     => 1,
     builder  => sub {
         return shift->messages->{ucfirst} // 1;
+    }
+);
+
+has language => (
+    is       => 'rw',
+    isa      => NonEmptyStr,
+    lazy     => 1,
+    builder  => sub {
+        return shift->messages->{language} // 'en';
     }
 );
 
@@ -57,14 +66,6 @@ has forms => (
     lazy     => 1,
     builder  => sub {
         return shift->config->{forms} // {};
-    }
-);
-
-has language => (
-    is       => 'rw',
-    isa      => NonEmptyStr,
-    builder  => sub {
-        return shift->config->{language} // 'en';
     }
 );
 
