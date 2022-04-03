@@ -76,7 +76,7 @@ sub result {
         success  => $success,
         valid    => $valid,
         invalid  => \@invalid,
-        messages => $messages,
+        messages => $messages->as_hashref_multi,
     );
 }
 
