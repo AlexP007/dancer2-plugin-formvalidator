@@ -9,7 +9,6 @@ use Dancer2::Plugin::FormValidator::Processor;
 
 package Validator {
     use Moo;
-    use Data::FormValidator::Constraints qw(:closures);
 
     with 'Dancer2::Plugin::FormValidator::Role::ProfileHasMessages';
 
