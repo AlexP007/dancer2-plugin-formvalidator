@@ -13,7 +13,7 @@ use Hash::Util qw(lock_hashref);
 use Module::Load;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.20';
+our $VERSION = '0.21';
 
 plugin_keywords qw(validate_form validate errors validator_language);
 
@@ -169,7 +169,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.20
+version 0.21
 
 =head1 SYNOPSIS
 
@@ -410,19 +410,26 @@ Validate that field exists and not empty string.
 
 =over 4
 
-=item Configuration details: list all fields and describe them.
+=item *
+Configuration details: list all fields and describe them.
 
-=item Document with example and descriptions DSL's.
+=item *
+Document with example and descriptions DSL's.
 
-=item Document with example all validators.
+=item *
+Document with example all validators.
 
-=item Document all config field with explanation.
+=item *
+Document all config field with explanation.
 
-=item Document all Roles and HashRef structures.
+=item *
+Document all Roles and HashRef structures.
 
-=item Extensions docs.
+=item *
+Extensions docs.
 
-=item Contribution and help details.
+=item *
+Contribution and help details.
 
 =back
 
