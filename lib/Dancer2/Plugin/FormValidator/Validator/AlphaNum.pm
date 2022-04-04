@@ -2,7 +2,6 @@ package Dancer2::Plugin::FormValidator::Validator::AlphaNum;
 
 use Moo;
 use utf8;
-use Scalar::Util qw(looks_like_number);
 use namespace::clean;
 
 with 'Dancer2::Plugin::FormValidator::Role::Validator';
