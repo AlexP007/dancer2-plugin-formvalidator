@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 4;
+use Test::More tests => 5;
 
 # TEST 1.
 use_ok('Dancer2::Plugin::FormValidator::Validator::Required');
@@ -13,3 +13,6 @@ use_ok('Dancer2::Plugin::FormValidator::Validator::EmailDns');
 
 # TEST 4.
 use_ok('Dancer2::Plugin::FormValidator::Validator::Same');
+
+# TEST 5.
+use_ok('Dancer2::Plugin::FormValidator::Validator::Enum');

@@ -1,12 +1,13 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 19;
+use Test::More tests => 23;
 
 use Dancer2::Plugin::FormValidator::Validator::Required;
 use Dancer2::Plugin::FormValidator::Validator::Email;
 use Dancer2::Plugin::FormValidator::Validator::EmailDns;
 use Dancer2::Plugin::FormValidator::Validator::Same;
+use Dancer2::Plugin::FormValidator::Validator::Enum;
 
 my $validator;
 
@@ -161,4 +162,33 @@ is(
         'password_cnf'),
     1,
     'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: valid',
+);
+
+# TEST 5.
+## Check Dancer2::Plugin::FormValidator::Validators::Enum.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::Enum->new;
+
+is_deeply(
+    ref $validator->message,
+    'HASH',
+    'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum stop_on_fail',
+);
+
+isnt(
+    $validator->validate('type', {type => 'child'}, 'credit', 'debit'),
+    1,
+    'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum: not valid',
+);
+
+is(
+    $validator->validate('type', {type => 'credit'}, 'credit', 'debit'),
+    1,
+    'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum: valid',
 );
