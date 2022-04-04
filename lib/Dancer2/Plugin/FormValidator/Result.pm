@@ -1,12 +1,18 @@
 package Dancer2::Plugin::FormValidator::Result;
 
 use Moo;
-use Types::Standard qw(ArrayRef HashRef Bool);
+use Types::Standard qw(ArrayRef HashRef Bool Str Undef);
 use namespace::clean;
 
 has success => (
     is       => 'ro',
     isa      => Bool,
+    required => 1,
+);
+
+has missing => (
+    is       => 'ro',
+    isa      => ArrayRef,
     required => 1,
 );
 
@@ -24,7 +30,7 @@ has valid => (
 
 has messages => (
     is       => 'ro',
-    isa      => HashRef,
+    isa      => Undef | Str | HashRef,
     required => 1,
 );
 

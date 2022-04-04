@@ -4,28 +4,28 @@ use Test::More tests => 1;
 
 package Validator {
     use Moo;
+    use Data::FormValidator::Constraints qw(:closures);
 
-    with 'Dancer2::Plugin::FormValidator::Role::Profile';
+    with 'Dancer2::Plugin::FormValidator::Role::HasProfile';
 
     sub profile {
         return {
-            email => [qw(required email)],
+            required => [qw(email)],
+            constraint_methods => {
+                email => email,
+            },
         };
     };
 }
 
 package App {
     use Dancer2;
-    use URI::Escape;
 
     BEGIN {
         set plugins => {
             FormValidator => {
                 session => {
                     namespace => '_form_validator'
-                },
-                messages => {
-                    language => 'de',
                 },
                 forms   => {
                     login => 'Validator',
@@ -38,7 +38,7 @@ package App {
 
     post '/' => sub {
         if (not validate_form 'login') {
-            to_json errors, {utf8 => 0};
+            to_json errors;
         }
     };
 }
@@ -47,10 +47,6 @@ use Plack::Test;
 use HTTP::Request::Common;
 
 my $app    = Plack::Test->create(App->to_app);
-my $result = $app->request(POST '/', [email => 'alex.cpan.org']);
+my $result = $app->request(POST '/', [email => 'alexp.cpan.org']);
 
-is(
-    $result->content,
-    '{"email":["Email enthält keine gültige E-Mail-Adresse"]}',
-    'Check language settings from config'
-);
+is($result->content, '{"email":"Email is invalid."}', 'Check deferred messages from unvalidated route');
