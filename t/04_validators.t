@@ -1,13 +1,14 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 23;
+use Test::More tests => 27;
 
 use Dancer2::Plugin::FormValidator::Validator::Required;
 use Dancer2::Plugin::FormValidator::Validator::Email;
 use Dancer2::Plugin::FormValidator::Validator::EmailDns;
 use Dancer2::Plugin::FormValidator::Validator::Same;
 use Dancer2::Plugin::FormValidator::Validator::Enum;
+use Dancer2::Plugin::FormValidator::Validator::Numeric;
 
 my $validator;
 
@@ -191,4 +192,33 @@ is(
     $validator->validate('type', {type => 'credit'}, 'credit', 'debit'),
     1,
     'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum: valid',
+);
+
+# TEST 6.
+## Check Dancer2::Plugin::FormValidator::Validators::Numeric.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::Numeric->new;
+
+is_deeply(
+    ref $validator->message,
+    'HASH',
+    'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric stop_on_fail',
+);
+
+isnt(
+    $validator->validate('price', {price => '0.13d'}),
+    1,
+    'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric: not valid',
+);
+
+is(
+    $validator->validate('price', {price => '0.13'}),
+    1,
+    'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric: valid',
 );

@@ -64,6 +64,7 @@ sub _validators {
         email_dns => 'Dancer2::Plugin::FormValidator::Validator::EmailDns',
         same      => 'Dancer2::Plugin::FormValidator::Validator::Same',
         enum      => 'Dancer2::Plugin::FormValidator::Validator::Enum',
+        numeric   => 'Dancer2::Plugin::FormValidator::Validator::Numeric',
     };
 }
 
