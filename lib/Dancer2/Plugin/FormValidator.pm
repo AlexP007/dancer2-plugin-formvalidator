@@ -402,6 +402,8 @@ Returns $valid_hash_ref if validation succeed, otherwise rerurns undef.
 
 =head3 required
 
+Validate that field exists and not empty string.
+
 =head3 same
 
 =head1 TODO
