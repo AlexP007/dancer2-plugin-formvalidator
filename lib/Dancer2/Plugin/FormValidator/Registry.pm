@@ -59,6 +59,7 @@ sub get {
 
 sub _validators {
     return {
+        accepted   => 'Dancer2::Plugin::FormValidator::Validator::Accepted',
         alpha      => 'Dancer2::Plugin::FormValidator::Validator::Alpha',
         alpha_num  => 'Dancer2::Plugin::FormValidator::Validator::AlphaNum',
         enum       => 'Dancer2::Plugin::FormValidator::Validator::Enum',

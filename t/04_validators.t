@@ -1,8 +1,9 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 56;
+use Test::More tests => 63;
 
+use Dancer2::Plugin::FormValidator::Validator::Accepted;
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
 use Dancer2::Plugin::FormValidator::Validator::AlphaNum;
 use Dancer2::Plugin::FormValidator::Validator::Enum;
@@ -437,4 +438,52 @@ is(
     $validator->validate('name', {name => 'Вася'}, '4'),
     1,
     'TEST 13: Dancer2::Plugin::FormValidator::Validator::LengthMax valid',
+);
+
+# TEST 14.
+## Check Dancer2::Plugin::FormValidator::Validators::Accepted.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::Accepted->new;
+
+is(
+    ref $validator->message,
+    'HASH',
+    'TEST 14: Dancer2::Plugin::FormValidator::Validator::Accepted messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 14: Dancer2::Plugin::FormValidator::Validator::Accepted stop_on_fail',
+);
+
+isnt(
+    $validator->validate('consent', {consent => '0'}),
+    1,
+    'TEST 14: Dancer2::Plugin::FormValidator::Validator::Accepted not valid',
+);
+
+isnt(
+    $validator->validate('consent', {consent => 'no'}),
+    1,
+    'TEST 14: Dancer2::Plugin::FormValidator::Validator::Accepted not valid',
+);
+
+is(
+    $validator->validate('consent', {consent => '1'}),
+    1,
+    'TEST 14: Dancer2::Plugin::FormValidator::Validator::Accepted valid',
+);
+
+is(
+    $validator->validate('consent', {consent => 'yes'}),
+    1,
+    'TEST 14: Dancer2::Plugin::FormValidator::Validator::Accepted valid',
+);
+
+
+is(
+    $validator->validate('consent', {consent => 'on'}),
+    1,
+    'TEST 14: Dancer2::Plugin::FormValidator::Validator::Accepted valid',
 );
