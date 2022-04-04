@@ -1,11 +1,12 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 12;
+use Test::More tests => 19;
 
 use Dancer2::Plugin::FormValidator::Validator::Required;
 use Dancer2::Plugin::FormValidator::Validator::Email;
 use Dancer2::Plugin::FormValidator::Validator::EmailDns;
+use Dancer2::Plugin::FormValidator::Validator::Same;
 
 my $validator;
 
@@ -88,11 +89,76 @@ is(
 isnt(
     $validator->validate('email', {email => 'alexpan@crfssfd.com'}),
     1,
-    'TEST 3:Dancer2::Plugin::FormValidator::Validator::EmailDns: not valid',
+    'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns: not valid',
 );
 
 is(
     $validator->validate('email', {email => 'alex@cpan.org'}),
     1,
-    'TEST 3:Dancer2::Plugin::FormValidator::Validator::EmailDns: valid',
+    'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns: valid',
+);
+
+# TEST 4.
+## Check Dancer2::Plugin::FormValidator::Validators::Same.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::Same->new;
+
+is_deeply(
+    ref $validator->message,
+    'HASH',
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same stop_on_fail',
+);
+
+isnt(
+    $validator->validate(
+        'password',
+        {password => 'pass', password_cnf => ''},
+        'password_cnf'
+    ),
+    1,
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: not valid',
+);
+
+isnt(
+    $validator->validate(
+        'password',
+        {password => [], password_cnf => ''},
+        'password_cnf'
+    ),
+    1,
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: not valid',
+);
+
+isnt(
+    $validator->validate(
+        'password',
+        {password => undef},
+        'password_cnf'
+    ),
+    1,
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: not valid',
+);
+
+is(
+    $validator->validate(
+        'password',
+        {password => 12345, password_cnf => 12345},
+        'password_cnf'),
+    1,
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: valid',
+);
+
+is(
+    $validator->validate(
+        'password',
+        {password => 'pass', password_cnf => 'pass'},
+        'password_cnf'),
+    1,
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: valid',
 );
