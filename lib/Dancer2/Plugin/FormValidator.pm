@@ -185,17 +185,37 @@ version 0.20
 
 =head1 DISCLAIMER
 
-This is alpha version (not stable)!
+This is alpha version, not stable.
 
 Interfaces may change in future:
-* Template tokens: errors.
-* Roles: Dancer2::Plugin::FormValidator::Role::Extension, Dancer2::Plugin::FormValidator::Role::Validator.
-* Validators logic: all (low).
+
+=over 4
+
+=item *
+Template tokens: errors.
+
+=item *
+Roles: Dancer2::Plugin::FormValidator::Role::Extension, Dancer2::Plugin::FormValidator::Role::Validator.
+
+=item *
+Validators.
+
+=back
 
 Won't change:
-* Dsl keywords: validate_form, validator_language, errors.
-* Template tokens: old.
-* Roles: Dancer2::Plugin::FormValidator::Role::Profile, Dancer2::Plugin::FormValidator::Role::HasMessages, Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
+
+=over 4
+
+=item *
+Dsl keywords: validate_form, validator_language, errors.
+
+=item *
+Template tokens: old.
+
+=item *
+Roles: Dancer2::Plugin::FormValidator::Role::Profile, Dancer2::Plugin::FormValidator::Role::HasMessages, Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
+
+=back
 
 If you like it - add it to your bookmarks. I intend to complete the development by the summer 2022.
 
@@ -391,6 +411,8 @@ Template app/register:
 =item Document with example and descriptions DSL's.
 
 =item Document with example all validators.
+
+=item Document all config field with explanation.
 
 =item Document all Roles and HashRef structures.
 
