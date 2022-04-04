@@ -45,7 +45,7 @@ use Plack::Test;
 use HTTP::Request::Common;
 
 my $app    = Plack::Test->create(App->to_app);
-my $result = $app->request(POST '/', [password => 'pass1', password_cnf => undef, role => 'agent']);
+my $result = $app->request(POST '/', [password => 'pass1', password_cnf => 'pass', role => 'agent']);
 
 is(
     $result->content,

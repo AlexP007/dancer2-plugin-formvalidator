@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 63;
+use Test::More tests => 64;
 
 use Dancer2::Plugin::FormValidator::Validator::Accepted;
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
@@ -43,9 +43,14 @@ isnt(
     'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required not valid',
 );
 
+isnt(
+    $validator->validate('email', {email => ''}),
+    1,
+    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required not valid',
+);
 
 is(
-    $validator->validate('email', {email => ''}),
+    $validator->validate('email', {email => 'alex'}),
     1,
     'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required valid',
 );
