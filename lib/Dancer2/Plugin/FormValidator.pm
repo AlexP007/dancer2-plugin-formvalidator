@@ -13,7 +13,7 @@ use Hash::Util qw(lock_hashref);
 use Module::Load;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.21';
+our $VERSION = '0.22';
 
 plugin_keywords qw(validate_form validate errors validator_language);
 
@@ -169,7 +169,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.21
+version 0.22
 
 =head1 SYNOPSIS
 
@@ -379,8 +379,16 @@ Returns $valid_hash_ref if validation succeed, otherwise rerurns undef.
 =head3 accepted
 
 =head3 alpha
+Validate that string only contain of alphabetic utf8 symbols, i.e. /^[[:alpha:]]+$/.
+
+=head3 alpha_ascii
+Validate that string only contain of latin alphabetic ascii symbols, i.e. /^[[:alpha:]]+$/a.
 
 =head3 alpha_num
+Validate that string only contain of alphabetic utf8 symbols, underscore and numbers 0-9, i.e. /^\w+$/.
+
+=head3 alpha_num_ascii
+Validate that string only contain of latin alphabetic ascii symbols, underscore and numbers 0-9, i.e. /^\w+$/a.
 
 =head3 email
 

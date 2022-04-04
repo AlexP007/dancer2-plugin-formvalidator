@@ -1,3 +1,11 @@
+0.22 2022-04-04 23:33:32 Europe/Moscow
+    [FEATURES]
+    * AlphaAscii validator
+    * AlphaNumAscii validator
+
+    [DOCS]
+    * some validators description
+
 0.21 2022-04-04 22:40:21 Europe/Moscow
     [BUGS]
     * Required validator accepting empty string
