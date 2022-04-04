@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 52;
+use Test::More tests => 56;
 
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
 use Dancer2::Plugin::FormValidator::Validator::AlphaNum;
@@ -9,6 +9,7 @@ use Dancer2::Plugin::FormValidator::Validator::Enum;
 use Dancer2::Plugin::FormValidator::Validator::Email;
 use Dancer2::Plugin::FormValidator::Validator::EmailDns;
 use Dancer2::Plugin::FormValidator::Validator::Integer;
+use Dancer2::Plugin::FormValidator::Validator::LengthMax;
 use Dancer2::Plugin::FormValidator::Validator::LengthMin;
 use Dancer2::Plugin::FormValidator::Validator::Max;
 use Dancer2::Plugin::FormValidator::Validator::Min;
@@ -407,4 +408,33 @@ is(
     $validator->validate('name', {name => 'Вася'}, '4'),
     1,
     'TEST 12: Dancer2::Plugin::FormValidator::Validator::LengthMin valid',
+);
+
+# TEST 13.
+## Check Dancer2::Plugin::FormValidator::Validators::LengthMax.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::LengthMax->new;
+
+is(
+    ref $validator->message,
+    'HASH',
+    'TEST 13: Dancer2::Plugin::FormValidator::Validator::LengthMax messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 13: Dancer2::Plugin::FormValidator::Validator::LengthMax stop_on_fail',
+);
+
+isnt(
+    $validator->validate('name', {name => 'Вася'}, '3'),
+    1,
+    'TEST 13: Dancer2::Plugin::FormValidator::Validator::LengthMax not valid',
+);
+
+is(
+    $validator->validate('name', {name => 'Вася'}, '4'),
+    1,
+    'TEST 13: Dancer2::Plugin::FormValidator::Validator::LengthMax valid',
 );
