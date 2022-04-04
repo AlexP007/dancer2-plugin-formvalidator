@@ -2,7 +2,7 @@ package Dancer2::Plugin::FormValidator::Validator::Enum;
 
 use Moo;
 use utf8;
-use List::Util qw(first);
+use List::Util qw(any);
 use namespace::clean;
 
 with 'Dancer2::Plugin::FormValidator::Role::Validator';
@@ -29,9 +29,8 @@ sub _is_enum {
     my ($self, $value1, @enum) = @_;
 
     if (defined $value1) {
-        my $first = first {$_ eq $value1} @enum;
+        return any {$_ eq $value1} @enum;
 
-        return defined $first ? 1 : 0;
     }
 
     return 0;
