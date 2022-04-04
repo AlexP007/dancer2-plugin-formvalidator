@@ -1,12 +1,12 @@
 package Dancer2::Plugin::FormValidator::Role::Validator;
 
 use Moo::Role;
-use Types::Standard qw(InstanceOf);
+use Types::Standard qw(ConsumerOf);
 use namespace::clean;
 
-has plugin => (
+has extension => (
     is       => 'ro',
-    isa      => InstanceOf['Dancer2::Plugin::FormValidator'],
+    isa      => ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension'],
 );
 
 requires 'validate';

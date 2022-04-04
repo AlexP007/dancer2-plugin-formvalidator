@@ -10,7 +10,8 @@ use Dancer2::Plugin::FormValidator::Registry;
 use Dancer2::Plugin::FormValidator::Processor;
 use Storable qw(dclone);
 use Hash::Util qw(lock_hashref);
-use Types::Standard qw(InstanceOf ArrayRef);
+use Module::Load;
+use Types::Standard qw(InstanceOf HashRef);
 
 our $VERSION = '0.20';
 
@@ -29,9 +30,9 @@ has config_obj => (
 
 has extensions => (
     is       => 'ro',
-    isa      => ArrayRef,
+    isa      => HashRef,
     default  => sub {
-        return shift->config->{extensions} // [],
+        return shift->config->{extensions} // {},
     }
 );
 
@@ -125,9 +126,21 @@ sub _clone_and_lock_input {
 sub _registry {
     my $self = shift;
 
+    # First build extensions.
+    my @extensions = map
+    {
+        my $class = $self->extensions->{$_}->{provider};
+        autoload $class;
+
+        $class->new(
+            plugin => $self,
+            config => $self->extensions->{$_},
+        );
+    }
+        keys %{ $self->extensions };
+
     return Dancer2::Plugin::FormValidator::Registry->new(
-        plugin     => $self,
-        extensions => $self->extensions,
+        extensions => \@extensions,
     );
 }
 
