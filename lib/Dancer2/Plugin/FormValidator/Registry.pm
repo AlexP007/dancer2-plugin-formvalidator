@@ -59,17 +59,18 @@ sub get {
 
 sub _validators {
     return {
-        alpha     => 'Dancer2::Plugin::FormValidator::Validator::Alpha',
-        alpha_num => 'Dancer2::Plugin::FormValidator::Validator::AlphaNum',
-        enum      => 'Dancer2::Plugin::FormValidator::Validator::Enum',
-        email     => 'Dancer2::Plugin::FormValidator::Validator::Email',
-        email_dns => 'Dancer2::Plugin::FormValidator::Validator::EmailDns',
-        integer   => 'Dancer2::Plugin::FormValidator::Validator::Integer',
-        max       => 'Dancer2::Plugin::FormValidator::Validator::Max',
-        min       => 'Dancer2::Plugin::FormValidator::Validator::Min',
-        numeric   => 'Dancer2::Plugin::FormValidator::Validator::Numeric',
-        required  => 'Dancer2::Plugin::FormValidator::Validator::Required',
-        same      => 'Dancer2::Plugin::FormValidator::Validator::Same',
+        alpha      => 'Dancer2::Plugin::FormValidator::Validator::Alpha',
+        alpha_num  => 'Dancer2::Plugin::FormValidator::Validator::AlphaNum',
+        enum       => 'Dancer2::Plugin::FormValidator::Validator::Enum',
+        email      => 'Dancer2::Plugin::FormValidator::Validator::Email',
+        email_dns  => 'Dancer2::Plugin::FormValidator::Validator::EmailDns',
+        integer    => 'Dancer2::Plugin::FormValidator::Validator::Integer',
+        length_min => 'Dancer2::Plugin::FormValidator::Validator::LengthMin',
+        max        => 'Dancer2::Plugin::FormValidator::Validator::Max',
+        min        => 'Dancer2::Plugin::FormValidator::Validator::Min',
+        numeric    => 'Dancer2::Plugin::FormValidator::Validator::Numeric',
+        required   => 'Dancer2::Plugin::FormValidator::Validator::Required',
+        same       => 'Dancer2::Plugin::FormValidator::Validator::Same',
     };
 }
 
