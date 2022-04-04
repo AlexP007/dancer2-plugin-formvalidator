@@ -1,3 +1,20 @@
+0.20 2022-04-04 19:14:12 Europe/Moscow
+    [CHANGES]
+    * Remove Data::FormValidator backend and now use custom and native Dancer2
+
+    [IMPROVEMENTS]
+    * Copy and lock input
+
+    [FEATURES]
+    * Validators
+    * Extensions
+    * Profiles
+    * Dancer2 configuration
+    * Change language in runtime
+
+    [DOCS]
+    * Full docs updates
+
 0.13 2022-03-31 13:03:59 Europe/Moscow
     [BUGS]
     * Fix old token has errors
