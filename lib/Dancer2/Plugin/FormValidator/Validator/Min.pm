@@ -9,9 +9,9 @@ with 'Dancer2::Plugin::FormValidator::Role::Validator';
 
 sub message {
     return {
-        en => '%s must be at least %s',
-        ru => '%s должно быть не меньше %s',
-        de => '%s muss größer als %s sein',
+        en => '%s must be at least %d',
+        ru => '%s должно быть не меньше %d',
+        de => '%s muss größer als %d sein',
     };
 }
 
