@@ -2,7 +2,6 @@ package Dancer2::Plugin::FormValidator::Validator::Same;
 
 use Moo;
 use utf8;
-use Email::Valid;
 use namespace::clean;
 
 with 'Dancer2::Plugin::FormValidator::Role::Validator';
