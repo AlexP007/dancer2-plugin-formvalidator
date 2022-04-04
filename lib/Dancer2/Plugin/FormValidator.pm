@@ -1,16 +1,21 @@
 package Dancer2::Plugin::FormValidator;
 
+use 5.20.0;
+
 use Dancer2::Plugin;
 use Dancer2::Core::Hook;
 use Dancer2::Plugin::Deferred;
 use Dancer2::Plugin::FormValidator::Config;
+use Dancer2::Plugin::FormValidator::Registry;
 use Dancer2::Plugin::FormValidator::Processor;
-use Data::FormValidator;
-use Types::Standard qw(InstanceOf);
+use Storable qw(dclone);
+use Hash::Util qw(lock_hashref);
+use Module::Load;
+use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.13';
+our $VERSION = '0.20';
 
-plugin_keywords qw(validate validate_form errors);
+plugin_keywords qw(validate_form validate errors validator_language);
 
 has config_obj => (
     is       => 'ro',
@@ -20,6 +25,14 @@ has config_obj => (
         return Dancer2::Plugin::FormValidator::Config->new(
             config => shift->config,
         );
+    }
+);
+
+has extensions => (
+    is       => 'ro',
+    isa      => HashRef,
+    default  => sub {
+        return shift->config->{extensions} // {},
     }
 );
 
@@ -48,12 +61,17 @@ sub BUILD {
     );
 }
 
+sub validator_language {
+    shift->config_obj->language(shift);
+    return;
+}
+
 sub validate_form {
     my ($self, $form) = @_;
 
-    if (my $validator = $self->config_obj->form($form)) {
-        my $input  = $self->dsl->body_parameters->as_hashref;
-        my $result = $self->validate($input, $validator->new);
+    if (my $validator_profile = $self->config_obj->form($form)) {
+        my $input  = $self->dsl->body_parameters->as_hashref_mixed;
+        my $result = $self->validate($input, $validator_profile->new);
 
         return $result->success ? $result->valid : undef;
     }
@@ -63,22 +81,23 @@ sub validate_form {
 }
 
 sub validate {
-    my ($self, $input, $validator) = @_;
+    my ($self, $input, $validator_profile) = @_;
 
     if (ref $input ne 'HASH') {
         Carp::croak "Input data should be a hash reference\n";
     }
 
-    my $role = 'Dancer2::Plugin::FormValidator::Role::HasProfile';
-    if (not $validator->does($role)) {
-        my $name = $validator->meta->name;
+    my $role = 'Dancer2::Plugin::FormValidator::Role::Profile';
+    if (not $validator_profile->does($role)) {
+        my $name = $validator_profile->meta->name;
         Carp::croak "$name should implement $role\n";
     }
 
     my $processor = Dancer2::Plugin::FormValidator::Processor->new(
-        config    => $self->config_obj,
-        validator => $validator,
-        results   => Data::FormValidator->check($input, $validator->profile),
+        input             => $self->_clone_and_lock_input($input),
+        config            => $self->config_obj,
+        registry          => $self->_registry,
+        validator_profile => $validator_profile,
     );
 
     my $result = $processor->result;
@@ -94,6 +113,35 @@ sub validate {
     }
 
     return $result;
+}
+
+sub _clone_and_lock_input {
+    # Copy input to work with isolated HashRef.
+    my $input = dclone($_[1]);
+
+    # Lock input to prevent accidental modifying.
+    return lock_hashref($input);
+}
+
+sub _registry {
+    my $self = shift;
+
+    # First build extensions.
+    my @extensions = map
+    {
+        my $class = $self->extensions->{$_}->{provider};
+        autoload $class;
+
+        $class->new(
+            plugin => $self,
+            config => $self->extensions->{$_},
+        );
+    }
+        keys %{ $self->extensions };
+
+    return Dancer2::Plugin::FormValidator::Registry->new(
+        extensions => \@extensions,
+    );
 }
 
 sub errors {
@@ -115,11 +163,11 @@ __END__
 
 =head1 NAME
 
-Dancer2::Plugin::FormValidator - validate incoming request in declarative way.
+Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin for Dancer2.
 
 =head1 VERSION
 
-version 0.13
+version 0.20
 
 =head1 SYNOPSIS
 
@@ -137,22 +185,50 @@ version 0.13
 
 =head1 DISCLAIMER
 
-This is not stable version!
+This is alpha version, not stable.
 
-Please dont rely on it.
-Interfaces would be changed in future, except of dsl keywords signatures.
+Interfaces may change in future:
+
+=over 4
+
+=item *
+Template tokens: errors.
+
+=item *
+Roles: Dancer2::Plugin::FormValidator::Role::Extension, Dancer2::Plugin::FormValidator::Role::Validator.
+
+=item *
+Validators.
+
+=back
+
+Won't change:
+
+=over 4
+
+=item *
+Dsl keywords: validate_form, validator_language, errors.
+
+=item *
+Template tokens: old.
+
+=item *
+Roles: Dancer2::Plugin::FormValidator::Role::Profile, Dancer2::Plugin::FormValidator::Role::HasMessages, Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
+
+=back
 
 If you like it - add it to your bookmarks. I intend to complete the development by the summer 2022.
 
 B<Have any ideas?> Find this project on github (repo ref is at the bottom).
+Help is always welcome!
 
 =head1 DESCRIPTION
 
 This is micro-framework that provides validation in your Dancer2 application.
 It consists of dsl's keywords and a set of agreements.
-It is build around L<Data::FormValidator|https://metacpan.org/pod/Data::FormValidator>.
+It has a set of built-in validators that can be extended by compatible modules (extensions).
 
-Uses two approaches: declarative and verbose with more control.
+Uses simple and declarative approach to validate forms:
 
 =head2 Validator
 
@@ -163,21 +239,17 @@ This role requires profile method which should return a HashRef Data::FormValida
 
     package App::Http::Validators::RegisterForm {
         use Moo;
-        use Data::FormValidator::Constraints qw(:closures);
-
-        with 'Dancer2::Plugin::FormValidator::Role::HasProfile';
+        with 'Dancer2::Plugin::FormValidator::Role::Profile';
 
         sub profile {
             return {
-                required => [qw(name email)],
-                constraint_methods => {
-                    email => email,
-                }
+                name  => [qw(required length_min:4 length_max:32)]
+                email => [qw(required email)],
             };
         };
     }
 
-=head2 Declarative approach
+=head2 Application
 
 Then you need to set an form => validator association in config:
 
@@ -207,13 +279,61 @@ Now you can validate POST parameters in your controller:
         redirect '/register';
     };
 
-In you template you have access to $errors - this is hash with parameters names as keys
-and error messages as values like:
+    get '/register' => sub {
+        template 'app/register' => {
+            title  => 'Register page',
+        };
+    };
 
-    {
-        name  => '<span>Name is missing.</span>',
-        email => '<span>Email is invalid.</span>'
-    }
+=head2 Template
+
+In you template you have access to: $errors - this is hash with parameters names as keys
+and error messages as values like and $old - contains old input values.
+
+Template app/register:
+
+    <div class="w-3/4 max-w-md bg-white shadow-lg py-4 px-6">
+        <form method="post" action="/register">
+            <div class="py-2">
+                <label class="block font-normal text-gray-400" for="name">
+                    Name
+                </label>
+                <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="<: $old[name] :>"
+                        class="border border-2 w-full h-5 px-4 py-5 mt-1 rounded-md
+                        hover:outline-none focus:outline-none focus:ring-1 focus:ring-indigo-100"
+                >
+                <: for $errors[name] -> $error { :>
+                    <small class="pl-1 text-red-400"><: $error :></small>
+                <: } :>
+            </div>
+            <div class="py-2">
+                <label class="block font-normal text-gray-400" for="email">
+                    Name
+                </label>
+                <input
+                        type="text"
+                        id="email"
+                        name="email"
+                        value="<: $old[email] :>"
+                        class="border border-2 w-full h-5 px-4 py-5 mt-1 rounded-md
+                        hover:outline-none focus:outline-none focus:ring-1 focus:ring-indigo-100"
+                >
+                <: for $errors[email] -> $error { :>
+                    <small class="pl-1 text-red-400"><: $error :></small>
+                <: } :>
+            </div>
+            <button
+                    type="submit"
+                    class="mt-4 bg-sky-600 text-white py-2 px-6 rounded-md hover:bg-sky-700"
+            >
+                Register
+            </button>
+        </form>
+    </div>
 
 =head1 CONFIGURATION
 
@@ -221,22 +341,66 @@ and error messages as values like:
     plugins:
         FormValidator:
             session:
-                namespace: '_form_validator'           # this is required
+                namespace: '_form_validator' # this is required
             messages:
-                missing: '<span>%s is missing.</span>' # default is '%s is missing.'
-                invalid: '<span>%s is invalid.</span>' # default is '%s is invalid.'
-                ucfirst: 1                             # this is default
+                language: en                 # this is default
+                ucfirst: 1                   # this is default
+                validators:
+                    required:
+                        en: %s is needed from config
+                        de: %s ist erforderlich
+                    ...
             forms:
                 login_form: 'App::Http::Validators::LoginForm'
                 support_form: 'App::Http::Validators::SupportForm'
                 ...
+            extensions:
+                Upload: ...
     ...
 
 =head1 DSL KEYWORDS
 
-=head3 validate HashRef:$input => Object:$validator
+=head3 validate
 
-=head3 validate_form String:$form
+    my $valid_hash_ref = validate_form $form
+
+=head3 validator_language
+
+    validator_language $lang
+
+=head3 errors
+
+    my $errors_hash_multi = errors
+
+=head1 Validators
+
+=head3 accepted
+
+=head3 alpha
+
+=head3 alpha_num
+
+=head3 email
+
+=head3 email_dns
+
+=head3 enum
+
+=head3 integer
+
+=head3 length_max
+
+=head3 length_min
+
+=head3 max
+
+=head3 min
+
+=head3 numeric
+
+=head3 required
+
+=head3 same
 
 =head1 TODO
 
@@ -244,15 +408,17 @@ and error messages as values like:
 
 =item Configuration details: list all fields and describe them.
 
-=item Document Result object.
+=item Document with example and descriptions DSL's.
 
-=item Document all Dsl.
+=item Document with example all validators.
 
-=item Document all Verbose approach.
+=item Document all config field with explanation.
 
 =item Document all Roles and HashRef structures.
 
-=item Template test $errors.
+=item Extensions docs.
+
+=item Contribution and help details.
 
 =back
 

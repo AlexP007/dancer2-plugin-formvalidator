@@ -4,22 +4,19 @@ use Test::More tests => 1;
 
 package Validator {
     use Moo;
-    use Data::FormValidator::Constraints qw(:closures);
 
-    with 'Dancer2::Plugin::FormValidator::Role::HasProfile';
+    with 'Dancer2::Plugin::FormValidator::Role::Profile';
 
     sub profile {
         return {
-            required => [qw(email)],
-            constraint_methods => {
-                email => email,
-            },
+            email => [qw(required email)],
         };
     };
 }
 
 package App {
     use Dancer2;
+    use URI::Escape;
 
     BEGIN {
         set plugins => {
@@ -36,8 +33,12 @@ package App {
 
     use Dancer2::Plugin::FormValidator;
 
+    validator_language 'ru';
+
     post '/' => sub {
-        to_json validate_form 'login';
+        if (not validate_form 'login') {
+            to_json errors, {utf8 => 0};
+        }
     };
 }
 
@@ -45,6 +46,10 @@ use Plack::Test;
 use HTTP::Request::Common;
 
 my $app    = Plack::Test->create(App->to_app);
-my $result = $app->request(POST '/', [email => 'alexp@cpan.org']);
+my $result = $app->request(POST '/', [email => 'alex.cpan.org']);
 
-is($result->content, '{"email":"alexp@cpan.org"}', 'Check response from validated route');
+is(
+    $result->content,
+    '{"email":["Email не является валидным email адресом"]}',
+    'Check dsl: errors'
+);
