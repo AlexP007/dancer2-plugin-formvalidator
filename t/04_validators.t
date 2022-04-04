@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 44;
+use Test::More tests => 48;
 
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
 use Dancer2::Plugin::FormValidator::Validator::AlphaNum;
@@ -9,6 +9,7 @@ use Dancer2::Plugin::FormValidator::Validator::Enum;
 use Dancer2::Plugin::FormValidator::Validator::Email;
 use Dancer2::Plugin::FormValidator::Validator::EmailDns;
 use Dancer2::Plugin::FormValidator::Validator::Integer;
+use Dancer2::Plugin::FormValidator::Validator::Max;
 use Dancer2::Plugin::FormValidator::Validator::Min;
 use Dancer2::Plugin::FormValidator::Validator::Numeric;
 use Dancer2::Plugin::FormValidator::Validator::Required;
@@ -347,4 +348,33 @@ is(
     $validator->validate('age', {age => '23'}, '23'),
     1,
     'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min: valid',
+);
+
+# TEST 11.
+## Check Dancer2::Plugin::FormValidator::Validators::Max.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::Max->new;
+
+is_deeply(
+    ref $validator->message,
+    'HASH',
+    'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max stop_on_fail',
+);
+
+isnt(
+    $validator->validate('age', {age => '23'}, '18'),
+    1,
+    'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max: not valid',
+);
+
+is(
+    $validator->validate('age', {age => '23'}, '30'),
+    1,
+    'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max: valid',
 );
