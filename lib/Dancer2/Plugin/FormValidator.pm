@@ -379,15 +379,19 @@ Returns $valid_hash_ref if validation succeed, otherwise rerurns undef.
 =head3 accepted
 
 =head3 alpha
+
 Validate that string only contain of alphabetic utf8 symbols, i.e. /^[[:alpha:]]+$/.
 
 =head3 alpha_ascii
+
 Validate that string only contain of latin alphabetic ascii symbols, i.e. /^[[:alpha:]]+$/a.
 
 =head3 alpha_num
+
 Validate that string only contain of alphabetic utf8 symbols, underscore and numbers 0-9, i.e. /^\w+$/.
 
 =head3 alpha_num_ascii
+
 Validate that string only contain of latin alphabetic ascii symbols, underscore and numbers 0-9, i.e. /^\w+$/a.
 
 =head3 email
