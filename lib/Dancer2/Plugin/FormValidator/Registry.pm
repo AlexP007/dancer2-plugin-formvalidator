@@ -59,14 +59,15 @@ sub get {
 
 sub _validators {
     return {
-        required  => 'Dancer2::Plugin::FormValidator::Validator::Required',
-        email     => 'Dancer2::Plugin::FormValidator::Validator::Email',
-        email_dns => 'Dancer2::Plugin::FormValidator::Validator::EmailDns',
-        same      => 'Dancer2::Plugin::FormValidator::Validator::Same',
-        enum      => 'Dancer2::Plugin::FormValidator::Validator::Enum',
-        numeric   => 'Dancer2::Plugin::FormValidator::Validator::Numeric',
         alpha     => 'Dancer2::Plugin::FormValidator::Validator::Alpha',
         alpha_num => 'Dancer2::Plugin::FormValidator::Validator::AlphaNum',
+        enum      => 'Dancer2::Plugin::FormValidator::Validator::Enum',
+        email     => 'Dancer2::Plugin::FormValidator::Validator::Email',
+        email_dns => 'Dancer2::Plugin::FormValidator::Validator::EmailDns',
+        integer   => 'Dancer2::Plugin::FormValidator::Validator::Integer',
+        numeric   => 'Dancer2::Plugin::FormValidator::Validator::Numeric',
+        required  => 'Dancer2::Plugin::FormValidator::Validator::Required',
+        same      => 'Dancer2::Plugin::FormValidator::Validator::Same',
     };
 }
 

@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 # TEST 1.
 use_ok('Dancer2::Plugin::FormValidator::Validator::Required');
@@ -26,3 +26,6 @@ use_ok('Dancer2::Plugin::FormValidator::Validator::Alpha');
 
 # TEST 8.
 use_ok('Dancer2::Plugin::FormValidator::Validator::AlphaNum');
+
+# TEST 9.
+use_ok('Dancer2::Plugin::FormValidator::Validator::Integer');
