@@ -23,7 +23,7 @@ my $validator;
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Required->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required messages hash'
@@ -38,14 +38,14 @@ is(
 isnt(
     $validator->validate('email', {}),
     1,
-    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required: not valid',
+    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required not valid',
 );
 
 
 is(
     $validator->validate('email', {email => ''}),
     1,
-    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required: valid',
+    'TEST 1: Dancer2::Plugin::FormValidator::Validator::Required valid',
 );
 
 # TEST 2.
@@ -53,7 +53,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Email->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email messages hash'
@@ -68,13 +68,13 @@ is(
 isnt(
     $validator->validate('email', {email => 'alexpan.org'}),
     1,
-    'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email: not valid',
+    'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email not valid',
 );
 
 is(
     $validator->validate('email', {email => 'alex@cpan.org'}),
     1,
-    'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email: valid',
+    'TEST 2: Dancer2::Plugin::FormValidator::Validator::Email valid',
 );
 
 # TEST 3.
@@ -82,7 +82,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::EmailDns->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns messages hash'
@@ -97,13 +97,13 @@ is(
 isnt(
     $validator->validate('email', {email => 'alexpan@crfssfd.com'}),
     1,
-    'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns: not valid',
+    'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns not valid',
 );
 
 is(
     $validator->validate('email', {email => 'alex@cpan.org'}),
     1,
-    'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns: valid',
+    'TEST 3: Dancer2::Plugin::FormValidator::Validator::EmailDns valid',
 );
 
 # TEST 4.
@@ -111,7 +111,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Same->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same messages hash'
@@ -130,7 +130,7 @@ isnt(
         'password_cnf'
     ),
     1,
-    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: not valid',
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same not valid',
 );
 
 isnt(
@@ -140,7 +140,7 @@ isnt(
         'password_cnf'
     ),
     1,
-    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: not valid',
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same not valid',
 );
 
 isnt(
@@ -150,7 +150,7 @@ isnt(
         'password_cnf'
     ),
     1,
-    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: not valid',
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same not valid',
 );
 
 is(
@@ -159,7 +159,7 @@ is(
         {password => 12345, password_cnf => 12345},
         'password_cnf'),
     1,
-    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: valid',
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same valid',
 );
 
 is(
@@ -168,7 +168,7 @@ is(
         {password => 'pass', password_cnf => 'pass'},
         'password_cnf'),
     1,
-    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same: valid',
+    'TEST 4: Dancer2::Plugin::FormValidator::Validators::Same valid',
 );
 
 # TEST 5.
@@ -176,7 +176,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Enum->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum messages hash'
@@ -191,13 +191,13 @@ is(
 isnt(
     $validator->validate('type', {type => 'child'}, 'credit', 'debit'),
     1,
-    'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum: not valid',
+    'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum not valid',
 );
 
 is(
     $validator->validate('type', {type => 'credit'}, 'credit', 'debit'),
     1,
-    'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum: valid',
+    'TEST 5: Dancer2::Plugin::FormValidator::Validator::Enum valid',
 );
 
 # TEST 6.
@@ -205,7 +205,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Numeric->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric messages hash'
@@ -220,13 +220,13 @@ is(
 isnt(
     $validator->validate('price', {price => '0.13d'}),
     1,
-    'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric: not valid',
+    'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric not valid',
 );
 
 is(
     $validator->validate('price', {price => '0.13'}),
     1,
-    'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric: valid',
+    'TEST 6: Dancer2::Plugin::FormValidator::Validator::Numeric valid',
 );
 
 # TEST 7.
@@ -234,7 +234,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Alpha->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha messages hash'
@@ -249,13 +249,13 @@ is(
 isnt(
     $validator->validate('username', {username => 'Ahмед23'}),
     1,
-    'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha: not valid',
+    'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha not valid',
 );
 
 is(
     $validator->validate('username', {username => 'Ahmed'}),
     1,
-    'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha: valid',
+    'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha valid',
 );
 
 # TEST 8.
@@ -263,7 +263,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::AlphaNum->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum messages hash'
@@ -278,13 +278,13 @@ is(
 isnt(
     $validator->validate('username', {username => 'Ahмед23-'}),
     1,
-    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum: not valid',
+    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum not valid',
 );
 
 is(
     $validator->validate('username', {username => 'Ahмед_23'}),
     1,
-    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum: valid',
+    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum valid',
 );
 
 # TEST 9.
@@ -292,7 +292,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Integer->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 9: Dancer2::Plugin::FormValidator::Validator::Integer messages hash'
@@ -313,13 +313,13 @@ isnt(
 isnt(
     $validator->validate('age', {age => '23.4'}),
     1,
-    'TEST 9: Dancer2::Plugin::FormValidator::Validator::Integer: not valid',
+    'TEST 9: Dancer2::Plugin::FormValidator::Validator::Integer not valid',
 );
 
 is(
     $validator->validate('age', {age => '23'}),
     1,
-    'TEST 9: Dancer2::Plugin::FormValidator::Validator::Integer: valid',
+    'TEST 9: Dancer2::Plugin::FormValidator::Validator::Integer valid',
 );
 
 # TEST 10.
@@ -327,7 +327,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Min->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min messages hash'
@@ -342,13 +342,13 @@ is(
 isnt(
     $validator->validate('age', {age => '23'}, '30'),
     1,
-    'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min: not valid',
+    'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min not valid',
 );
 
 is(
     $validator->validate('age', {age => '23'}, '23'),
     1,
-    'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min: valid',
+    'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min valid',
 );
 
 # TEST 11.
@@ -356,7 +356,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::Max->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max messages hash'
@@ -371,13 +371,13 @@ is(
 isnt(
     $validator->validate('age', {age => '23'}, '18'),
     1,
-    'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max: not valid',
+    'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max not valid',
 );
 
 is(
     $validator->validate('age', {age => '23'}, '30'),
     1,
-    'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max: valid',
+    'TEST 11: Dancer2::Plugin::FormValidator::Validator::Max valid',
 );
 
 # TEST 12.
@@ -385,7 +385,7 @@ is(
 
 $validator = Dancer2::Plugin::FormValidator::Validator::LengthMin->new;
 
-is_deeply(
+is(
     ref $validator->message,
     'HASH',
     'TEST 12: Dancer2::Plugin::FormValidator::Validator::LengthMin messages hash'
