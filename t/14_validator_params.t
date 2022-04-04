@@ -11,6 +11,7 @@ package Validator {
         return {
             password     => [qw(required)],
             password_cnf => [qw(required same:password)],
+            role         => [qw(required enum:user,agent)]
         };
     };
 }
@@ -44,7 +45,7 @@ use Plack::Test;
 use HTTP::Request::Common;
 
 my $app    = Plack::Test->create(App->to_app);
-my $result = $app->request(POST '/', [password => 'pass1', password_cnf => undef]);
+my $result = $app->request(POST '/', [password => 'pass1', password_cnf => undef, role => 'agent']);
 
 is(
     $result->content,
