@@ -70,7 +70,7 @@ sub validate_form {
     my ($self, $form) = @_;
 
     if (my $validator_profile = $self->config_obj->form($form)) {
-        my $input  = $self->dsl->body_parameters->as_hashref;
+        my $input  = $self->dsl->body_parameters->as_hashref_mixed;
         my $result = $self->validate($input, $validator_profile->new);
 
         return $result->success ? $result->valid : undef;
