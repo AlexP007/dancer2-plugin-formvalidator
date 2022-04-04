@@ -364,6 +364,8 @@ Template app/register:
 
     my $valid_hash_ref = validate_form $form
 
+Returns $valid_hash_ref if validation succeed, otherwise rerurns undef.
+
 =head3 validator_language
 
     validator_language $lang
