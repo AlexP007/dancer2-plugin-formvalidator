@@ -1,10 +1,11 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 64;
+use Test::More tests => 68;
 
 use Dancer2::Plugin::FormValidator::Validator::Accepted;
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
+use Dancer2::Plugin::FormValidator::Validator::AlphaAscii;
 use Dancer2::Plugin::FormValidator::Validator::AlphaNum;
 use Dancer2::Plugin::FormValidator::Validator::Enum;
 use Dancer2::Plugin::FormValidator::Validator::Email;
@@ -491,4 +492,33 @@ is(
     $validator->validate('consent', {consent => 'on'}),
     1,
     'TEST 14: Dancer2::Plugin::FormValidator::Validator::Accepted valid',
+);
+
+# TEST 15.
+## Check Dancer2::Plugin::FormValidator::Validators::AlphaAscii.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::AlphaAscii->new;
+
+is(
+    ref $validator->message,
+    'HASH',
+    'TEST 15: Dancer2::Plugin::FormValidator::Validator::AlphaAscii messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 15: Dancer2::Plugin::FormValidator::Validator::AlphaAscii stop_on_fail',
+);
+
+isnt(
+    $validator->validate('username', {username => 'Ahмед'}),
+    1,
+    'TEST 15: Dancer2::Plugin::FormValidator::Validator::AlphaAscii not valid',
+);
+
+is(
+    $validator->validate('username', {username => 'Ahmed'}),
+    1,
+    'TEST 15: Dancer2::Plugin::FormValidator::Validator::AlphaAscii valid',
 );
