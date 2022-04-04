@@ -19,7 +19,7 @@ sub validate {
     my ($self, $field, $input) = @_;
 
     if (exists $input->{$field}) {
-        return $input->{$field} =~ /[[:alpha:]]/;
+        return $input->{$field} =~ /^[[:alpha:]]+$/;
     }
 
     return 1;

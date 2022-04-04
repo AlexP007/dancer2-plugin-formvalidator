@@ -242,7 +242,7 @@ is(
 );
 
 isnt(
-    $validator->validate('username', {username => 'Ахмед'}),
+    $validator->validate('username', {username => 'Ahмед23'}),
     1,
     'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha: not valid',
 );
