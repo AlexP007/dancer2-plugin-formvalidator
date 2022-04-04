@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 31;
+use Test::More tests => 35;
 
 use Dancer2::Plugin::FormValidator::Validator::Required;
 use Dancer2::Plugin::FormValidator::Validator::Email;
@@ -10,6 +10,7 @@ use Dancer2::Plugin::FormValidator::Validator::Same;
 use Dancer2::Plugin::FormValidator::Validator::Enum;
 use Dancer2::Plugin::FormValidator::Validator::Numeric;
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
+use Dancer2::Plugin::FormValidator::Validator::AlphaNum;
 
 my $validator;
 
@@ -251,4 +252,33 @@ is(
     $validator->validate('username', {username => 'Ahmed'}),
     1,
     'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha: valid',
+);
+
+# TEST 8.
+## Check Dancer2::Plugin::FormValidator::Validators::AlphaNum.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::AlphaNum->new;
+
+is_deeply(
+    ref $validator->message,
+    'HASH',
+    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum stop_on_fail',
+);
+
+isnt(
+    $validator->validate('username', {username => 'Ahмед23-'}),
+    1,
+    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum: not valid',
+);
+
+is(
+    $validator->validate('username', {username => 'Ahмед_23'}),
+    1,
+    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum: valid',
 );

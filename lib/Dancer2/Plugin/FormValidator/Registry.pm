@@ -66,6 +66,7 @@ sub _validators {
         enum      => 'Dancer2::Plugin::FormValidator::Validator::Enum',
         numeric   => 'Dancer2::Plugin::FormValidator::Validator::Numeric',
         alpha     => 'Dancer2::Plugin::FormValidator::Validator::Alpha',
+        alpha_num => 'Dancer2::Plugin::FormValidator::Validator::AlphaNum',
     };
 }
 
