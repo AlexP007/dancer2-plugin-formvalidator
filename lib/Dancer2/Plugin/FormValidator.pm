@@ -70,6 +70,8 @@ sub validate_form {
     my ($self, $form) = @_;
 
     if (my $validator_profile = $self->config_obj->form($form)) {
+        autoload $validator_profile;
+
         my $input  = $self->dsl->body_parameters->as_hashref_mixed;
         my $result = $self->validate($input, $validator_profile->new);
 
@@ -172,7 +174,6 @@ version 0.20
 =head1 SYNOPSIS
 
     use Dancer2::Plugin::FormValidator;
-    use App::Http::Validators::Form;
 
     post '/form' => sub {
         if (my $valid_hash_ref = validate_form 'form') {
@@ -267,7 +268,6 @@ Then you need to set an form => validator association in config:
 Now you can validate POST parameters in your controller:
 
     use Dancer2::Plugin::FormValidator;
-    use App::Http::Validators::RegisterForm;
 
     post '/register' => sub {
         if (my $valid_hash_ref = validate_form 'register_form') {
