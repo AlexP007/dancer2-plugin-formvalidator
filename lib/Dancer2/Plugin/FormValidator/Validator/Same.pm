@@ -33,13 +33,7 @@ sub _is_same_as {
     my ($self, $value1, $value2) = @_;
 
     if (defined $value1 and defined $value2) {
-        # This validator compare only strings.
-        if (ref $value1 eq 'ARRAY' or ref $value2 eq 'ARRAY') {
-            return 0;
-        }
-        else {
-            return $value1 eq $value2;
-        }
+        return $value1 eq $value2;
     }
 
     return 0;
