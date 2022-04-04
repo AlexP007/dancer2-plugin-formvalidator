@@ -65,6 +65,7 @@ sub _validators {
         email     => 'Dancer2::Plugin::FormValidator::Validator::Email',
         email_dns => 'Dancer2::Plugin::FormValidator::Validator::EmailDns',
         integer   => 'Dancer2::Plugin::FormValidator::Validator::Integer',
+        min       => 'Dancer2::Plugin::FormValidator::Validator::Min',
         numeric   => 'Dancer2::Plugin::FormValidator::Validator::Numeric',
         required  => 'Dancer2::Plugin::FormValidator::Validator::Required',
         same      => 'Dancer2::Plugin::FormValidator::Validator::Same',

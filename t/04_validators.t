@@ -1,15 +1,16 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 40;
+use Test::More tests => 44;
 
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
 use Dancer2::Plugin::FormValidator::Validator::AlphaNum;
 use Dancer2::Plugin::FormValidator::Validator::Enum;
 use Dancer2::Plugin::FormValidator::Validator::Email;
 use Dancer2::Plugin::FormValidator::Validator::EmailDns;
-use Dancer2::Plugin::FormValidator::Validator::Numeric;
 use Dancer2::Plugin::FormValidator::Validator::Integer;
+use Dancer2::Plugin::FormValidator::Validator::Min;
+use Dancer2::Plugin::FormValidator::Validator::Numeric;
 use Dancer2::Plugin::FormValidator::Validator::Required;
 use Dancer2::Plugin::FormValidator::Validator::Same;
 
@@ -317,4 +318,33 @@ is(
     $validator->validate('age', {age => '23'}),
     1,
     'TEST 9: Dancer2::Plugin::FormValidator::Validator::Integer: valid',
+);
+
+# TEST 10.
+## Check Dancer2::Plugin::FormValidator::Validators::Min.
+
+$validator = Dancer2::Plugin::FormValidator::Validator::Min->new;
+
+is_deeply(
+    ref $validator->message,
+    'HASH',
+    'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min messages hash'
+);
+
+is(
+    $validator->stop_on_fail,
+    0,
+    'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min stop_on_fail',
+);
+
+isnt(
+    $validator->validate('age', {age => '23'}, '30'),
+    1,
+    'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min: not valid',
+);
+
+is(
+    $validator->validate('age', {age => '23'}, '23'),
+    1,
+    'TEST 10: Dancer2::Plugin::FormValidator::Validator::Min: valid',
 );
