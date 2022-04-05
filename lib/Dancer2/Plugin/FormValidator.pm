@@ -13,9 +13,9 @@ use Hash::Util qw(lock_hashref);
 use Module::Load;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.23';
+our $VERSION = '0.30';
 
-plugin_keywords qw(validate_form validate errors validator_language);
+plugin_keywords qw(validate_form errors validator_language);
 
 has config_obj => (
     is       => 'ro',
@@ -169,7 +169,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.23
+version 0.30
 
 =head1 SYNOPSIS
 
