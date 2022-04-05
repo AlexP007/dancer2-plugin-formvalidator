@@ -131,10 +131,10 @@ sub _registry {
     # First build extensions.
     my @extensions = map
     {
-        my $class = $self->extensions->{$_}->{provider};
-        autoload $class;
+        my $extension = $self->extensions->{$_}->{provider};
+        autoload $extension;
 
-        $class->new(
+        $extension->new(
             plugin => $self,
             config => $self->extensions->{$_},
         );

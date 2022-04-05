@@ -17,6 +17,7 @@ has extensions => (
 has validators => (
     is        => 'ro',
     isa       => HashRef,
+    lazy      => 1,
     required  => 1,
     builder   => sub {
         my $self       = shift;

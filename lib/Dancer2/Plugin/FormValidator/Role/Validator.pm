@@ -5,8 +5,9 @@ use Types::Standard qw(ConsumerOf);
 use namespace::clean;
 
 has extension => (
-    is       => 'ro',
-    isa      => ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension'],
+    is        => 'ro',
+    isa       => ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension'],
+    predicate => 1,
 );
 
 requires 'validate';
