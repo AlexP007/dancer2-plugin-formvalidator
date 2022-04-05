@@ -1,3 +1,18 @@
+0.30 2022-04-05 19:02:51 Europe/Moscow
+    [CHANGES]
+    * Perl minimum version set to 5.34.0
+    * List::Util minimum version to 1.45
+    * Remove dsl validate
+
+    [FEATURES]
+    * Add predicates for Extension and Validator roles properties
+
+    [IMPROVEMENTS]
+    * Lazy builder for Registry::validators
+
+    [DOCS]
+    * More info about plugin
+
 0.22 2022-04-04 23:33:32 Europe/Moscow
     [FEATURES]
     * AlphaAscii validator
