@@ -288,8 +288,8 @@ Now you can validate POST parameters in your controller:
 
 =head2 Template
 
-In you template you have access to: $errors - this is hash with parameters names as keys
-and error messages as values like and $old - contains old input values.
+In you template you have access to: $errors - this is HashRef with parameters names as keys
+and error messages as ArrayRef values and $old - contains old input values.
 
 Template app/register:
 
