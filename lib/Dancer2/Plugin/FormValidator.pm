@@ -228,6 +228,7 @@ Help is always welcome!
 This is micro-framework that provides validation in your Dancer2 application.
 It consists of dsl's keywords and a set of agreements.
 It has a set of built-in validators that can be extended by compatible modules (extensions).
+Also proved runtime switching between languages, so you can show proper error messages to users.
 
 Uses simple and declarative approach to validate forms:
 
@@ -355,7 +356,9 @@ Template app/register:
                 support_form: 'App::Http::Validators::SupportForm'
                 ...
             extensions:
-                Upload: ...
+                upload:
+                    provider: ...
+                    ...
     ...
 
 =head1 DSL KEYWORDS
@@ -364,7 +367,7 @@ Template app/register:
 
     my $valid_hash_ref = validate_form $form
 
-Returns $valid_hash_ref if validation succeed, otherwise rerurns undef.
+Returns $valid_hash_ref if validation succeed, otherwise returns undef.
 
 =head3 validator_language
 
@@ -373,6 +376,8 @@ Returns $valid_hash_ref if validation succeed, otherwise rerurns undef.
 =head3 errors
 
     my $errors_hash_multi = errors
+
+Returns HashRef[ArrayRef] if validation failed.
 
 =head1 Validators
 
