@@ -25,6 +25,9 @@ package App {
                 session  => {
                     namespace => '_form_validator'
                 },
+                forms   => {
+                    login => 'Validator',
+                },
             },
         };
     }
@@ -32,9 +35,9 @@ package App {
     use Dancer2::Plugin::FormValidator;
 
     post '/' => sub {
-        my $result = validate body_parameters->as_hashref => Validator->new;
-
-        to_json $result->messages;
+        if (not validate_form 'login') {
+            to_json errors;
+        }
     };
 }
 

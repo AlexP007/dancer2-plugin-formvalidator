@@ -41,7 +41,7 @@ use Plack::Test;
 use HTTP::Request::Common;
 
 my $app    = Plack::Test->create(App->to_app);
-my $result = $app->request(POST '/', [email => 'alexp@cpan.org']);
+my $result = $app->request(POST '/', [email => 'alexp@cpan.org', name => 'hacker']);
 
 is(
     $result->content,
