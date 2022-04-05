@@ -1,7 +1,7 @@
 package Dancer2::Plugin::FormValidator::Processor;
 
 use Moo;
-use List::Util qw(uniqstr);
+use List::Util 1.45 qw(uniqstr);
 use Hash::MultiValue;
 use Dancer2::Plugin::FormValidator::Result;
 use Types::Standard qw(InstanceOf ConsumerOf HashRef);

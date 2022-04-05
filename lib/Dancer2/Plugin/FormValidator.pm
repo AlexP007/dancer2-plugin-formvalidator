@@ -1,6 +1,6 @@
 package Dancer2::Plugin::FormValidator;
 
-use 5.20.0;
+use 5.24.0;
 
 use Dancer2::Plugin;
 use Dancer2::Core::Hook;
@@ -13,7 +13,7 @@ use Hash::Util qw(lock_hashref);
 use Module::Load;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.22';
+our $VERSION = '0.23';
 
 plugin_keywords qw(validate_form validate errors validator_language);
 
@@ -169,7 +169,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.22
+version 0.23
 
 =head1 SYNOPSIS
 
