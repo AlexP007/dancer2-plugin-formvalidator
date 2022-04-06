@@ -4,7 +4,6 @@ use 5.24.0;
 
 use Dancer2::Plugin;
 use Dancer2::Core::Hook;
-use Dancer2::Plugin::Deferred;
 use Dancer2::Plugin::FormValidator::Config;
 use Dancer2::Plugin::FormValidator::Registry;
 use Dancer2::Plugin::FormValidator::Processor;
@@ -13,7 +12,7 @@ use Hash::Util qw(lock_hashref);
 use Module::Load;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.30';
+our $VERSION = '0.31';
 
 plugin_keywords qw(validate_form errors validator_language);
 
@@ -25,6 +24,15 @@ has config_obj => (
         return Dancer2::Plugin::FormValidator::Config->new(
             config => shift->config,
         );
+    }
+);
+
+has plugin_deferred => (
+    is       => 'ro',
+    isa      => InstanceOf ['Dancer2::Plugin::Deferred'],
+    required => 1,
+    builder  => sub {
+        return shift->app->with_plugin('Dancer2::Plugin::Deferred');
     }
 );
 
@@ -105,7 +113,7 @@ sub validate {
     my $result = $processor->result;
 
     if ($result->success != 1) {
-        deferred(
+        $self->plugin_deferred->deferred(
             $self->config_obj->session_namespace,
             {
                 messages => $result->messages,
@@ -151,7 +159,9 @@ sub errors {
 }
 
 sub _get_deferred {
-    return deferred(shift->config_obj->session_namespace);
+    my $self = shift;
+
+    return $self->plugin_deferred->deferred($self->config_obj->session_namespace);
 }
 
 1;
@@ -169,7 +179,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.30
+version 0.31
 
 =head1 SYNOPSIS
 
