@@ -117,9 +117,9 @@ sub _messages {
         my $message = $self->config->messages_validators->{$name} || $validator->message;
 
         if ($profile->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
-            my $validator_messages = $profile->messages;
-            if (ref $validator_messages eq 'HASH') {
-                $message = $validator_messages->{$name} || $message;
+            my $profile_messages = $profile->messages;
+            if (ref $profile_messages eq 'HASH') {
+                $message = $profile_messages->{$field}->{$name} || $message;
             }
             else {
                 Carp::croak("Messages should be a HashRef\n")

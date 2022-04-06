@@ -21,13 +21,21 @@ package Validator {
 
     sub messages {
         return {
-            required => {
-                en => '%s is needed',
-                ru => '%s это нужно',
+            name => {
+                required => {
+                    en => '%s form profile is needed',
+                    ru => 'Имя из профиля нужно',
+                },
             },
-            email    => {
-                en => '%s please use valid email',
-                ru => '%s пожалуйста укажи правильную почту',
+            email => {
+                required => {
+                    en => '%s form profile is needed',
+                    ru => 'Почта из профиля нужно',
+                },
+                email => {
+                    en => '%s please use valid email',
+                    ru => '%s пожалуйста укажи правильную почту',
+                }
             }
         }
     }
@@ -75,7 +83,7 @@ is_deeply(
     $processor->result->messages,
     {
         'name' => [
-            'Name is needed'
+            'Name form profile is needed'
         ],
         'email' => [
             'Email please use valid email'
@@ -93,7 +101,7 @@ is_deeply(
     $processor->result->messages,
     {
         'name' => [
-            'Name это нужно'
+            'Имя из профиля нужно'
         ],
         'email' => [
             'Email пожалуйста укажи правильную почту'
