@@ -20,16 +20,32 @@ has validators => (
     lazy      => 1,
     required  => 1,
     builder   => sub {
-        my $self       = shift;
-        my $validators = $self->_validators;
+        my $self = shift;
+        my %plugin_validators;
 
-        if ($self->has_extensions) {
-            for my $extension (@{ $self->extensions }) {
-                $validators = {%{ $validators }, %{ $extension->validators }};
+        for my $validator (keys % { $self->_validators }) {
+            $plugin_validators{$validator} = {
+                extension => undef,
+                validator => $self->_validators->{$validator},
             };
         }
 
-        return $validators;
+        if ($self->has_extensions) {
+            for my $extension (@{ $self->extensions }) {
+                my %extension_validators;
+
+                for my $validator (keys %{ $extension->validators } ) {
+                    $extension_validators{$validator} = {
+                        extension => $extension,
+                        validator => $extension->validators->{$validator},
+                    };
+                }
+
+                %plugin_validators = (%plugin_validators, %extension_validators);
+            };
+        }
+
+        return \%plugin_validators;
     }
 );
 
@@ -40,11 +56,17 @@ sub get {
         return $validators{$name};
     }
 
-    if (my $class = $self->validators->{$name}) {
+    if (my $validator_struct = $self->validators->{$name}) {
+        my $extension = $validator_struct->{extension};
+        my $class     = $validator_struct->{validator};
+
         autoload $class;
 
         my $role      = 'Dancer2::Plugin::FormValidator::Role::Validator';
-        my $validator = $class->new;
+
+        my $validator = $extension
+            ? $class->new(extension => $extension)
+            : $class->new;
 
         if (not $validator->does($role)) {
             Carp::croak "Validator: $class should implement $role\n";
