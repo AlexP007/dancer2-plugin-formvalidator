@@ -1,3 +1,10 @@
+0.50 2022-04-06 15:30:45 Europe/Moscow
+    [CHANGES]
+    * Change ProfileHasMessages message struct
+
+    [DOCS]
+    * Profile custom messages
+
 0.40 2022-04-06 12:29:59 Europe/Moscow
     [CHANGES]
     * Passing extension to its validator constructor
