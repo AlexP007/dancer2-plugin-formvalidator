@@ -12,7 +12,7 @@ use Hash::Util qw(lock_hashref);
 use Module::Load;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.40';
+our $VERSION = '0.50';
 
 plugin_keywords qw(validate_form errors validator_language);
 
@@ -179,7 +179,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.40
+version 0.50
 
 =head1 SYNOPSIS
 
@@ -432,6 +432,42 @@ Validate that string only contain of latin alphabetic ascii symbols, underscore 
 Validate that field exists and not empty string.
 
 =head3 same
+
+=head1 CUSTOM MESSAGES
+
+To define custom error messages for fields/validators your Validator should implement
+Role: Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
+
+    package Validator {
+        use Moo;
+
+        with 'Dancer2::Plugin::FormValidator::Role::ProfileHasMessages';
+
+        sub profile {
+            return {
+                name  => [qw(required)],
+                email => [qw(required email)],
+            };
+        };
+
+        sub messages {
+            return {
+                name => {
+                    required => {
+                        en => 'Specify your %s',
+                    },
+                },
+                email => {
+                    required => {
+                        en => '%s is needed',
+                    },
+                    email => {
+                        en => '%s please use valid email',
+                    }
+                }
+            }
+        }
+    }
 
 =head1 TODO
 
