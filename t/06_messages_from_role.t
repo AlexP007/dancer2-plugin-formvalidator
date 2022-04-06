@@ -23,13 +23,13 @@ package Validator {
         return {
             name => {
                 required => {
-                    en => '%s form profile is needed',
+                    en => '%s from profile is needed',
                     ru => 'Имя из профиля нужно',
                 },
             },
             email => {
                 required => {
-                    en => '%s form profile is needed',
+                    en => '%s from profile is needed',
                     ru => 'Почта из профиля нужно',
                 },
                 email => {
@@ -83,7 +83,7 @@ is_deeply(
     $processor->result->messages,
     {
         'name' => [
-            'Name form profile is needed'
+            'Name from profile is needed'
         ],
         'email' => [
             'Email please use valid email'
