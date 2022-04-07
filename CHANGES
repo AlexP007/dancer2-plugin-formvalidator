@@ -1,3 +1,7 @@
+0.51 --- Europe/Moscow
+    [DOCS]
+    * Extensions
+
 0.50 2022-04-06 15:30:45 Europe/Moscow
     [CHANGES]
     * Change ProfileHasMessages message struct
