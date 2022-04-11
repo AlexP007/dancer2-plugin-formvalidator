@@ -18,7 +18,7 @@ sub message {
 sub validate {
     my ($self, $field, $input) = @_;
 
-    if (defined $input->{$field}) {
+    if ($self->_field_defined_and_non_empty($input->{$field})) {
         return any { $input->{$field} eq $_ } qw(yes on 1);
     }
 

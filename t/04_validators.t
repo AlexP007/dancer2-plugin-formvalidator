@@ -155,7 +155,7 @@ isnt(
 isnt(
     $validator->validate(
         'password',
-        {password => undef},
+        {password => 'pass'},
         'password_cnf'
     ),
     1,

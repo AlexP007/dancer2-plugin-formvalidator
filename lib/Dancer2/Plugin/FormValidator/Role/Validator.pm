@@ -17,4 +17,8 @@ sub stop_on_fail {
     return 0;
 }
 
+sub _field_defined_and_non_empty {
+    return defined($_[1]) && $_[1] ne '';
+}
+
 1;
