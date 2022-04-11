@@ -393,6 +393,8 @@ Returns HashRef[ArrayRef] if validation failed.
 
 =head3 accepted
 
+Validates that field B<exists> and one of the listed: (yes on 1).
+
 =head3 alpha
 
 Validate that string only contain of alphabetic utf8 symbols, i.e. /^[[:alpha:]]+$/.
@@ -417,9 +419,13 @@ Validate that string only contain of latin alphabetic ascii symbols, underscore 
 
 =head3 integer
 
-=head3 length_max
+=head3 length_max:num
 
-=head3 length_min
+Validate that string length <= num.
+
+=head3 length_min:num
+
+Validate that string length >= num.
 
 =head3 max
 

@@ -1,6 +1,10 @@
-0.51 --- Europe/Moscow
+0.51 2022-04-11 19:41:41 Europe/Moscow
+    [CHANGES]
+    * Now validated defined and not empty fields
+
     [DOCS]
     * Extensions
+    * Some validators
 
 0.50 2022-04-06 15:30:45 Europe/Moscow
     [CHANGES]
