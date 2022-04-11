@@ -18,7 +18,11 @@ sub stop_on_fail {
 }
 
 sub _field_defined_and_non_empty {
-    return defined($_[1]) && $_[1] ne '';
+    if (exists $_[1] and $_[1] ne '') {
+        return 1;
+    }
+
+    return 0;
 }
 
 1;
