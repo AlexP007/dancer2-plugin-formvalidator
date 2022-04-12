@@ -585,6 +585,9 @@ Document all Roles and HashRef structures.
 Extensions docs.
 
 =item *
+Profile docs.
+
+=item *
 Contribution and help details.
 
 =back
