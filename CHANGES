@@ -1,3 +1,12 @@
+0.60 ---- Europe/Moscow
+    [CHANGES]
+    * Removed validate_form dsl
+    * Removed config form => profile association
+    * Add validate dsl
+
+    [DOCS]
+    * Update docs
+
 0.51 2022-04-11 19:41:41 Europe/Moscow
     [CHANGES]
     * Now validated defined and not empty fields
