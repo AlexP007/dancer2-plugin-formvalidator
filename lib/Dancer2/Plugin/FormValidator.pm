@@ -245,7 +245,7 @@ Uses simple and declarative approach to validate forms:
 =head2 Validator
 
 First, you need to create class which will implements
-at least one main role: Dancer2::Plugin::FormValidator::Role::HasProfile.
+at least one main role: Dancer2::Plugin::FormValidator::Role::Profile.
 
 This role requires profile method which should return a HashRef Data::FormValidator accepts:
 
