@@ -1,4 +1,4 @@
-0.60 ---- Europe/Moscow
+0.60 2022-04-12 12:59:01 Europe/Moscow
     [CHANGES]
     * Removed validate_form dsl
     * Removed config form => profile association
