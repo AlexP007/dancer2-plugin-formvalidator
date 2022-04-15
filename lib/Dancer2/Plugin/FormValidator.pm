@@ -75,12 +75,12 @@ sub validator_language {
 }
 
 sub validate {
-    my ($self, $profile) = @_;
+    my ($self, $profile, $input) = @_;
 
-    autoload $profile;
+    # The default value for input.
+    $input //= $self->dsl->body_parameters->as_hashref_mixed;
 
-    my $input  = $self->dsl->body_parameters->as_hashref_mixed;
-    my $result = $self->_validate($input, $profile->new);
+    my $result = $self->_validate($input, $profile);
 
     return $result->success ? $result->valid : undef;
 
@@ -182,7 +182,7 @@ version 0.70
     use Dancer2::Plugin::FormValidator;
 
     post '/form' => sub {
-        if (my $valid_hash_ref = validate 'App::Http::Forms::RegisterForm') {
+        if (my $valid_hash_ref = validate(App::Http::Forms::RegisterForm->new)) {
             save_user_input($valid_hash_ref);
             redirect '/success_page';
         }
@@ -277,7 +277,7 @@ Now you can validate POST parameters in your controller:
     use Dancer2::Plugin::FormValidator;
 
     post '/register' => sub {
-        if (my $valid_hash_ref = validate 'App::Http::Forms::RegisterForm') {
+        if (my $valid_hash_ref = validate(App::Http::Forms::RegisterForm->new)) {
             if (login($valid_hash_ref)) {
                 redirect '/success_page';
             }
@@ -367,9 +367,10 @@ Template app/register:
 
 =head3 validate
 
-    my $valid_hash_ref = validate $profile_class
+    my $valid_hash_ref = validate($profile, $input = body_parameters->as_hashref_mixed)
 
-Where $profile_class is string.
+Where $profile is object instance.
+$input is optional, if not passed, then body_parameters would be used.
 Returns $valid_hash_ref if validation succeed, otherwise returns undef.
 
     if (my $valid_hash_ref = validate 'RegisterForm') {

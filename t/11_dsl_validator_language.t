@@ -33,7 +33,7 @@ package App {
     validator_language 'ru';
 
     post '/' => sub {
-        if (not validate 'Validator') {
+        if (not validate(Validator->new)) {
             to_json errors, {utf8 => 0};
         }
     };

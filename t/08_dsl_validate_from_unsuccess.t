@@ -32,7 +32,7 @@ package App {
     use Dancer2::Plugin::FormValidator;
 
     post '/' => sub {
-        if (not validate 'Validator') {
+        if (not validate(Validator->new)) {
             to_json errors;
         }
     };
