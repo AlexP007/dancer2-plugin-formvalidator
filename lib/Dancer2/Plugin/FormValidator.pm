@@ -12,7 +12,7 @@ use Hash::Util qw(lock_hashref);
 use Module::Load;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.61';
+our $VERSION = '0.70';
 
 plugin_keywords qw(validate errors validator_language);
 
@@ -175,7 +175,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.61
+version 0.70
 
 =head1 SYNOPSIS
 
@@ -192,7 +192,7 @@ version 0.61
 
 =head1 DISCLAIMER
 
-This is alpha version, not stable.
+This is alpa version, not stable.
 
 Interfaces may change in future:
 
@@ -232,7 +232,7 @@ Help is always welcome!
 =head1 DESCRIPTION
 
 This is micro-framework that provides validation in your Dancer2 application.
-It consists of dsl's keywords and a set of agreements.
+It consists of dsl's keywords: validate, validator_language, errors.
 It has a set of built-in validators that can be extended by compatible modules (extensions).
 Also proved runtime switching between languages, so you can show proper error messages to users.
 
@@ -245,20 +245,20 @@ at least one main role: Dancer2::Plugin::FormValidator::Role::Profile.
 
 This role requires profile method which should return a HashRef Data::FormValidator accepts:
 
-    package App::Http::Forms::RegisterForm {
-        use Moo;
-        with 'Dancer2::Plugin::FormValidator::Role::Profile';
+    package App::Http::Forms::RegisterForm
 
-        sub profile {
-            return {
-                username     => [ qw(required alpha_num_ascii length_min:4 length_max:32) ],
-                email        => [ qw(required email length_max:127) ],
-                password     => [ qw(required length_max:40) ],
-                password_cnf => [ qw(required same:password) ],
-                confirm      => [ qw(required accepted) ],
-            };
+    use Moo;
+    with 'Dancer2::Plugin::FormValidator::Role::Profile';
+
+    sub profile {
+        return {
+            username     => [ qw(required alpha_num_ascii length_min:4 length_max:32) ],
+            email        => [ qw(required email length_max:127) ],
+            password     => [ qw(required length_max:40) ],
+            password_cnf => [ qw(required same:password) ],
+            confirm      => [ qw(required accepted) ],
         };
-    }
+    };
 
 =head2 Application
 
@@ -348,14 +348,14 @@ Template app/register:
     plugins:
         FormValidator:
             session:
-                namespace: '_form_validator' # this is required
+                namespace: '_form_validator'         # this is required
             messages:
-                language: en                 # this is default
-                ucfirst: 1                   # this is default
+                language: en                         # this is default
+                ucfirst: 1                           # this is default
                 validators:
                     required:
-                        en: %s is needed from config
-                        de: %s ist erforderlich
+                        en: %s is needed from config # custom en message
+                        de: %s ist erforderlich      # custom de message
                     ...
             extensions:
                 dbic:
@@ -369,11 +369,25 @@ Template app/register:
 
     my $valid_hash_ref = validate $profile_class
 
+Where $profile_class is string.
 Returns $valid_hash_ref if validation succeed, otherwise returns undef.
+
+    if (my $valid_hash_ref = validate 'RegisterForm') {
+        # Success, data is valid.
+        # Do some operations...
+    }
+    else {
+        # Error, data is invalid.
+        # Redirect or show errors...
+    }
 
 =head3 validator_language
 
     validator_language $lang
+
+Where $lang is string.
+
+    validator_language 'de'; # Set language to German.
 
 =head3 errors
 
