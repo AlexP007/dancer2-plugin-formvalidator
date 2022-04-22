@@ -14,7 +14,10 @@ use Types::Standard qw(InstanceOf HashRef);
 
 our $VERSION = '0.70';
 
-plugin_keywords qw(validate errors validator_language);
+# Global var for saving last success validation valid input.
+my $valid_input;
+
+plugin_keywords qw(validate validated errors);
 
 has config_obj => (
     is       => 'ro',
@@ -69,21 +72,42 @@ sub BUILD {
     );
 }
 
-sub validator_language {
-    shift->config_obj->language(shift);
-    return;
-}
-
 sub validate {
-    my ($self, $profile, $input) = @_;
+    my ($self, %params) = @_;
 
-    # The default value for input.
-    $input //= $self->dsl->body_parameters->as_hashref_mixed;
+    my $profile = %params{profile};
+    my $input   = %params{input} // $self->dsl->body_parameters->as_hashref_mixed;
+    my $lang    = %params{lang};
+
+    if (defined $lang) {
+        $self->_validator_language($lang);
+    }
+
+    # We need to unset value of this global var.
+    $valid_input = undef;
 
     my $result = $self->_validate($input, $profile);
 
-    return $result->success ? $result->valid : undef;
+    if ($result->success) {
+        $valid_input = $result->valid;
+        return $valid_input;
+    }
 
+    return undef;
+}
+
+sub validated {
+    return $valid_input;
+}
+
+sub errors {
+    return shift->_get_deferred->{messages};
+}
+
+
+sub _validator_language {
+    shift->config_obj->language(shift);
+    return;
 }
 
 sub _validate {
@@ -150,10 +174,6 @@ sub _registry {
     );
 }
 
-sub errors {
-    return shift->_get_deferred->{messages};
-}
-
 sub _get_deferred {
     my $self = shift;
 
@@ -192,7 +212,7 @@ version 0.70
 
 =head1 DISCLAIMER
 
-This is alpa version, not stable.
+This is alpha version, not stable.
 
 Interfaces may change in future:
 

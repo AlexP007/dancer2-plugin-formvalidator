@@ -30,7 +30,7 @@ package App {
     use Dancer2::Plugin::FormValidator;
 
     post '/' => sub {
-        to_json validate(Validator->new);
+        to_json validate profile => Validator->new;
     };
 }
 

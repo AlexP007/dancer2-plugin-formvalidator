@@ -30,10 +30,8 @@ package App {
 
     use Dancer2::Plugin::FormValidator;
 
-    validator_language 'ru';
-
     post '/' => sub {
-        if (not validate(Validator->new)) {
+        if (not validate profile => Validator->new, lang => 'ru') {
             to_json errors, {utf8 => 0};
         }
     };

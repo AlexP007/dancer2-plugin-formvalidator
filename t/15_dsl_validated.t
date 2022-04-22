@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use Test::More tests => 1;
+use JSON::MaybeXS;
 
 package Validator {
     use Moo;
@@ -32,8 +33,11 @@ package App {
     use Dancer2::Plugin::FormValidator;
 
     post '/' => sub {
-        if (not validate profile => Validator->new) {
-            to_json errors;
+        if (my $validated = validate profile => Validator->new) {
+            to_json {
+                'validated'          => $validated,
+                'validated_from_dsl' => validated,
+            };
         }
     };
 }
@@ -42,10 +46,12 @@ use Plack::Test;
 use HTTP::Request::Common;
 
 my $app    = Plack::Test->create(App->to_app);
-my $result = $app->request(POST '/', [password => 'pass1', password_cnf => 'pass', role => 'agent']);
+my $result = $app->request(POST '/', [password => 'pass1', password_cnf => 'pass1', role => 'agent']);
 
-is(
-    $result->content,
-    '{"password_cnf":["Password_cnf must be the same as password"]}',
-    'Check validator params',
+my $content = decode_json $result->content;
+
+is_deeply(
+    $content->{validated},
+    $content->{validated_from_dsl},
+    'Check validated result',
 );
