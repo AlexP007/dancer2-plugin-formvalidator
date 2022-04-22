@@ -217,7 +217,7 @@ version 0.71
                 password_cnf => [ qw(required same:password) ],
                 confirm      => [ qw(required accepted) ],
             };
-        };
+        }
     }
 
     post '/form' => sub {

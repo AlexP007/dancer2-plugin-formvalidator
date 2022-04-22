@@ -13,7 +13,7 @@ package Validator {
             name  => [qw(required)],
             email => [qw(required email)],
         };
-    };
+    }
 }
 
 package App {

@@ -40,7 +40,7 @@ package Validator {
         return {
             email => [qw(required email)],
         };
-    };
+    }
 }
 
 package App {
