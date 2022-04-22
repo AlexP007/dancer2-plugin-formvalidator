@@ -12,7 +12,7 @@ use Hash::Util qw(lock_hashref);
 use Module::Load;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.70';
+our $VERSION = '0.71';
 
 # Global var for saving last success validation valid input.
 my $valid_input;
@@ -195,7 +195,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.70
+version 0.71
 
 =head1 SYNOPSIS
 
@@ -623,12 +623,6 @@ L<Dancer2::Plugin::FormValidator::Extension::DBIC|https://metacpan.org/pod/Dance
 =head1 TODO
 
 =over 4
-
-=item *
-Configuration details: list all fields and describe them.
-
-=item *
-Document with example and descriptions DSL's.
 
 =item *
 Document with example all validators.
