@@ -307,6 +307,11 @@ This role requires profile method which should return a HashRef Data::FormValida
         };
     };
 
+=head3 Profile method
+
+Profile method should always return a HashRef[ArrayRef] where keys are input fields names
+and values are ArrayRef with list of validators.
+
 =head2 Application
 
 Then you need to set basic configuration:
