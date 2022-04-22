@@ -240,6 +240,16 @@ version 0.71
         redirect '/form';
     };
 
+The html result could be like:
+
+=begin html
+
+<p>
+  <img alt="https://raw.githubusercontent.com/AlexP007/dancer2-plugin-formvalidator/645b8e8d7c91739c7618a2088841f93f47c53495/assets/screenshot_register.png" width="600px">
+</p>
+
+=end html
+
 =head1 DISCLAIMER
 
 This is alpha version, not stable.
