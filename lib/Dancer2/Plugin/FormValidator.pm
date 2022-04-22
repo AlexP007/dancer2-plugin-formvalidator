@@ -203,6 +203,9 @@ version 0.71
 
 =head1 SYNOPSIS
 
+    ### If you need a simple and easy validation in your project,
+    ### then this module is what you need.
+
     use Dancer2::Plugin::FormValidator;
 
     package RegisterForm {
