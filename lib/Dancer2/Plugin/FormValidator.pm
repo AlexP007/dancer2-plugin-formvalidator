@@ -413,7 +413,7 @@ Template app/register:
 
 =head3 validate
 
-    my $valid_hash_ref = validate(Hash $params): HashRef|undef
+    validate(Hash $params): HashRef|undef
 
 Accept params as hash:
 
@@ -427,12 +427,16 @@ Profile is required, input and lang is optional.
 
 Returns valid input HashRef if validation succeed, otherwise returns undef.
 
-    if (my $valid_hash_ref = validate 'RegisterForm') {
+    if (validate profile => RegisterForm->new) {
         # Success, data is valid.
+        my $valid_hash_ref = validated;
+
         # Do some operations...
     }
     else {
         # Error, data is invalid.
+        my $errors = errors;
+
         # Redirect or show errors...
     }
 
