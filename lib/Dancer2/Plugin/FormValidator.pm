@@ -201,8 +201,25 @@ version 0.70
 
     use Dancer2::Plugin::FormValidator;
 
+    package RegisterForm {
+         use Moo;
+         with 'Dancer2::Plugin::FormValidator::Role::Profile';
+
+         sub profile {
+            return {
+                username     => [ qw(required alpha_num_ascii length_min:4 length_max:32) ],
+                email        => [ qw(required email length_max:127) ],
+                password     => [ qw(required length_max:40) ],
+                password_cnf => [ qw(required same:password) ],
+                confirm      => [ qw(required accepted) ],
+            };
+        };
+    }
+
     post '/form' => sub {
-        if (my $valid_hash_ref = validate(App::Http::Forms::RegisterForm->new)) {
+        if (validate profile => RegisterForm->new) {
+            my $valid_hash_ref = validated;
+
             save_user_input($valid_hash_ref);
             redirect '/success_page';
         }
@@ -219,9 +236,6 @@ Interfaces may change in future:
 =over 4
 
 =item *
-Template tokens: errors.
-
-=item *
 Roles: Dancer2::Plugin::FormValidator::Role::Extension, Dancer2::Plugin::FormValidator::Role::Validator.
 
 =item *
@@ -234,10 +248,10 @@ Won't change:
 =over 4
 
 =item *
-Dsl keywords: validator_language, errors.
+Dsl keywords.
 
 =item *
-Template tokens: old.
+Template tokens.
 
 =item *
 Roles: Dancer2::Plugin::FormValidator::Role::Profile, Dancer2::Plugin::FormValidator::Role::HasMessages, Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
@@ -265,7 +279,7 @@ at least one main role: Dancer2::Plugin::FormValidator::Role::Profile.
 
 This role requires profile method which should return a HashRef Data::FormValidator accepts:
 
-    package App::Http::Forms::RegisterForm
+    package RegisterForm
 
     use Moo;
     with 'Dancer2::Plugin::FormValidator::Role::Profile';
@@ -295,9 +309,10 @@ Then you need to set basic configuration:
 Now you can validate POST parameters in your controller:
 
     use Dancer2::Plugin::FormValidator;
+    use RegisterForm;
 
     post '/register' => sub {
-        if (my $valid_hash_ref = validate(App::Http::Forms::RegisterForm->new)) {
+        if (my $valid_hash_ref = validate profile => RegisterForm->new) {
             if (login($valid_hash_ref)) {
                 redirect '/success_page';
             }
@@ -352,6 +367,13 @@ Template app/register:
                 <: for $errors[email] -> $error { :>
                     <small class="pl-1 text-red-400"><: $error :></small>
                 <: } :>
+
+            <!-- Other fields -->
+            ...
+            ...
+            ...
+            <!-- Other fields end -->
+
             </div>
             <button
                     type="submit"
@@ -387,11 +409,19 @@ Template app/register:
 
 =head3 validate
 
-    my $valid_hash_ref = validate($profile, $input = body_parameters->as_hashref_mixed)
+    my $valid_hash_ref = validate(Hash $params): HashRef|undef
 
-Where $profile is object instance.
-$input is optional, if not passed, then body_parameters would be used.
-Returns $valid_hash_ref if validation succeed, otherwise returns undef.
+Accept params as hash:
+
+    (
+        profile => Object implementing Dancer2::Plugin::FormValidator::Role::Profile # required
+        input   => HashRef of values to validate, default is body_parameters->as_hashref_mixed
+        lang    => Accepts two-lettered language id, default is 'en'
+    )
+
+Profile is required, input and lang is optional.
+
+Returns valid input HashRef if validation succeed, otherwise returns undef.
 
     if (my $valid_hash_ref = validate 'RegisterForm') {
         # Success, data is valid.
@@ -402,19 +432,23 @@ Returns $valid_hash_ref if validation succeed, otherwise returns undef.
         # Redirect or show errors...
     }
 
-=head3 validator_language
+=head3 validated
 
-    validator_language $lang
+    validated(): HashRef|undef
 
-Where $lang is string.
+No arguments.
+Returns valid input HashRef if validate succeed.
 
-    validator_language 'de'; # Set language to German.
+    my $valid_hash_ref = validated;
 
 =head3 errors
 
-    my $errors_hash_multi = errors
+    errors(): HashRef
 
+No arguments.
 Returns HashRef[ArrayRef] if validation failed.
+
+    my $errors_hash_multi = errors;
 
 =head1 Validators
 

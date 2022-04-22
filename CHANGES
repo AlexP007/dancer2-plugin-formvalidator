@@ -1,4 +1,4 @@
-0.70 ----- Europe/Moscow
+0.70 2022-04-22 18:01:46 Europe/Moscow
     [CHANGES]
     * Validate signature. Now accepting arguments as hash
 
@@ -7,6 +7,9 @@
 
     [REMOVED]
     * validator_language
+
+    [DOCS]
+    * Update docs
 
 0.61 2022-04-12 14:38:13 Europe/Moscow
     [IMPROVEMENTS]
