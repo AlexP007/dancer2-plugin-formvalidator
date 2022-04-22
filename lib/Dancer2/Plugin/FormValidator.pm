@@ -483,25 +483,49 @@ Validate that string only contain of latin alphabetic ascii symbols, underscore 
 
 =head3 email
 
+Validate that field is valid email(rfc822).
+
 =head3 email_dns
 
-=head3 enum
+Validate that field is valid email(rfc822) and dns exists.
+
+=head3 enum:value1,value2
+
+Validate that field is one of listed values.
+
+    field => [ qw(enum:value1,value2) ]
 
 =head3 integer
+
+Validate that field is integer.
 
 =head3 length_max:num
 
 Validate that string length <= num.
 
+    field => [ qw(length_max:32) ]
+
 =head3 length_min:num
 
 Validate that string length >= num.
 
-=head3 max
+    field => [ qw(length_max:4) ]
 
-=head3 min
+=head3 max:num
+
+Validate that field is number <= num.
+
+    field => [ qw(max:32) ]
+
+=head3 min:num
+
+Validate that field is number >= num.
+
+    field => [ qw(min:4) ]
 
 =head3 numeric
+
+Validate that field is number.
 
 =head3 required
 
@@ -632,9 +656,6 @@ L<Dancer2::Plugin::FormValidator::Extension::DBIC|https://metacpan.org/pod/Dance
 =head1 TODO
 
 =over 4
-
-=item *
-Document with example all validators.
 
 =item *
 Document all config field with explanation.
