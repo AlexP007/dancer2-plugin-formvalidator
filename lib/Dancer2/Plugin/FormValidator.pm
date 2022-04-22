@@ -75,6 +75,10 @@ sub BUILD {
 sub validate {
     my ($self, %params) = @_;
 
+    # We need to unset value of this global var.
+    $valid_input = undef;
+
+    # Now works with arguments.
     my $profile = %params{profile};
     my $input   = %params{input} // $self->dsl->body_parameters->as_hashref_mixed;
     my $lang    = %params{lang};
@@ -82,9 +86,6 @@ sub validate {
     if (defined $lang) {
         $self->_validator_language($lang);
     }
-
-    # We need to unset value of this global var.
-    $valid_input = undef;
 
     my $result = $self->_validate($input, $profile);
 
@@ -97,7 +98,10 @@ sub validate {
 }
 
 sub validated {
-    return $valid_input;
+    my $valid    = $valid_input;
+    $valid_input = undef;
+
+    return $valid;
 }
 
 sub errors {
@@ -438,6 +442,7 @@ Returns valid input HashRef if validation succeed, otherwise returns undef.
 
 No arguments.
 Returns valid input HashRef if validate succeed.
+Undef value will be returned after first call within one validation process.
 
     my $valid_hash_ref = validated;
 

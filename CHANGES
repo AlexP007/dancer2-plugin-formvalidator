@@ -1,4 +1,11 @@
 0.70 2022-04-22 18:01:46 Europe/Moscow
+    [IMPROVEMENTS]
+    * Unsetting $valid_input after first access
+
+    [DOCS]
+    * Update docs
+
+0.70 2022-04-22 18:01:46 Europe/Moscow
     [CHANGES]
     * Validate signature. Now accepting arguments as hash
 
