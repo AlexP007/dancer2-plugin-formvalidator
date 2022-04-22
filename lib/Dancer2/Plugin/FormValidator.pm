@@ -557,7 +557,7 @@ Role: Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
                 name  => [qw(required)],
                 email => [qw(required email)],
             };
-        };
+        }
 
         sub messages {
             return {
@@ -574,7 +574,7 @@ Role: Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
                         en => '%s please use valid email',
                     }
                 }
-            }
+            };
         }
     }
 
