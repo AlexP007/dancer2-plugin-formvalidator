@@ -208,11 +208,15 @@ version 0.71
 
     use Dancer2::Plugin::FormValidator;
 
+    ### First create form validation profile class.
+
     package RegisterForm {
          use Moo;
          with 'Dancer2::Plugin::FormValidator::Role::Profile';
 
-         sub profile {
+        ### Here you need to declare validators.
+
+        sub profile {
             return {
                 username     => [ qw(required alpha_num_ascii length_min:4 length_max:32) ],
                 email        => [ qw(required email length_max:127) ],
@@ -222,6 +226,8 @@ version 0.71
             };
         }
     }
+
+    ### Now you can use it in your Dancer2 project.
 
     post '/form' => sub {
         if (validate profile => RegisterForm->new) {
