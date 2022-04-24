@@ -7,7 +7,7 @@ use Module::Load;
 use Dancer2::Core::Hook;
 use Dancer2::Plugin::FormValidator::Validator;
 use Dancer2::Plugin::FormValidator::Config;
-use Types::Standard qw(InstanceOf HashRef);
+use Types::Standard qw(InstanceOf HashRef ArrayRef);
 
 our $VERSION = '0.80';
 
@@ -27,11 +27,32 @@ has config_obj => (
     }
 );
 
-has extensions => (
+has config_extensions => (
     is       => 'ro',
     isa      => HashRef,
     default  => sub {
         return shift->config->{extensions} // {},
+    }
+);
+
+has extensions => (
+    is       => 'ro',
+    isa      => ArrayRef,
+    required => 1,
+    builder  => sub {
+        my $self = shift;
+
+        my @extensions = map {
+            my $extension = $self->config_extensions->{$_}->{provider};
+            autoload $extension;
+
+            $extension->new(
+                plugin => $self,
+                config => $self->config_extensions->{$_},
+            );
+        } keys %{ $self->config_extensions };
+
+        return \@extensions;
     }
 );
 
@@ -87,7 +108,7 @@ sub validate {
     my $validator = Dancer2::Plugin::FormValidator::Validator->new(
         config            => $self->config_obj,
         input             => $input,
-        extensions        => $self->_extensions,
+        extensions        => $self->extensions,
         validator_profile => $profile,
     );
 
@@ -124,22 +145,6 @@ sub errors {
 sub _validator_language {
     shift->config_obj->language(shift);
     return;
-}
-
-sub _extensions {
-    my $self = shift;
-
-    my @extensions = map {
-        my $extension = $self->extensions->{$_}->{provider};
-        autoload $extension;
-
-        $extension->new(
-            plugin => $self,
-            config => $self->extensions->{$_},
-        );
-    } keys %{ $self->extensions };
-
-    return \@extensions;
 }
 
 sub _get_deferred {
