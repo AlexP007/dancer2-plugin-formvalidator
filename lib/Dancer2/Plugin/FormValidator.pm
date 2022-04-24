@@ -117,15 +117,7 @@ sub _validator_language {
 sub _validate {
     my ($self, $input, $validator_profile) = @_;
 
-    if (ref $input ne 'HASH') {
-        Carp::croak "Input data should be a hash reference\n";
-    }
-
-    my $role = 'Dancer2::Plugin::FormValidator::Role::Profile';
-    if (not $validator_profile->does($role)) {
-        my $name = $validator_profile->meta->name;
-        Carp::croak "$name should implement $role\n";
-    }
+    $self->_check_arguments($input, $validator_profile);
 
     my $processor = Dancer2::Plugin::FormValidator::Processor->new(
         input             => $self->_clone_and_lock_input($input),
@@ -147,6 +139,20 @@ sub _validate {
     }
 
     return $result;
+}
+
+sub _check_arguments {
+    my ($self, $input, $validator_profile) = @_;
+
+    if (ref $input ne 'HASH') {
+        Carp::croak "Input data should be a hash reference\n";
+    }
+
+    my $role = 'Dancer2::Plugin::FormValidator::Role::Profile';
+    if (not $validator_profile->does($role)) {
+        my $name = $validator_profile->meta->name;
+        Carp::croak "$name should implement $role\n";
+    }
 }
 
 sub _clone_and_lock_input {
