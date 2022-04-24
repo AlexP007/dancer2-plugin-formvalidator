@@ -2,6 +2,8 @@ use strict;
 use warnings;
 use Test::More tests => 1;
 
+# In this test ve wanna test validators params, like same:password.
+
 package Validator {
     use Moo;
 
