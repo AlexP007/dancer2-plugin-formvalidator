@@ -2,7 +2,7 @@ package Dancer2::Plugin::FormValidator::Registry;
 
 use Moo;
 use Carp;
-use Module::Load;
+use Module::Load qw(autoload);
 use Types::Standard qw(ConsumerOf ArrayRef HashRef);
 use namespace::clean;
 

@@ -3,7 +3,7 @@ package Dancer2::Plugin::FormValidator;
 use 5.24.0;
 
 use Dancer2::Plugin;
-use Module::Load;
+use Module::Load qw(autoload);
 use Dancer2::Core::Hook;
 use Dancer2::Plugin::FormValidator::Validator;
 use Dancer2::Plugin::FormValidator::Config;
