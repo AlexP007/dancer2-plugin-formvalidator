@@ -15,9 +15,9 @@ has config => (
 );
 
 has extensions => (
-    is        => 'ro',
-    isa       => ArrayRef[ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension']],
-    predicate => 1,
+    is       => 'ro',
+    isa      => ArrayRef[ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension']],
+    required => 1,
 );
 
 has input => (
@@ -32,22 +32,36 @@ has validator_profile => (
     required => 1,
 );
 
+has registry => (
+    is       => 'ro',
+    default  => sub {
+        return Dancer2::Plugin::FormValidator::Registry->new(
+            extensions => shift->extensions,
+        );
+    }
+);
+
+sub BUILDARGS {
+    my ($self, %args) = @_;
+
+    if (my $input = $args{input}) {
+        $args{input} = $self->_clone_and_lock_input($input)
+    }
+
+    return \%args;
+}
+
 sub validate {
     my $self = shift;
 
     my $processor = Dancer2::Plugin::FormValidator::Processor->new(
-        input             => $self->_input,
+        input             => $self->input,
         config            => $self->config,
-        registry          => $self->_registry,
+        registry          => $self->registry,
         validator_profile => $self->validator_profile,
     );
 
     return $processor->result;
-}
-
-sub _input {
-    my $self = shift;
-    return $self->_clone_and_lock_input($self->input);
 }
 
 sub _clone_and_lock_input {
@@ -56,12 +70,6 @@ sub _clone_and_lock_input {
 
     # Lock input to prevent accidental modifying.
     return lock_hashref($input);
-}
-
-sub _registry {
-    return Dancer2::Plugin::FormValidator::Registry->new(
-        extensions => shift->extensions,
-    );
 }
 
 1;
