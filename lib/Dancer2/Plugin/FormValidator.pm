@@ -76,7 +76,7 @@ sub validate {
     my ($self, %params) = @_;
 
     # We need to unset value of this global var.
-    $valid_input = undef;
+    undef $valid_input;
 
     # Now works with arguments.
     my $profile = %params{profile};
@@ -98,8 +98,8 @@ sub validate {
 }
 
 sub validated {
-    my $valid    = $valid_input;
-    $valid_input = undef;
+    my $valid = $valid_input;
+    undef $valid_input;
 
     return $valid;
 }
