@@ -160,9 +160,15 @@ sub _clone_and_lock_input {
 sub _registry {
     my $self = shift;
 
-    # First build extensions.
-    my @extensions = map
-    {
+    return Dancer2::Plugin::FormValidator::Registry->new(
+        extensions => $self->_extensions,
+    );
+}
+
+sub _extensions {
+    my $self = shift;
+
+    my @extensions = map {
         my $extension = $self->extensions->{$_}->{provider};
         autoload $extension;
 
@@ -170,12 +176,9 @@ sub _registry {
             plugin => $self,
             config => $self->extensions->{$_},
         );
-    }
-        keys %{ $self->extensions };
+    } keys %{ $self->extensions };
 
-    return Dancer2::Plugin::FormValidator::Registry->new(
-        extensions => \@extensions,
-    );
+    return \@extensions;
 }
 
 sub _get_deferred {
