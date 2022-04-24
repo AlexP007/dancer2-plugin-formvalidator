@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use utf8;
 use Test::More tests => 1;
 
 # In this test ve wanna test validators params, like same:password.
@@ -11,9 +12,10 @@ package Validator {
 
     sub profile {
         return {
-            password     => [qw(required)],
-            password_cnf => [qw(required same:password)],
-            role         => [qw(required enum:user,agent)]
+            password     => [ qw(required) ],
+            password_cnf => [ qw(required same:password) ],
+            name         => [ qw(alpha:u) ],
+            role         => [ qw(required enum:user,agent) ],
         };
     }
 }
@@ -44,7 +46,7 @@ use Plack::Test;
 use HTTP::Request::Common;
 
 my $app    = Plack::Test->create(App->to_app);
-my $result = $app->request(POST '/', [password => 'pass1', password_cnf => 'pass', role => 'agent']);
+my $result = $app->request(POST '/', [password => 'pass1', password_cnf => 'pass', name => 'Вася', role => 'agent']);
 
 is(
     $result->content,
