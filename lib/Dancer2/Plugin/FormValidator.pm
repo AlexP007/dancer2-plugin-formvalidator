@@ -3,16 +3,13 @@ package Dancer2::Plugin::FormValidator;
 use 5.24.0;
 
 use Dancer2::Plugin;
-use Dancer2::Core::Hook;
-use Dancer2::Plugin::FormValidator::Config;
-use Dancer2::Plugin::FormValidator::Registry;
-use Dancer2::Plugin::FormValidator::Processor;
-use Storable qw(dclone);
-use Hash::Util qw(lock_hashref);
 use Module::Load;
+use Dancer2::Core::Hook;
+use Dancer2::Plugin::FormValidator::Validator;
+use Dancer2::Plugin::FormValidator::Config;
 use Types::Standard qw(InstanceOf HashRef);
 
-our $VERSION = '0.72';
+our $VERSION = '0.80';
 
 # Global var for saving last success validation valid input.
 my $valid_input;
@@ -30,20 +27,20 @@ has config_obj => (
     }
 );
 
+has extensions => (
+    is       => 'ro',
+    isa      => HashRef,
+    default  => sub {
+        return shift->config->{extensions} // {},
+    }
+);
+
 has plugin_deferred => (
     is       => 'ro',
     isa      => InstanceOf ['Dancer2::Plugin::Deferred'],
     required => 1,
     builder  => sub {
         return shift->app->with_plugin('Dancer2::Plugin::Deferred');
-    }
-);
-
-has extensions => (
-    is       => 'ro',
-    isa      => HashRef,
-    default  => sub {
-        return shift->config->{extensions} // {},
     }
 );
 
@@ -87,14 +84,30 @@ sub validate {
         $self->_validator_language($lang);
     }
 
-    my $result = $self->_validate($input, $profile);
+    my $validator = Dancer2::Plugin::FormValidator::Validator->new(
+        config            => $self->config_obj,
+        input             => $input,
+        extensions        => $self->_extensions,
+        validator_profile => $profile,
+    );
 
-    if ($result->success) {
+    my $result = $validator->validate;
+
+    if ($result->success != 1) {
+        $self->plugin_deferred->deferred(
+            $self->config_obj->session_namespace,
+            {
+                messages => $result->messages,
+                old      => $input,
+            },
+        );
+
+        return undef;
+    }
+    else {
         $valid_input = $result->valid;
         return $valid_input;
     }
-
-    return undef;
 }
 
 sub validated {
@@ -108,67 +121,9 @@ sub errors {
     return shift->_get_deferred->{messages};
 }
 
-
 sub _validator_language {
     shift->config_obj->language(shift);
     return;
-}
-
-sub _validate {
-    my ($self, $input, $validator_profile) = @_;
-
-    $self->_check_arguments($input, $validator_profile);
-
-    my $processor = Dancer2::Plugin::FormValidator::Processor->new(
-        input             => $self->_clone_and_lock_input($input),
-        config            => $self->config_obj,
-        registry          => $self->_registry,
-        validator_profile => $validator_profile,
-    );
-
-    my $result = $processor->result;
-
-    if ($result->success != 1) {
-        $self->plugin_deferred->deferred(
-            $self->config_obj->session_namespace,
-            {
-                messages => $result->messages,
-                old      => $input,
-            },
-        );
-    }
-
-    return $result;
-}
-
-sub _check_arguments {
-    my ($self, $input, $validator_profile) = @_;
-
-    if (ref $input ne 'HASH') {
-        Carp::croak "Input data should be a hash reference\n";
-    }
-
-    my $role = 'Dancer2::Plugin::FormValidator::Role::Profile';
-    if (not $validator_profile->does($role)) {
-        my $name = $validator_profile->meta->name;
-        Carp::croak "$name should implement $role\n";
-    }
-}
-
-sub _clone_and_lock_input {
-    # Copy input to work with isolated HashRef.
-    my $input = dclone($_[1]);
-
-    # Lock input to prevent accidental modifying.
-    return lock_hashref($input);
-}
-
-sub _registry {
-    my $self = shift;
-
-    return Dancer2::Plugin::FormValidator::Registry->new(
-        extensions => $self->_extensions,
-    );
 }
 
 sub _extensions {
@@ -189,7 +144,6 @@ sub _extensions {
 
 sub _get_deferred {
     my $self = shift;
-
     return $self->plugin_deferred->deferred($self->config_obj->session_namespace);
 }
 
@@ -208,7 +162,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.72
+version 0.80
 
 =head1 SYNOPSIS
 

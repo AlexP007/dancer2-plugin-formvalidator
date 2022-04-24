@@ -1,6 +1,7 @@
-0.72 ---- Europe/Moscow
+0.80 ---- Europe/Moscow
     [IMPROVEMENTS]
     * Refactoring
+    * Moved Plugin login to Validator class
 
 0.71 2022-04-22 19:40:42 Europe/Moscow
     [IMPROVEMENTS]
