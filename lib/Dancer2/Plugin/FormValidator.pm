@@ -463,7 +463,7 @@ Validates that field B<exists> and one of the listed: (yes on 1).
 
 =head3 alpha:encoding=ascii
 
-Validate that string only contain of alphabetic ascii or unicode symbols.
+Validate that string only contain of alphabetic symbols.
 By default encoding is ascii, i.e /^[[:alpha:]]+$/a.
 
      field => [ qw(alpha) ]
