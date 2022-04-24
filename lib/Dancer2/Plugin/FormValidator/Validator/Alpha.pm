@@ -36,11 +36,9 @@ sub message {
 
 sub validate {
     my ($self, $field, $input, $encoding) = @_;
-    $encoding //= $self->encoding;
-
     my $regex;
 
-    if ($encoding eq UNICODE) {
+    if (defined $encoding and $encoding eq UNICODE) {
         $regex = qr/^[[:alpha:]]+$/;
         $self->encoding(UNICODE);
     }
