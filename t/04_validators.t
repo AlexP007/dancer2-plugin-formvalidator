@@ -249,13 +249,13 @@ is(
 );
 
 isnt(
-    $validator->validate('username', {username => 'Ahмед23'}),
+    $validator->validate('username', {username => 'Ahмед23'}, 'u'),
     1,
     'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha not valid',
 );
 
 is(
-    $validator->validate('username', {username => 'Ahmed'}),
+    $validator->validate('username', {username => 'Ahmed'}, 'u'),
     1,
     'TEST 7: Dancer2::Plugin::FormValidator::Validator::Alpha valid',
 );
@@ -510,13 +510,13 @@ is(
 );
 
 isnt(
-    $validator->validate('username', {username => 'Ahмед'}, 'a'),
+    $validator->validate('username', {username => 'Ahмед'}),
     1,
     'TEST 15: Dancer2::Plugin::FormValidator::Validator::Alpha not valid',
 );
 
 is(
-    $validator->validate('username', {username => 'Ahmed'}, 'a'),
+    $validator->validate('username', {username => 'Ahmed'}),
     1,
     'TEST 15: Dancer2::Plugin::FormValidator::Validator::Alpha valid',
 );

@@ -4,6 +4,9 @@
     * Moved Plugin login to Validator class
     * More tests
 
+    [DOCS]
+    * Validators docs
+
 0.71 2022-04-22 19:40:42 Europe/Moscow
     [IMPROVEMENTS]
     * Unsetting $valid_input after first access

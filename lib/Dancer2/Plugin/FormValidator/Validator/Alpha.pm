@@ -13,7 +13,7 @@ with 'Dancer2::Plugin::FormValidator::Role::Validator';
 
 has encoding => (
     is      => 'rw',
-    default => UNICODE,
+    default => ASCII,
 );
 
 sub message {

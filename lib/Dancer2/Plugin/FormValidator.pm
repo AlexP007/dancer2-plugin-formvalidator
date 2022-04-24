@@ -461,13 +461,22 @@ Returns HashRef[ArrayRef] if validation failed.
 
 Validates that field B<exists> and one of the listed: (yes on 1).
 
-=head3 alpha
+=head3 alpha:encoding=ascii
 
-Validate that string only contain of alphabetic utf8 symbols, i.e. /^[[:alpha:]]+$/.
+Validate that string only contain of alphabetic ascii or unicode symbols.
+By default encoding is ascii, i.e /^[[:alpha:]]+$/a.
+
+     field => [ qw(alpha) ]
+
+To set encoding to unicode you need to pass 'u' argument:
+
+    field => [ qw(alpha:u) ]
+
+Then the validation rule will be /^[[:alpha:]]+$/.
 
 =head3 alpha_ascii
 
-Validate that string only contain of latin alphabetic ascii symbols, i.e. /^[[:alpha:]]+$/a.
+Validate that string only contain of latin alphabetic ascii symbols, i.e.
 
 =head3 alpha_num
 
