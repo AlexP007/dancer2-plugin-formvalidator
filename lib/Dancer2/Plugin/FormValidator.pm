@@ -66,28 +66,8 @@ has plugin_deferred => (
 );
 
 sub BUILD {
-    my $self = shift;
-
-    $self->app->add_hook(
-        Dancer2::Core::Hook->new(
-            name => 'before_template_render',
-            code => sub {
-                my $tokens = shift;
-                my $errors = {};
-                my $old    = {};
-
-                if (my $deferred = $tokens->{deferred}->{$self->config_obj->session_namespace}) {
-                    $errors = delete $deferred->{messages};
-                    $old    = delete $deferred->{old};
-                }
-
-                $tokens->{errors} = $errors;
-                $tokens->{old}    = $old;
-
-                return;
-            },
-        )
-    );
+    shift->_register_hooks;
+    return;
 }
 
 sub validate {
@@ -140,6 +120,33 @@ sub validated {
 
 sub errors {
     return shift->_get_deferred->{messages};
+}
+
+sub _register_hooks {
+    my $self = shift;
+
+    $self->app->add_hook(
+        Dancer2::Core::Hook->new(
+            name => 'before_template_render',
+            code => sub {
+                my $tokens = shift;
+                my $errors = {};
+                my $old    = {};
+
+                if (my $deferred = $tokens->{deferred}->{$self->config_obj->session_namespace}) {
+                    $errors = delete $deferred->{messages};
+                    $old    = delete $deferred->{old};
+                }
+
+                $tokens->{errors} = $errors;
+                $tokens->{old}    = $old;
+
+                return;
+            },
+        )
+    );
+
+    return;
 }
 
 sub _validator_language {
