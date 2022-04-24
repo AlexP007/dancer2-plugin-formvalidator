@@ -4,21 +4,53 @@ use Moo;
 use utf8;
 use namespace::clean;
 
+use constant {
+    UNICODE => 'u',
+    ASCII   => 'a',
+};
+
 with 'Dancer2::Plugin::FormValidator::Role::Validator';
 
+has encoding => (
+    is      => 'rw',
+    default => UNICODE,
+);
+
 sub message {
+    my $encoding = shift->encoding;
+
+    if ($encoding eq UNICODE) {
+        return {
+            en => '%s must contain only alphabetical symbols',
+            ru => '%s должно содержать только символы алфавита',
+            de => '%s darf nur alphabetische Zeichen enthalten',
+        };
+    }
+
     return {
-        en => '%s must contain only alphabetical symbols',
-        ru => '%s должно содержать только символы алфавита',
-        de => '%s darf nur alphabetische Zeichen enthalten',
+        en => '%s must contain only latin alphabetical symbols',
+        ru => '%s должно содержать только символы латинского алфавита',
+        de => '%s darf nur lateinische Zeichen enthalten',
     };
 }
 
 sub validate {
-    my ($self, $field, $input) = @_;
+    my ($self, $field, $input, $encoding) = @_;
+    $encoding //= $self->encoding;
+
+    my $regex;
+
+    if ($encoding eq UNICODE) {
+        $regex = qr/^[[:alpha:]]+$/;
+        $self->encoding(UNICODE);
+    }
+    else {
+        $regex = qr/^[[:alpha:]]+$/a;
+        $self->encoding(ASCII);
+    }
 
     if ($self->_field_defined_and_non_empty($field, $input)) {
-        return $input->{$field} =~ /^[[:alpha:]]+$/;
+        return $input->{$field} =~ $regex;
     }
 
     return 1;
