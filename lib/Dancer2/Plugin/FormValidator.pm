@@ -73,15 +73,15 @@ sub BUILD {
 }
 
 sub validate {
-    my ($self, %params) = @_;
+    my ($self, %args) = @_;
 
     # We need to unset value of this global var.
     undef $valid_input;
 
     # Now works with arguments.
-    my $profile = %params{profile};
-    my $input   = %params{input} // $self->dsl->body_parameters->as_hashref_mixed;
-    my $lang    = %params{lang};
+    my $profile = %args{profile};
+    my $input   = %args{input} // $self->dsl->body_parameters->as_hashref_mixed;
+    my $lang    = %args{lang};
 
     if (defined $lang) {
         $self->_validator_language($lang);
@@ -448,7 +448,7 @@ Template app/register:
 
     validate(Hash $params): HashRef|undef
 
-Accept params as hash:
+Accept arguments as hash:
 
     (
         profile => Object implementing Dancer2::Plugin::FormValidator::Role::Profile # required
