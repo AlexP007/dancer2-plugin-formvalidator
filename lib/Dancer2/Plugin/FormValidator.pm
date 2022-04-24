@@ -19,7 +19,6 @@ plugin_keywords qw(validate validated errors);
 has config_obj => (
     is       => 'ro',
     isa      => InstanceOf['Dancer2::Plugin::FormValidator::Config'],
-    required => 1,
     builder  => sub {
         return Dancer2::Plugin::FormValidator::Config->new(
             config => shift->config,
@@ -38,7 +37,6 @@ has config_extensions => (
 has extensions => (
     is       => 'ro',
     isa      => ArrayRef,
-    required => 1,
     builder  => sub {
         my $self = shift;
 
@@ -59,7 +57,6 @@ has extensions => (
 has plugin_deferred => (
     is       => 'ro',
     isa      => InstanceOf ['Dancer2::Plugin::Deferred'],
-    required => 1,
     builder  => sub {
         return shift->app->with_plugin('Dancer2::Plugin::Deferred');
     }
