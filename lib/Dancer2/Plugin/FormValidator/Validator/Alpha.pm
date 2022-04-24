@@ -4,12 +4,12 @@ use Moo;
 use utf8;
 use namespace::clean;
 
+with 'Dancer2::Plugin::FormValidator::Role::Validator';
+
 use constant {
     UNICODE => 'u',
     ASCII   => 'a',
 };
-
-with 'Dancer2::Plugin::FormValidator::Role::Validator';
 
 has encoding => (
     is      => 'rw',

@@ -6,7 +6,6 @@ use Test::More tests => 72;
 use Dancer2::Plugin::FormValidator::Validator::Accepted;
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
 use Dancer2::Plugin::FormValidator::Validator::AlphaNum;
-use Dancer2::Plugin::FormValidator::Validator::AlphaNumAscii;
 use Dancer2::Plugin::FormValidator::Validator::Enum;
 use Dancer2::Plugin::FormValidator::Validator::Email;
 use Dancer2::Plugin::FormValidator::Validator::EmailDns;
@@ -276,27 +275,31 @@ is_deeply(
 $validator = Dancer2::Plugin::FormValidator::Validator::AlphaNum->new;
 
 is(
-    ref $validator->message,
-    'HASH',
-    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum messages hash'
-);
-
-is(
     $validator->stop_on_fail,
     0,
     'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum stop_on_fail',
 );
 
 isnt(
-    $validator->validate('username', {username => 'Ahмед23-'}),
+    $validator->validate('username', {username => 'Ahмед23-'}, 'u'),
     1,
     'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum not valid',
 );
 
 is(
-    $validator->validate('username', {username => 'Ahмед_23'}),
+    $validator->validate('username', {username => 'Ahмед_23'}, 'u'),
     1,
     'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum valid',
+);
+
+is_deeply(
+    $validator->message,
+    {
+        en => '%s must contain only alphabetical symbols and/or numbers 0-9',
+        ru => '%s должно содержать только символы алфавита или/и цифры 0-9',
+        de => '%s darf nur alphabetische Symbole und/oder Zahlen 0-9 enthalten',
+    },
+    'TEST 8: Dancer2::Plugin::FormValidator::Validator::AlphaNum messages hash'
 );
 
 # TEST 9.
@@ -534,13 +537,7 @@ is_deeply(
 # TEST 16.
 ## Check Dancer2::Plugin::FormValidator::Validators::AlphaNumAscii.
 
-$validator = Dancer2::Plugin::FormValidator::Validator::AlphaNumAscii->new;
-
-is(
-    ref $validator->message,
-    'HASH',
-    'TEST 16: Dancer2::Plugin::FormValidator::Validator::AlphaNumAscii messages hash'
-);
+$validator = Dancer2::Plugin::FormValidator::Validator::AlphaNum->new;
 
 is(
     $validator->stop_on_fail,
@@ -558,4 +555,14 @@ is(
     $validator->validate('username', {username => 'Ahmed23'}),
     1,
     'TEST 16: Dancer2::Plugin::FormValidator::Validator::AlphaNumAscii valid',
+);
+
+is_deeply(
+    $validator->message,
+    {
+        en => '%s must contain only latin alphabetical symbols',
+        ru => '%s должно содержать только символы латинского алфавита',
+        de => '%s darf nur lateinische Zeichen enthalten',
+    },
+    'TEST 16: Dancer2::Plugin::FormValidator::Validator::AlphaNumAscii messages hash'
 );
