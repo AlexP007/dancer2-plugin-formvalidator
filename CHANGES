@@ -1,4 +1,7 @@
 0.80 ---- Europe/Moscow
+    [CHANGES]
+    * No memoization for validators
+
     [IMPROVEMENTS]
     * Refactoring
     * Moved Plugin login to Validator class

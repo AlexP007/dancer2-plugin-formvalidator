@@ -6,8 +6,6 @@ use Module::Load qw(autoload);
 use Types::Standard qw(ConsumerOf ArrayRef HashRef);
 use namespace::clean;
 
-my %validators;
-
 has extensions => (
     is        => 'ro',
     isa       => ArrayRef[ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension']],
@@ -18,7 +16,6 @@ has validators => (
     is        => 'ro',
     isa       => HashRef,
     lazy      => 1,
-    required  => 1,
     builder   => sub {
         my $self = shift;
         my %plugin_validators;
@@ -52,10 +49,6 @@ has validators => (
 sub get {
     my ($self, $name) = @_;
 
-    if (defined $validators{$name}) {
-        return $validators{$name};
-    }
-
     if (my $validator_struct = $self->validators->{$name}) {
         my $extension = $validator_struct->{extension};
         my $class     = $validator_struct->{validator};
@@ -71,8 +64,6 @@ sub get {
         if (not $validator->does($role)) {
             Carp::croak "Validator: $class should implement $role\n";
         }
-
-        $validators{$name} = $validator;
 
         return $validator;
     }
