@@ -16,7 +16,7 @@ my $valid_input;
 
 plugin_keywords qw(validate validated errors);
 
-has config_obj => (
+has config_validator => (
     is       => 'ro',
     isa      => InstanceOf['Dancer2::Plugin::FormValidator::Config'],
     builder  => sub {
@@ -83,7 +83,7 @@ sub validate {
     }
 
     my $validator = Dancer2::Plugin::FormValidator::Validator->new(
-        config            => $self->config_obj,
+        config            => $self->config_validator,
         input             => $input,
         extensions        => $self->extensions,
         validator_profile => $profile,
@@ -93,7 +93,7 @@ sub validate {
 
     if ($result->success != 1) {
         $self->plugin_deferred->deferred(
-            $self->config_obj->session_namespace,
+            $self->config_validator->session_namespace,
             {
                 messages => $result->messages,
                 old      => $input,
@@ -130,7 +130,7 @@ sub _register_hooks {
                 my $errors = {};
                 my $old    = {};
 
-                if (my $deferred = $tokens->{deferred}->{$self->config_obj->session_namespace}) {
+                if (my $deferred = $tokens->{deferred}->{$self->config_validator->session_namespace}) {
                     $errors = delete $deferred->{messages};
                     $old    = delete $deferred->{old};
                 }
@@ -147,13 +147,13 @@ sub _register_hooks {
 }
 
 sub _validator_language {
-    shift->config_obj->language(shift);
+    shift->config_validator->language(shift);
     return;
 }
 
 sub _get_deferred {
     my $self = shift;
-    return $self->plugin_deferred->deferred($self->config_obj->session_namespace);
+    return $self->plugin_deferred->deferred($self->config_validator->session_namespace);
 }
 
 1;
