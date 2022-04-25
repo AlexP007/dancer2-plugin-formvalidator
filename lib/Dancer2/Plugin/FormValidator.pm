@@ -329,7 +329,7 @@ Now you can validate POST parameters in your controller:
 
 =head2 Template
 
-In you template you have access to: $errors - this is HashRef with parameters names as keys
+In you template you have access to: $errors - this is HashRef with fields names as keys
 and error messages as ArrayRef values and $old - contains old input values.
 
 Template app/register:
@@ -404,6 +404,31 @@ Template app/register:
                     provider: Dancer2::Plugin::FormValidator::Extension::DBIC
                     ...
     ...
+
+=head2 session
+
+=head3 namespace
+
+Session storage key where this module stores data, like: errors or old vars.
+
+=head2 messages
+
+=head3 language
+
+Default language for error messages.
+
+=head3 ucfirst
+
+Apply ucfirst function to messages or not.
+
+=head3 validators
+
+Key => values, where key is validator name and value is messages
+dictionary for different languages.
+
+=head2 extensions
+
+Key => values, where key is extension short name and values is its configuration.
 
 =head1 DSL KEYWORDS
 
@@ -688,9 +713,6 @@ L<Dancer2::Plugin::FormValidator::Extension::DBIC|https://metacpan.org/pod/Dance
 =head1 TODO
 
 =over 4
-
-=item *
-Document all config field with explanation.
 
 =item *
 Document all Roles and HashRef structures.
