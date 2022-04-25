@@ -423,6 +423,15 @@ Profile is required, input and lang is optional.
 
 Returns valid input HashRef if validation succeed, otherwise returns undef.
 
+    ### You can use HashRef returned from validate.
+
+    if (my $valid_hash_ref = validate profile => RegisterForm->new) {
+        # Success, data is valid.
+    }
+
+
+    ### Or more declarative approach with validated keyword.
+
     if (validate profile => RegisterForm->new) {
         # Success, data is valid.
         my $valid_hash_ref = validated;
@@ -431,7 +440,7 @@ Returns valid input HashRef if validation succeed, otherwise returns undef.
     }
     else {
         # Error, data is invalid.
-        my $errors = errors;
+        my $errors = errors; # errors keyword returns error messages.
 
         # Redirect or show errors...
     }
@@ -461,12 +470,14 @@ Returns HashRef[ArrayRef] if validation failed.
 
 Validates that field B<exists> and one of the listed: (yes on 1).
 
+    field => [ qw(accepted) ]
+
 =head3 alpha:encoding=ascii
 
 Validate that string only contain of alphabetic symbols.
 By default encoding is ascii, i.e /^[[:alpha:]]+$/a.
 
-     field => [ qw(alpha) ]
+    field => [ qw(alpha) ]
 
 To set encoding to unicode you need to pass 'u' argument:
 
@@ -474,25 +485,30 @@ To set encoding to unicode you need to pass 'u' argument:
 
 Then the validation rule will be /^[[:alpha:]]+$/.
 
-=head3 alpha_ascii
-
-Validate that string only contain of latin alphabetic ascii symbols, i.e.
-
 =head3 alpha_num
 
-Validate that string only contain of alphabetic utf8 symbols, underscore and numbers 0-9, i.e. /^\w+$/.
+Validate that string only contain of alphabetic symbols, underscore and numbers 0-9.
+By default encoding is ascii, i.e. /^\w+$/a.
 
-=head3 alpha_num_ascii
+    field => [ qw(alpha_num) ]
 
-Validate that string only contain of latin alphabetic ascii symbols, underscore and numbers 0-9, i.e. /^\w+$/a.
+To set encoding to unicode you need to pass 'u' argument:
+
+    field => [ qw(alpha_num:u) ]
+
+Rule will be /^\w+$/.
 
 =head3 email
 
 Validate that field is valid email(rfc822).
 
+    field => [ qw(email) ]
+
 =head3 email_dns
 
 Validate that field is valid email(rfc822) and dns exists.
+
+    field => [ qw(email_dns) ]
 
 =head3 enum:value1,value2
 
@@ -503,6 +519,8 @@ Validate that field is one of listed values.
 =head3 integer
 
 Validate that field is integer.
+
+    field => [ qw(integer) ]
 
 =head3 length_max:num
 
@@ -532,11 +550,20 @@ Validate that field is number >= num.
 
 Validate that field is number.
 
+    field => [ qw(numeric) ]
+
 =head3 required
 
 Validate that field exists and not empty string.
 
-=head3 same
+    field => [ qw(required) ]
+
+=head3 same:field
+
+Validate that field is exact value as another.
+
+    field_1 => [ qw(required) ]
+    field_2 => [ qw(required same:field_1) ]
 
 =head1 CUSTOM MESSAGES
 
