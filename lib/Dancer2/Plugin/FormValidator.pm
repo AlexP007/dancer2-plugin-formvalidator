@@ -217,7 +217,7 @@ The html result could be like:
 =begin html
 
 <p>
-  <img alt="Screenshot register form" src="https://raw.githubusercontent.com/AlexP007/dancer2-plugin-formvalidator/645b8e8d7c91739c7618a2088841f93f47c53495/assets/screenshot_register.png" width="500px">
+  <img alt="Screenshot register form" src="https://raw.githubusercontent.com/AlexP007/dancer2-plugin-formvalidator/main/assets/screenshot_register.png" width="500px">
 </p>
 
 =end html
