@@ -9,7 +9,7 @@ use Dancer2::Plugin::FormValidator::Validator;
 use Dancer2::Plugin::FormValidator::Config;
 use Types::Standard qw(InstanceOf HashRef ArrayRef);
 
-our $VERSION = '0.80';
+our $VERSION = '0.81';
 
 # Global var for saving last success validation valid input.
 my $valid_input;
@@ -171,7 +171,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.80
+version 0.81
 
 =head1 SYNOPSIS
 
@@ -183,8 +183,8 @@ version 0.80
     ### First create form validation profile class.
 
     package RegisterForm {
-         use Moo;
-         with 'Dancer2::Plugin::FormValidator::Role::Profile';
+        use Moo;
+        with 'Dancer2::Plugin::FormValidator::Role::Profile';
 
         ### Here you need to declare validators.
 
@@ -265,14 +265,14 @@ It consists of dsl's keywords: validate, validator_language, errors.
 It has a set of built-in validators that can be extended by compatible modules (extensions).
 Also proved runtime switching between languages, so you can show proper error messages to users.
 
-Uses simple and declarative approach to validate forms:
+Uses simple and declarative approach to validate forms.
 
 =head2 Validator
 
 First, you need to create class which will implements
 at least one main role: Dancer2::Plugin::FormValidator::Role::Profile.
 
-This role requires profile method which should return a HashRef Data::FormValidator accepts:
+This role requires profile method which should return a I<HashRef> Data::FormValidator accepts:
 
     package RegisterForm
 
@@ -291,7 +291,7 @@ This role requires profile method which should return a HashRef Data::FormValida
 
 =head3 Profile method
 
-Profile method should always return a HashRef[ArrayRef] where keys are input fields names
+Profile method should always return a I<HashRef[ArrayRef]> where keys are input fields names
 and values are ArrayRef with list of validators.
 
 =head2 Application
@@ -329,8 +329,8 @@ Now you can validate POST parameters in your controller:
 
 =head2 Template
 
-In you template you have access to: $errors - this is HashRef with fields names as keys
-and error messages as ArrayRef values and $old - contains old input values.
+In you template you have access to: $errors - this is I<HashRef[ArrayRef]> with fields names as keys
+and error messages values and $old - contains old input values.
 
 Template app/register:
 
@@ -446,7 +446,7 @@ Accept arguments as hash:
 
 Profile is required, input and lang is optional.
 
-Returns valid input HashRef if validation succeed, otherwise returns undef.
+Returns valid input I<HashRef> if validation succeed, otherwise returns undef.
 
     ### You can use HashRef returned from validate.
 
@@ -475,8 +475,8 @@ Returns valid input HashRef if validation succeed, otherwise returns undef.
     validated(): HashRef|undef
 
 No arguments.
-Returns valid input HashRef if validate succeed.
-Undef value will be returned after first call within one validation process.
+Returns valid input I<HashRef> if validate succeed.
+I<Undef> value will be returned after first call within one validation process.
 
     my $valid_hash_ref = validated;
 
@@ -485,7 +485,7 @@ Undef value will be returned after first call within one validation process.
     errors(): HashRef
 
 No arguments.
-Returns HashRef[ArrayRef] if validation failed.
+Returns I<HashRef[ArrayRef]> if validation failed.
 
     my $errors_hash_multi = errors;
 
@@ -500,7 +500,7 @@ Validates that field B<exists> and one of the listed: (yes on 1).
 =head3 alpha:encoding=ascii
 
 Validate that string only contain of alphabetic symbols.
-By default encoding is ascii, i.e /^[[:alpha:]]+$/a.
+By default encoding is ascii, i.e B</^[[:alpha:]]+$/a>.
 
     field => [ qw(alpha) ]
 
@@ -508,12 +508,12 @@ To set encoding to unicode you need to pass 'u' argument:
 
     field => [ qw(alpha:u) ]
 
-Then the validation rule will be /^[[:alpha:]]+$/.
+Then the validation rule will be B</^[[:alpha:]]+$/>.
 
 =head3 alpha_num
 
 Validate that string only contain of alphabetic symbols, underscore and numbers 0-9.
-By default encoding is ascii, i.e. /^\w+$/a.
+By default encoding is ascii, i.e. B</^\w+$/a>.
 
     field => [ qw(alpha_num) ]
 
@@ -521,17 +521,17 @@ To set encoding to unicode you need to pass 'u' argument:
 
     field => [ qw(alpha_num:u) ]
 
-Rule will be /^\w+$/.
+Rule will be B</^\w+$/>.
 
 =head3 email
 
-Validate that field is valid email(rfc822).
+Validate that field is valid email(B<rfc822>).
 
     field => [ qw(email) ]
 
 =head3 email_dns
 
-Validate that field is valid email(rfc822) and dns exists.
+Validate that field is valid email(B<rfc822>) and dns exists.
 
     field => [ qw(email_dns) ]
 
