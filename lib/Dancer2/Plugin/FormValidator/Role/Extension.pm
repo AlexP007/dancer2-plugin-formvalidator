@@ -6,7 +6,7 @@ use namespace::clean;
 
 has plugin => (
     is        => 'ro',
-    isa       => InstanceOf [ 'Dancer2::Plugin::FormValidator' ],
+    isa       => InstanceOf['Dancer2::Plugin::FormValidator'],
     predicate => 1,
 );
 

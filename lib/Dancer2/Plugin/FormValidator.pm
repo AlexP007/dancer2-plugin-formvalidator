@@ -56,7 +56,7 @@ has extensions => (
 
 has plugin_deferred => (
     is       => 'ro',
-    isa      => InstanceOf ['Dancer2::Plugin::Deferred'],
+    isa      => InstanceOf['Dancer2::Plugin::Deferred'],
     builder  => sub {
         return shift->app->with_plugin('Dancer2::Plugin::Deferred');
     }
