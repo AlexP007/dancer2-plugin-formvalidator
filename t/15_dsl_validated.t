@@ -10,9 +10,9 @@ package Validator {
 
     sub profile {
         return {
-            password     => [qw(required)],
-            password_cnf => [qw(required same:password)],
-            role         => [qw(required enum:user,agent)]
+            password     => [ qw(required) ],
+            password_cnf => [ qw(required same:password) ],
+            role         => [ qw(required enum:user,agent) ]
         };
     }
 }
