@@ -1,4 +1,7 @@
 0.81 --------- Europe/Moscow
+    [CHANGES]
+    * Turn off redundant sprintf warnings
+
     [IMPROVEMENTS]
     * Code style
 
