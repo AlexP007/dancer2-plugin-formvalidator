@@ -493,11 +493,15 @@ Returns I<HashRef[ArrayRef]> if validation failed.
 
 =head3 accepted
 
+    accepted(): Bool
+
 Validates that field B<exists> and one of the listed: (yes on 1).
 
     field => [ qw(accepted) ]
 
-=head3 alpha:encoding=ascii
+=head3 alpha
+
+    alpha(String $encoding = 'a'): Bool
 
 Validate that string only contain of alphabetic symbols.
 By default encoding is ascii, i.e B</^[[:alpha:]]+$/a>.
@@ -512,6 +516,8 @@ Then the validation rule will be B</^[[:alpha:]]+$/>.
 
 =head3 alpha_num
 
+    alpha_num(String $encoding = 'a'): Bool
+
 Validate that string only contain of alphabetic symbols, underscore and numbers 0-9.
 By default encoding is ascii, i.e. B</^\w+$/a>.
 
@@ -525,17 +531,23 @@ Rule will be B</^\w+$/>.
 
 =head3 email
 
+    email(): Bool
+
 Validate that field is valid email(B<rfc822>).
 
     field => [ qw(email) ]
 
 =head3 email_dns
 
+    email_dns(): Bool
+
 Validate that field is valid email(B<rfc822>) and dns exists.
 
     field => [ qw(email_dns) ]
 
-=head3 enum:value1,value2
+=head3 enum
+
+    enum(Array @values): Bool
 
 Validate that field is one of listed values.
 
@@ -543,29 +555,39 @@ Validate that field is one of listed values.
 
 =head3 integer
 
+    integer(): Bool
+
 Validate that field is integer.
 
     field => [ qw(integer) ]
 
-=head3 length_max:num
+=head3 length_max
+
+    length_max(Int $num): Bool
 
 Validate that string length <= num.
 
     field => [ qw(length_max:32) ]
 
-=head3 length_min:num
+=head3 length_min
+
+    length_min(Int $num): Bool
 
 Validate that string length >= num.
 
     field => [ qw(length_max:4) ]
 
-=head3 max:num
+=head3 max
+
+    max(Int $num): Bool
 
 Validate that field is number <= num.
 
     field => [ qw(max:32) ]
 
-=head3 min:num
+=head3 min
+
+    min(Int $num): Bool
 
 Validate that field is number >= num.
 
@@ -573,17 +595,23 @@ Validate that field is number >= num.
 
 =head3 numeric
 
+    numeric(): Bool
+
 Validate that field is number.
 
     field => [ qw(numeric) ]
 
 =head3 required
 
+    required(): Bool
+
 Validate that field exists and not empty string.
 
     field => [ qw(required) ]
 
-=head3 same:field
+=head3 same
+
+    same(String $field_name): bool
 
 Validate that field is exact value as another.
 
