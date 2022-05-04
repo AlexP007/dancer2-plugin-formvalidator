@@ -126,14 +126,19 @@ sub _messages {
             }
         }
 
-        $messages->add(
-            $field,
-            sprintf(
-                $message->{$language},
-                $ucfirst ? ucfirst($field) : $field,
-                split(',', $params),
-            )
-        );
+        {
+            # Cause we need this feature.
+            no warnings 'redundant';
+
+            $messages->add(
+                $field,
+                sprintf(
+                    $message->{$language},
+                    $ucfirst ? ucfirst($field) : $field,
+                    split(',', $params),
+                )
+            );
+        }
     }
 
     return $messages->as_hashref_multi;

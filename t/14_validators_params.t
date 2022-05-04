@@ -15,7 +15,7 @@ package Validator {
             password     => [ qw(required) ],
             password_cnf => [ qw(required same:password) ],
             name         => [ qw(alpha:u) ],
-            role         => [ qw(required enum:user,agent) ],
+            role         => [ 'required', 'enum:user,agent' ],
         };
     }
 }
