@@ -178,6 +178,7 @@ version 0.81
     ### If you need a simple and easy validation in your project,
     ### then this module is what you need.
 
+    use Dancer2;
     use Dancer2::Plugin::FormValidator;
 
     ### First create form validation profile class.
@@ -298,6 +299,8 @@ and values are ArrayRef with list of validators.
 
 Then you need to set basic configuration:
 
+    use Dancer2;
+
      set plugins => {
             FormValidator => {
                 session => {
@@ -308,6 +311,7 @@ Then you need to set basic configuration:
 
 Now you can validate POST parameters in your controller:
 
+    use Dancer2;
     use Dancer2::Plugin::FormValidator;
     use RegisterForm;
 
