@@ -1,5 +1,8 @@
 package Dancer2::Plugin::FormValidator::Role::Extension;
 
+use strict;
+use warnings;
+
 use Moo::Role;
 use Types::Standard qw(InstanceOf HashRef);
 use namespace::clean;

@@ -1,5 +1,8 @@
 package Dancer2::Plugin::FormValidator::Processor;
 
+use strict;
+use warnings;
+
 use Moo;
 use List::Util 1.45 qw(uniqstr);
 use Hash::MultiValue;

@@ -1,5 +1,8 @@
 package Dancer2::Plugin::FormValidator::Validator::Alpha;
 
+use strict;
+use warnings;
+
 use Moo;
 use utf8;
 use namespace::clean;

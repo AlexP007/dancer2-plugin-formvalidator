@@ -1,5 +1,8 @@
 package Dancer2::Plugin::FormValidator::Validator;
 
+use strict;
+use warnings;
+
 use Moo;
 use Storable qw(dclone);
 use Hash::Util qw(lock_hashref);

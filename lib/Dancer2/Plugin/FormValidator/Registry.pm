@@ -1,5 +1,8 @@
 package Dancer2::Plugin::FormValidator::Registry;
 
+use strict;
+use warnings;
+
 use Moo;
 use Carp;
 use Module::Load qw(autoload);

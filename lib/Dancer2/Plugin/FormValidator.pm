@@ -1,6 +1,8 @@
 package Dancer2::Plugin::FormValidator;
 
 use 5.24.0;
+use strict;
+use warnings;
 
 use Dancer2::Plugin;
 use Module::Load qw(autoload);
