@@ -23,7 +23,7 @@ has config_validator => (
     isa      => InstanceOf['Dancer2::Plugin::FormValidator::Config'],
     builder  => sub {
         return Dancer2::Plugin::FormValidator::Config->new(
-            config => shift->config,
+            config => $_[0]->config,
         );
     }
 );
@@ -32,7 +32,7 @@ has config_extensions => (
     is       => 'ro',
     isa      => HashRef,
     default  => sub {
-        return shift->config->{extensions} // {},
+        return $_[0]->config->{extensions} // {},
     }
 );
 
@@ -40,7 +40,7 @@ has extensions => (
     is       => 'ro',
     isa      => ArrayRef,
     builder  => sub {
-        my $self = shift;
+        my ($self) = @_;
 
         my @extensions = map {
             my $extension = $self->config_extensions->{$_}->{provider};
@@ -60,12 +60,12 @@ has plugin_deferred => (
     is       => 'ro',
     isa      => InstanceOf['Dancer2::Plugin::Deferred'],
     builder  => sub {
-        return shift->app->with_plugin('Dancer2::Plugin::Deferred');
+        return $_[0]->app->with_plugin('Dancer2::Plugin::Deferred');
     }
 );
 
 sub BUILD {
-    shift->_register_hooks;
+    $_[0]->_register_hooks;
     return;
 }
 
@@ -118,19 +118,20 @@ sub validated {
 }
 
 sub errors {
-    return shift->_get_deferred->{messages};
+    return $_[0]->_get_deferred->{messages};
 }
 
 sub _register_hooks {
-    my $self = shift;
+    my ($self) = @_;
 
     $self->app->add_hook(
         Dancer2::Core::Hook->new(
             name => 'before_template_render',
             code => sub {
-                my $tokens = shift;
-                my $errors = {};
-                my $old    = {};
+                my ($tokens) = @_;
+
+                my $errors   = {};
+                my $old      = {};
 
                 if (my $deferred = $tokens->{deferred}->{$self->config_validator->session_namespace}) {
                     $errors = delete $deferred->{messages};
@@ -149,13 +150,14 @@ sub _register_hooks {
 }
 
 sub _validator_language {
-    shift->config_validator->language(shift);
+    my ($self, $lang) = @_;
+
+    $self->config_validator->language($lang);
     return;
 }
 
 sub _get_deferred {
-    my $self = shift;
-    return $self->plugin_deferred->deferred($self->config_validator->session_namespace);
+    return $_[0]->plugin_deferred->deferred($_[0]->config_validator->session_namespace);
 }
 
 1;

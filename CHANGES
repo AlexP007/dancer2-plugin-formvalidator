@@ -1,6 +1,7 @@
 0.82 ------ Europe/Moscow
     [IMPROVEMENTS]
     * Add use strict, warnings
+    * Code style
 
     [DOCS]
     * Typos

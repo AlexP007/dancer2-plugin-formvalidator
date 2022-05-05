@@ -20,7 +20,8 @@ has validators => (
     isa       => HashRef,
     lazy      => 1,
     builder   => sub {
-        my $self = shift;
+        my ($self) = @_;
+
         my %plugin_validators;
 
         for my $validator (keys % { $self->_validators }) {
@@ -65,7 +66,7 @@ sub get {
             : $class->new;
 
         if (not $validator->does($role)) {
-            Carp::croak "Validator: $class should implement $role\n";
+            Carp::croak("Validator: $class should implement $role\n");
         }
 
         return $validator;

@@ -32,7 +32,7 @@ has messages => (
     isa      => HashRef,
     required => 1,
     builder  => sub {
-        return shift->config->{messages} // {};
+        return $_[0]->config->{messages} // {};
     }
 );
 
@@ -41,7 +41,7 @@ has messages_validators => (
     isa      => HashRef,
     required => 1,
     builder  => sub {
-        return shift->messages->{validators} // {};
+        return $_[0]->messages->{validators} // {};
     }
 );
 
@@ -50,7 +50,7 @@ has ucfirst => (
     isa      => Bool,
     lazy     => 1,
     builder  => sub {
-        return shift->messages->{ucfirst} // 1;
+        return $_[0]->messages->{ucfirst} // 1;
     }
 );
 
@@ -59,7 +59,7 @@ has language => (
     isa      => NonEmptyStr,
     lazy     => 1,
     builder  => sub {
-        return shift->messages->{language} // 'en';
+        return $_[0]->messages->{language} // 'en';
     }
 );
 

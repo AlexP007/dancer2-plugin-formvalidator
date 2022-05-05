@@ -35,7 +35,8 @@ has validator_profile => (
 );
 
 sub result {
-    my $self     = shift;
+    my ($self)   = @_;
+
     my $messages = {};
 
     my ($success, $valid, $invalid) = $self->_validate;
@@ -62,7 +63,8 @@ sub result {
 }
 
 sub _validate {
-    my $self    = shift;
+    my ($self)  = @_;
+
     my $success = 0;
     my %profile = %{ $self->validator_profile->profile };
     my $is_valid;
@@ -105,8 +107,8 @@ sub _split_validator_declaration {
 }
 
 sub _messages {
-    my $self     = shift;
-    my $invalid  = shift;
+    my ($self, $invalid) = @_;
+
     my $messages = Hash::MultiValue->new;
     my $config   = $self->config;
     my $ucfirst  = $config->ucfirst;

@@ -23,6 +23,7 @@ around 'stop_on_fail' => sub {
 
 sub validate {
     my ($self, $field, $input) = @_;
+
     return $self->_field_defined_and_non_empty($field, $input);
 }
 
