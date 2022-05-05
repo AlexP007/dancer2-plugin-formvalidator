@@ -76,9 +76,9 @@ sub validate {
     undef $valid_input;
 
     # Now works with arguments.
-    my $profile = %args{profile};
-    my $input   = %args{input} // $self->dsl->body_parameters->as_hashref_mixed;
-    my $lang    = %args{lang};
+    my $profile = $args{profile};
+    my $input   = $args{input} // $self->dsl->body_parameters->as_hashref_mixed;
+    my $lang    = $args{lang};
 
     if (defined $lang) {
         $self->_validator_language($lang);
