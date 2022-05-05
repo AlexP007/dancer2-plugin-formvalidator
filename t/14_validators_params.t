@@ -24,15 +24,17 @@ package App {
 
     use Dancer2::Plugin::FormValidator;
 
+    my $validator = Validator->new(profile_hash =>
+        {
+            password     => [ qw(required) ],
+            password_cnf => [ qw(required same:password) ],
+            name         => [ qw(alpha:u) ],
+            role         => [ 'required', 'enum:user,agent' ],
+        }
+    );
+
     post '/' => sub {
-        if (not validate profile => Validator->new(profile_hash =>
-            {
-                password     => [ qw(required) ],
-                password_cnf => [ qw(required same:password) ],
-                name         => [ qw(alpha:u) ],
-                role         => [ 'required', 'enum:user,agent' ],
-            })
-        ){
+        if (not validate profile => $validator){
             to_json errors;
         }
     };

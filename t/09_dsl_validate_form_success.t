@@ -21,12 +21,14 @@ package App {
 
     use Dancer2::Plugin::FormValidator;
 
+    my $validator = Validator->new(profile_hash =>
+        {
+            email => [qw(required email)],
+        }
+    );
+
     post '/' => sub {
-        to_json validate profile => Validator->new(profile_hash =>
-            {
-                email => [qw(required email)],
-            }
-        );
+        to_json validate profile => $validator;
     };
 }
 
