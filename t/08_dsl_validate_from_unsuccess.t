@@ -1,20 +1,11 @@
 use strict;
 use warnings;
+
+use FindBin;
 use Test::More tests => 1;
 use JSON::MaybeXS;
 
-package Validator {
-    use Moo;
-
-    with 'Dancer2::Plugin::FormValidator::Role::Profile';
-
-    sub profile {
-        return {
-            name  => [qw(required)],
-            email => [qw(required email)],
-        };
-    }
-}
+require "$FindBin::Bin/lib/validator.pl";
 
 package App {
     use Dancer2;
@@ -32,7 +23,12 @@ package App {
     use Dancer2::Plugin::FormValidator;
 
     post '/' => sub {
-        if (not validate profile => Validator->new) {
+        if (not validate profile => Validator->new(profile_hash =>
+            {
+                name  => [qw(required)],
+                email => [qw(required email)],
+            })
+        ) {
             to_json errors;
         }
     };

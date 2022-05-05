@@ -1,21 +1,11 @@
 use strict;
 use warnings;
+
+use FindBin;
 use Test::More tests => 3;
 use JSON::MaybeXS;
 
-package Validator {
-    use Moo;
-
-    with 'Dancer2::Plugin::FormValidator::Role::Profile';
-
-    sub profile {
-        return {
-            password     => [ qw(required) ],
-            password_cnf => [ qw(required same:password) ],
-            role         => [ 'required', 'enum:user,agent' ]
-        };
-    }
-}
+require "$FindBin::Bin/lib/validator.pl";
 
 # TEST 1
 # Test validated input equal in both cases (from validate and validated).
@@ -36,7 +26,13 @@ package App {
     use Dancer2::Plugin::FormValidator;
 
     post '/' => sub {
-        if (my $validated = validate profile => Validator->new) {
+        if (my $validated = validate profile => Validator->new(profile_hash =>
+            {
+                password     => [ qw(required) ],
+                password_cnf => [ qw(required same:password) ],
+                role         => [ 'required', 'enum:user,agent' ]
+            })
+        ) {
             to_json {
                 'validated'          => $validated,
                 'validated_from_dsl' => validated,
@@ -79,7 +75,13 @@ package App2 {
     use Dancer2::Plugin::FormValidator;
 
     post '/' => sub {
-        if (not validate profile => Validator->new) {
+        if (not validate profile => Validator->new(profile_hash =>
+            {
+                password     => [ qw(required) ],
+                password_cnf => [ qw(required same:password) ],
+                role         => [ 'required', 'enum:user,agent' ]
+            })
+        ) {
             to_json validated;
         }
     };

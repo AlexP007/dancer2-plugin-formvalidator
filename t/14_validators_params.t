@@ -1,24 +1,13 @@
 use strict;
 use warnings;
 use utf8;
+
+use FindBin;
 use Test::More tests => 1;
 
+require "$FindBin::Bin/lib/validator.pl";
+
 # In this test ve wanna test validators params, like same:password.
-
-package Validator {
-    use Moo;
-
-    with 'Dancer2::Plugin::FormValidator::Role::Profile';
-
-    sub profile {
-        return {
-            password     => [ qw(required) ],
-            password_cnf => [ qw(required same:password) ],
-            name         => [ qw(alpha:u) ],
-            role         => [ 'required', 'enum:user,agent' ],
-        };
-    }
-}
 
 package App {
     use Dancer2;
@@ -36,7 +25,14 @@ package App {
     use Dancer2::Plugin::FormValidator;
 
     post '/' => sub {
-        if (not validate profile => Validator->new) {
+        if (not validate profile => Validator->new(profile_hash =>
+            {
+                password     => [ qw(required) ],
+                password_cnf => [ qw(required same:password) ],
+                name         => [ qw(alpha:u) ],
+                role         => [ 'required', 'enum:user,agent' ],
+            })
+        ){
             to_json errors;
         }
     };

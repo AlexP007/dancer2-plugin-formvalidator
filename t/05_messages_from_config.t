@@ -3,7 +3,6 @@ use warnings;
 use utf8::all;
 
 use FindBin;
-
 use Test::More tests => 2;
 use Dancer2::Plugin::FormValidator::Config;
 use Dancer2::Plugin::FormValidator::Registry;
