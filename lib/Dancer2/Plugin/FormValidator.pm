@@ -121,6 +121,7 @@ sub errors {
     return $_[0]->_get_deferred->{messages};
 }
 
+# Register Dancer2 hook to add custom template tokens: errors, old.
 sub _register_hooks {
     my ($self) = @_;
 
@@ -149,6 +150,7 @@ sub _register_hooks {
     return;
 }
 
+# Set validator to language to $lang.
 sub _validator_language {
     my ($self, $lang) = @_;
 
@@ -156,8 +158,11 @@ sub _validator_language {
     return;
 }
 
+# Returned deferred message from session storage.
 sub _get_deferred {
-    return $_[0]->plugin_deferred->deferred($_[0]->config_validator->session_namespace);
+    return $_[0]->plugin_deferred->deferred(
+        $_[0]->config_validator->session_namespace
+    );
 }
 
 1;

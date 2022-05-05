@@ -1,6 +1,7 @@
 0.82 ------ Europe/Moscow
     [IMPROVEMENTS]
     * Add use strict, warnings
+    * Add comments for some private methods
     * Code style
 
     [DOCS]

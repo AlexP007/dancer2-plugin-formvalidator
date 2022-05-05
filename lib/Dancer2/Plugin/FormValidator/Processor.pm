@@ -62,6 +62,8 @@ sub result {
     );
 }
 
+# Apply validators to each fields.
+# Collect valid and invalid fields.
 sub _validate {
     my ($self)  = @_;
 
@@ -102,10 +104,12 @@ sub _validate {
     return ($success, \@valid, \@invalid)
 }
 
+# Because validator signatures could be validator:params, we need to split it.
 sub _split_validator_declaration {
     return ($_[1] =~ /([^:]+):?(.*)/);
 }
 
+# Generates messages for each invalid field.
 sub _messages {
     my ($self, $invalid) = @_;
 

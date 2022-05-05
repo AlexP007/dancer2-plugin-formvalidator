@@ -75,6 +75,7 @@ sub get {
     Carp::croak("$name is not defined\n");
 }
 
+# Validators map.
 sub _validators {
     return {
         accepted        => 'Dancer2::Plugin::FormValidator::Validator::Accepted',
