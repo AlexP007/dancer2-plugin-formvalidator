@@ -238,31 +238,6 @@ This is alpha version, not stable.
 
 Interfaces may change in future:
 
-=over 4
-
-=item *
-Roles: Dancer2::Plugin::FormValidator::Role::Extension, Dancer2::Plugin::FormValidator::Role::Validator.
-
-=item *
-Validators.
-
-=back
-
-Won't change:
-
-=over 4
-
-=item *
-Dsl keywords.
-
-=item *
-Template tokens.
-
-=item *
-Roles: Dancer2::Plugin::FormValidator::Role::Profile, Dancer2::Plugin::FormValidator::Role::HasMessages, Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
-
-=back
-
 If you like it - add it to your bookmarks. I intend to complete the development by the summer 2022.
 
 B<Have any ideas?> Find this project on github (repo ref is at the bottom).
@@ -271,9 +246,11 @@ Help is always welcome!
 =head1 DESCRIPTION
 
 This is micro-framework that provides validation in your Dancer2 application.
-It consists of dsl's keywords: validate, validator_language, errors.
+It consists of dsl's keywords: validate, validated, errors.
 It has a set of built-in validators that can be extended by compatible modules (extensions).
 Also proved runtime switching between languages, so you can show proper error messages to users.
+
+This module has a minimal set of dependencies and does not require the mandatory use of DBIc or Moose.
 
 Uses simple and declarative approach to validate forms.
 
@@ -750,6 +727,44 @@ L<Dancer2::Plugin::FormValidator::Extension::DBIC|https://metacpan.org/pod/Dance
 - for checking fields existence in table rows.
 
 =back
+
+=head1 HINTS
+
+If you don't want to create separated classes for your validation logic,
+you could create one base class and reuse it in your project.
+
+    ### Validator class
+
+    package Validator {
+        use Moo;
+
+        with 'Dancer2::Plugin::FormValidator::Role::Profile';
+
+        has profile_hash => (
+            is       => 'ro',
+            required => 1,
+        );
+
+        sub profile {
+            return $_[0]->profile_hash;
+        }
+    }
+
+    ### Application
+
+    use Dancer2
+
+    my $validator = Validator->new(profile_hash =>
+        {
+            email => [qw(required email)],
+        }
+    );
+
+    post '/' => sub {
+        if (not validate profile => $validator) {
+            to_json errors;
+        }
+    };
 
 =head1 TODO
 
