@@ -236,7 +236,7 @@ The html result could be like:
 
 This is alpha version, not stable.
 
-Interfaces may change in future:
+Interfaces may change in future.
 
 If you like it - add it to your bookmarks. I intend to complete the development by the summer 2022.
 
@@ -760,7 +760,7 @@ you could create one base class and reuse it in your project.
         }
     );
 
-    post '/' => sub {
+    post '/subscribe' => sub {
         if (not validate profile => $validator) {
             to_json errors;
         }
