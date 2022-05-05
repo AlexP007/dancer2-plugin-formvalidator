@@ -196,7 +196,7 @@ version 0.82
         use Moo;
         with 'Dancer2::Plugin::FormValidator::Role::Profile';
 
-        ### Here you need to declare validators.
+        ### Here you need to declare fields => validators.
 
         sub profile {
             return {
@@ -737,7 +737,6 @@ you could create one base class and reuse it in your project.
 
     package Validator {
         use Moo;
-
         with 'Dancer2::Plugin::FormValidator::Role::Profile';
 
         has profile_hash => (
