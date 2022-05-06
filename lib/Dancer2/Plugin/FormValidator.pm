@@ -11,7 +11,7 @@ use Dancer2::Plugin::FormValidator::Validator;
 use Dancer2::Plugin::FormValidator::Config;
 use Types::Standard qw(InstanceOf HashRef ArrayRef);
 
-our $VERSION = '0.82';
+our $VERSION = '0.83';
 
 # Global var for saving last success validation valid input.
 my $valid_input;
@@ -179,7 +179,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.82
+version 0.83
 
 =head1 SYNOPSIS
 
