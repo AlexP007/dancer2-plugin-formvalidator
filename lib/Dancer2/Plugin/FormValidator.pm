@@ -101,7 +101,6 @@ sub validate {
                 old      => $input,
             },
         );
-
         return undef;
     }
     else {

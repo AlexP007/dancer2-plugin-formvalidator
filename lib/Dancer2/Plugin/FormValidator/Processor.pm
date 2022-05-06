@@ -127,6 +127,7 @@ sub _messages {
 
         if ($profile->does('Dancer2::Plugin::FormValidator::Role::HasMessages')) {
             my $profile_messages = $profile->messages;
+
             if (ref $profile_messages eq 'HASH') {
                 $message = $profile_messages->{$field}->{$name} || $message;
             }
