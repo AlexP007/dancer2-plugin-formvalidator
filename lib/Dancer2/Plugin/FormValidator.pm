@@ -74,12 +74,10 @@ sub validate {
     }
 
     my $validator = Dancer2::Plugin::FormValidator::Validator->new(
+        input             => Dancer2::Plugin::FormValidator::Input->new(input => $input),
         config            => $self->validator_config,
         extensions        => $self->extensions,
         validator_profile => $profile,
-        input             => Dancer2::Plugin::FormValidator::Input->new(
-            input => $input // $self->dsl->body_parameters->as_hashref_mixed
-        ),
     );
 
     my $result = $validator->validate;
