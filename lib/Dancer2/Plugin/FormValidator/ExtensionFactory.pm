@@ -9,13 +9,13 @@ use Types::Standard qw(InstanceOf HashRef);
 use namespace::clean;
 
 has plugin => (
-    is       => 'ro',
-    isa      => InstanceOf['Dancer2::Plugin::FormValidator'],
+    is   => 'ro',
+    isa  => InstanceOf['Dancer2::Plugin::FormValidator'],
 );
 
 has extensions => (
-    is       => 'ro',
-    isa      => HashRef,
+    is   => 'ro',
+    isa  => HashRef,
 );
 
 sub build {
