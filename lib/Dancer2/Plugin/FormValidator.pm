@@ -10,13 +10,13 @@ use Dancer2::Plugin::FormValidator::Input;
 use Dancer2::Plugin::FormValidator::ExtensionFactory;
 use Dancer2::Plugin::FormValidator::Validator;
 use Dancer2::Plugin::FormValidator::Config;
-use Types::Standard qw(InstanceOf HashRef ArrayRef);
+use Types::Standard qw(InstanceOf ConsumerOf HashRef ArrayRef);
 
 our $VERSION = '0.90';
 
 plugin_keywords qw(validate validated errors);
 
-has config_validator => (
+has validator_config => (
     is       => 'ro',
     isa      => InstanceOf['Dancer2::Plugin::FormValidator::Config'],
     builder  => sub {
@@ -26,11 +26,16 @@ has config_validator => (
     }
 );
 
-has config_extensions => (
+has extensions => (
     is       => 'ro',
-    isa      => HashRef,
+    isa      => ArrayRef[ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension']],
     default  => sub {
-        return $_[0]->config->{extensions} // {},
+        my $factory = Dancer2::Plugin::FormValidator::ExtensionFactory->new(
+            plugin     => $_[0],
+            extensions => $_[0]->config->{extensions} // {},
+        );
+
+        return $factory->build;
     }
 );
 
@@ -59,28 +64,17 @@ sub validate {
     # We need to unset value of this var (if there was something).
     $self->clear_valid;
 
-    # Input object.
-    my $input = Dancer2::Plugin::FormValidator::Input->new(
-        input => $args{input} // $self->dsl->body_parameters->as_hashref_mixed
-    );
-
-    # Extension factory.
-    my $extension_factory = Dancer2::Plugin::FormValidator::ExtensionFactory->new(
-        plugin     => $self,
-        extensions => $self->extensions,
-    );
-
-    my $lang    = $args{lang};
-
-    if (defined $lang) {
-        $self->_validator_language($lang);
+    if (defined $args{lang}) {
+        $self->_validator_language($args{lang});
     }
 
     my $validator = Dancer2::Plugin::FormValidator::Validator->new(
-        config            => $self->config_validator,
-        input             => $input,
+        config            => $self->validator_config,
         extensions        => $self->extensions,
         validator_profile => $args{profile},
+        input             => Dancer2::Plugin::FormValidator::Input->new(
+            input => $args{input} // $self->dsl->body_parameters->as_hashref_mixed
+        ),
     );
 
     my $result = $validator->validate;

@@ -5,7 +5,7 @@ use warnings;
 
 use Moo;
 use Module::Load qw(autoload);
-use Types::Standard qw(HashRef InstanceOf);
+use Types::Standard qw(InstanceOf HashRef);
 use namespace::clean;
 
 has plugin => (
