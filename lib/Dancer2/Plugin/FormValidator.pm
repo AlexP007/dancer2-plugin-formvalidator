@@ -13,9 +13,6 @@ use Types::Standard qw(InstanceOf HashRef ArrayRef);
 
 our $VERSION = '0.90';
 
-# Global var for saving last success validation valid input.
-my $valid_input;
-
 plugin_keywords qw(validate validated errors);
 
 has config_validator => (
@@ -64,6 +61,12 @@ has plugin_deferred => (
     }
 );
 
+# Var for saving last success validation valid input.
+has valid => (
+    is       => 'rwp',
+    clearer  => 1,
+);
+
 sub BUILD {
     $_[0]->_register_hooks;
     return;
@@ -72,8 +75,8 @@ sub BUILD {
 sub validate {
     my ($self, %args) = @_;
 
-    # We need to unset value of this global var.
-    undef $valid_input;
+    # We need to unset value of this var (if there was something).
+    $self->clear_valid;
 
     # Now works with arguments.
     my $profile = $args{profile};
@@ -104,16 +107,14 @@ sub validate {
         return undef;
     }
     else {
-        $valid_input = $result->valid;
-        return $valid_input;
+        $self->_set_valid($result->valid);
+
+        return $self->valid;
     }
 }
 
 sub validated {
-    my $valid = $valid_input;
-    undef $valid_input;
-
-    return $valid;
+    return $_[0]->valid;
 }
 
 sub errors {
