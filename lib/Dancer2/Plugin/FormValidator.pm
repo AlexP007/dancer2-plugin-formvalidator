@@ -5,8 +5,9 @@ use strict;
 use warnings;
 
 use Dancer2::Plugin;
-use Module::Load qw(autoload);
 use Dancer2::Core::Hook;
+use Dancer2::Plugin::FormValidator::Input;
+use Dancer2::Plugin::FormValidator::ExtensionFactory;
 use Dancer2::Plugin::FormValidator::Validator;
 use Dancer2::Plugin::FormValidator::Config;
 use Types::Standard qw(InstanceOf HashRef ArrayRef);
@@ -30,26 +31,6 @@ has config_extensions => (
     isa      => HashRef,
     default  => sub {
         return $_[0]->config->{extensions} // {},
-    }
-);
-
-has extensions => (
-    is       => 'ro',
-    isa      => ArrayRef,
-    builder  => sub {
-        my ($self) = @_;
-
-        my @extensions = map {
-            my $extension = $self->config_extensions->{$_}->{provider};
-            autoload $extension;
-
-            $extension->new(
-                plugin => $self,
-                config => $self->config_extensions->{$_},
-            );
-        } keys %{ $self->config_extensions };
-
-        return \@extensions;
     }
 );
 
@@ -78,9 +59,17 @@ sub validate {
     # We need to unset value of this var (if there was something).
     $self->clear_valid;
 
-    # Now works with arguments.
-    my $profile = $args{profile};
-    my $input   = $args{input} // $self->dsl->body_parameters->as_hashref_mixed;
+    # Input object.
+    my $input = Dancer2::Plugin::FormValidator::Input->new(
+        input => $args{input} // $self->dsl->body_parameters->as_hashref_mixed
+    );
+
+    # Extension factory.
+    my $extension_factory = Dancer2::Plugin::FormValidator::ExtensionFactory->new(
+        plugin     => $self,
+        extensions => $self->extensions,
+    );
+
     my $lang    = $args{lang};
 
     if (defined $lang) {
@@ -91,7 +80,7 @@ sub validate {
         config            => $self->config_validator,
         input             => $input,
         extensions        => $self->extensions,
-        validator_profile => $profile,
+        validator_profile => $args{profile},
     );
 
     my $result = $validator->validate;
