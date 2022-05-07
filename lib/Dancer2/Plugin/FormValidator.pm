@@ -64,16 +64,21 @@ sub validate {
     # We need to unset value of this var (if there was something).
     $self->clear_valid;
 
-    if (defined $args{lang}) {
-        $self->_validator_language($args{lang});
+    # Arguments.
+    my $profile = $args{profile};
+    my $input   = $args{input} // $self->dsl->body_parameters->as_hashref_mixed;
+    my $lang    = $args{lang};
+
+    if (defined $lang) {
+        $self->_validator_language($lang);
     }
 
     my $validator = Dancer2::Plugin::FormValidator::Validator->new(
         config            => $self->validator_config,
         extensions        => $self->extensions,
-        validator_profile => $args{profile},
+        validator_profile => $profile,
         input             => Dancer2::Plugin::FormValidator::Input->new(
-            input => $args{input} // $self->dsl->body_parameters->as_hashref_mixed
+            input => $input // $self->dsl->body_parameters->as_hashref_mixed
         ),
     );
 
