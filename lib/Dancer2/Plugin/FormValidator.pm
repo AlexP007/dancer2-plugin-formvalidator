@@ -6,11 +6,12 @@ use warnings;
 
 use Dancer2::Plugin;
 use Dancer2::Core::Hook;
-use Dancer2::Plugin::FormValidator::Input;
-use Dancer2::Plugin::FormValidator::ExtensionFactory;
-use Dancer2::Plugin::FormValidator::Validator;
 use Dancer2::Plugin::FormValidator::Config;
-use Types::Standard qw(InstanceOf ConsumerOf HashRef ArrayRef);
+use Dancer2::Plugin::FormValidator::Factory::Extensions;
+use Dancer2::Plugin::FormValidator::Registry;
+use Dancer2::Plugin::FormValidator::Input;
+use Dancer2::Plugin::FormValidator::Processor;
+use Types::Standard qw(InstanceOf);
 
 our $VERSION = '0.90';
 
@@ -19,6 +20,7 @@ plugin_keywords qw(validate validated errors);
 has validator_config => (
     is       => 'ro',
     isa      => InstanceOf['Dancer2::Plugin::FormValidator::Config'],
+    lazy     => 1,
     builder  => sub {
         return Dancer2::Plugin::FormValidator::Config->new(
             config => $_[0]->config,
@@ -26,22 +28,26 @@ has validator_config => (
     }
 );
 
-has extensions => (
+has registry => (
     is       => 'ro',
-    isa      => ArrayRef[ConsumerOf['Dancer2::Plugin::FormValidator::Role::Extension']],
+    isa      => InstanceOf['Dancer2::Plugin::FormValidator::Registry'],
+    lazy     => 1,
     default  => sub {
-        my $factory = Dancer2::Plugin::FormValidator::ExtensionFactory->new(
+        my $factory = Dancer2::Plugin::FormValidator::Factory::Extensions->new(
             plugin     => $_[0],
             extensions => $_[0]->config->{extensions} // {},
         );
 
-        return $factory->build;
+        return Dancer2::Plugin::FormValidator::Registry->new(
+            extensions => $factory->build,
+        );
     }
 );
 
 has plugin_deferred => (
     is       => 'ro',
     isa      => InstanceOf['Dancer2::Plugin::Deferred'],
+    lazy     => 1,
     builder  => sub {
         return $_[0]->app->with_plugin('Dancer2::Plugin::Deferred');
     }
@@ -73,18 +79,19 @@ sub validate {
         $self->_validator_language($lang);
     }
 
-    my $validator = Dancer2::Plugin::FormValidator::Validator->new(
-        input             => Dancer2::Plugin::FormValidator::Input->new(input => $input),
-        config            => $self->validator_config,
-        extensions        => $self->extensions,
-        validator_profile => $profile,
+    my $processor = Dancer2::Plugin::FormValidator::Processor->new(
+        input    => Dancer2::Plugin::FormValidator::Input->new(input => $input),
+        profile  => $profile,
+        config   => $self->validator_config,
+        registry => $self->registry,
     );
 
-    my $result = $validator->validate;
+
+    my $result = $processor->run;
 
     if ($result->success != 1) {
         $self->plugin_deferred->deferred(
-            $self->config_validator->session_namespace,
+            $self->validator_config->session_namespace,
             {
                 messages => $result->messages,
                 old      => $input,
@@ -120,7 +127,7 @@ sub _register_hooks {
                 my $errors   = {};
                 my $old      = {};
 
-                if (my $deferred = $tokens->{deferred}->{$self->config_validator->session_namespace}) {
+                if (my $deferred = $tokens->{deferred}->{$self->validator_config->session_namespace}) {
                     $errors = delete $deferred->{messages};
                     $old    = delete $deferred->{old};
                 }
@@ -140,14 +147,14 @@ sub _register_hooks {
 sub _validator_language {
     my ($self, $lang) = @_;
 
-    $self->config_validator->language($lang);
+    $self->validator_config->language($lang);
     return;
 }
 
 # Returned deferred message from session storage.
 sub _get_deferred {
     return $_[0]->plugin_deferred->deferred(
-        $_[0]->config_validator->session_namespace
+        $_[0]->validator_config->session_namespace
     );
 }
 

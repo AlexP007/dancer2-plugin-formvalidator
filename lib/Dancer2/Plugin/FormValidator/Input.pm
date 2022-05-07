@@ -30,20 +30,7 @@ sub BUILDARGS {
 }
 
 sub get {
-    my ($self, $field) = @_;
-
-    return $self->_input->{$field};
-}
-
-# Field exists, defined and not empty string.
-sub has {
-    my ($self, $field) = @_;
-
-    my $input = $self->_input;
-
-    return exists  $input->{$field}
-        && defined $input->{$field}
-        && '' ne   $input->{$field};
+    return $_[0]->_input;
 }
 
 # Create locked copy.

@@ -5,6 +5,7 @@ use Test::More tests => 2;
 
 use Dancer2::Plugin::FormValidator::Config;
 use Dancer2::Plugin::FormValidator::Registry;
+use Dancer2::Plugin::FormValidator::Input;
 use Dancer2::Plugin::FormValidator::Processor;
 
 package Validator {
@@ -63,25 +64,24 @@ my $config = Dancer2::Plugin::FormValidator::Config->new(
     }
 );
 
-my $validator = Validator->new;
-my $registry  = Dancer2::Plugin::FormValidator::Registry->new;
-my $input = {
+my $profile  = Validator->new;
+my $registry = Dancer2::Plugin::FormValidator::Registry->new;
+my $input    = Dancer2::Plugin::FormValidator::Input->new(input => {
     email => 'alexсpan.org',
-};
+});
 
 my $processor = Dancer2::Plugin::FormValidator::Processor->new(
-    input             => $input,
-    registry          => $registry,
-    config            => $config,
-    validator_profile => $validator,
+    input    => $input,
+    profile  => $profile,
+    config   => $config,
+    registry => $registry,
 );
-
 
 # TEST 1.
 ## Check user defined messages(en) from validator class.
 
 is_deeply(
-    $processor->result->messages,
+    $processor->run->messages,
     {
         'name'   => [
             'Name from profile is needed'
@@ -102,7 +102,7 @@ is_deeply(
 $config->language('ru');
 
 is_deeply(
-    $processor->result->messages,
+    $processor->run->messages,
     {
         'name' => [
             'Имя из профиля нужно'

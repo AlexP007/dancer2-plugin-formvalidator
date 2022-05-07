@@ -3,8 +3,9 @@ use warnings;
 
 use Test::More tests => 2;
 
-use Dancer2::Plugin::FormValidator::Validator;
 use Dancer2::Plugin::FormValidator::Config;
+use Dancer2::Plugin::FormValidator::Input;
+use Dancer2::Plugin::FormValidator::Processor;
 
 package Validator {
     use Moo;
@@ -18,14 +19,16 @@ my $config = Dancer2::Plugin::FormValidator::Config->new(
     },
 );
 
+my $input = Dancer2::Plugin::FormValidator::Input->new(input => {});
+
 # Test 1 test Validator profile.
 
 eval {
-    Dancer2::Plugin::FormValidator::Validator->new(
-        config            => $config,
-        input             => {},
-        extensions        => [],
-        validator_profile => Validator->new,
+    Dancer2::Plugin::FormValidator::Processor->new(
+        config   => $config,
+        input    => $input,
+        profile  => Validator->new,
+        registry => [],
     );
 };
 
@@ -38,16 +41,16 @@ like(
 # Test 2 test Validator input.
 
 eval {
-    Dancer2::Plugin::FormValidator::Validator->new(
-        config            => $config,
-        input             => '',
-        extensions        => [],
-        validator_profile => Validator->new,
+    Dancer2::Plugin::FormValidator::Processor->new(
+        config   => $config,
+        profile  => Validator->new,
+        input    => '',
+        registry => [],
     );
 };
 
 like(
     $@,
-    qr/did not pass type constraint "HashRef"/,
+    qr/not isa Dancer2::Plugin::FormValidator::Input/,
     'Check validator params',
 );

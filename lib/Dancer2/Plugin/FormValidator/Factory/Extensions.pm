@@ -1,4 +1,4 @@
-package Dancer2::Plugin::FormValidator::ExtensionFactory;
+package Dancer2::Plugin::FormValidator::Factory::Extensions;
 
 use strict;
 use warnings;
@@ -26,7 +26,7 @@ sub build {
         autoload $extension;
 
         $extension->new(
-            plugin => $self,
+            plugin => $self->plugin,
             config => $self->extensions->{$_},
         );
     } keys %{ $self->extensions };
