@@ -39,7 +39,7 @@ my $profile = Validator->new(profile_hash =>
     }
 );
 
-my $registry  = Dancer2::Plugin::FormValidator::Registry->new;
+my $registry = Dancer2::Plugin::FormValidator::Registry->new;
 
 my $input = Dancer2::Plugin::FormValidator::Input->new(input => {
     email => 'alexсpan.org',
