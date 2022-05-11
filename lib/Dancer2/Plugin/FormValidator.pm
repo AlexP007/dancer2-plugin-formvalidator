@@ -225,17 +225,6 @@ The html result could be like:
 
 =end html
 
-=head1 DISCLAIMER
-
-This is alpha version, not stable.
-
-Interfaces may change in future.
-
-If you like it - add it to your bookmarks. I intend to complete the development by the summer 2022.
-
-B<Have any ideas?> Find this project on github (repo ref is at the bottom).
-Help is always welcome!
-
 =head1 DESCRIPTION
 
 This is micro-framework that provides validation in your Dancer2 application.
@@ -659,6 +648,8 @@ You can extend the set of validators by writing extensions:
 
 Extension should implement Role: Dancer2::Plugin::FormValidator::Role::Extension.
 
+B<Hint:> you could reassign built-in validator with your custom one.
+
 Custom validators:
 
     package IsTrue {
@@ -721,6 +712,27 @@ L<Dancer2::Plugin::FormValidator::Extension::DBIC|https://metacpan.org/pod/Dance
 
 =back
 
+=head1 ROLES
+
+=over 4
+
+=item *
+Dancer2::Plugin::FormValidator::Role::Profile - for profile classes.
+
+=item *
+Dancer2::Plugin::FormValidator::Role::HasMessages - for classes, that implements custom error messages.
+
+=item *
+Dancer2::Plugin::FormValidator::Role::ProfileHasMessages - brings together Profile and HasMassages.
+
+=item *
+Dancer2::Plugin::FormValidator::Role::Extension - for extension classes.
+
+=item *
+Dancer2::Plugin::FormValidator::Role::Validator - for custom validators.
+
+=back
+
 =head1 HINTS
 
 If you don't want to create separated classes for your validation logic,
@@ -757,21 +769,6 @@ you could create one base class and reuse it in your project.
             to_json errors;
         }
     };
-
-=head1 TODO
-
-=over 4
-
-=item *
-Document all Roles and HashRef structures.
-
-=item *
-Extensions docs.
-
-=item *
-Contribution and help details.
-
-=back
 
 =head1 BUGS AND LIMITATIONS
 
