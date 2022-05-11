@@ -47,7 +47,7 @@ is(
 );
 
 is_deeply(
-    $valid,
+    [sort { $a cmp $b } @$valid],
     ['email', 'name'],
     'TEST 2: Check valid fields'
 );
