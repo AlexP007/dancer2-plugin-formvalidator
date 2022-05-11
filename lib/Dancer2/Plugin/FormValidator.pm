@@ -13,7 +13,7 @@ use Dancer2::Plugin::FormValidator::Input;
 use Dancer2::Plugin::FormValidator::Processor;
 use Types::Standard qw(InstanceOf);
 
-our $VERSION = '0.90';
+our $VERSION = '1.00';
 
 plugin_keywords qw(validate validated errors);
 
@@ -173,12 +173,12 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 0.90
+version 1.00
 
 =head1 SYNOPSIS
 
     ### If you need a simple and easy validation in your project,
-    ### then this module is what you need.
+    ### This module is what you need.
 
     use Dancer2;
     use Dancer2::Plugin::FormValidator;
@@ -597,7 +597,6 @@ Role: Dancer2::Plugin::FormValidator::Role::ProfileHasMessages.
 
     package Validator {
         use Moo;
-
         with 'Dancer2::Plugin::FormValidator::Role::ProfileHasMessages';
 
         sub profile {
@@ -634,7 +633,6 @@ You can extend the set of validators by writing extensions:
 
     package Extension {
         use Moo;
-
         with 'Dancer2::Plugin::FormValidator::Role::Extension';
 
         sub validators {
@@ -654,7 +652,6 @@ Custom validators:
 
     package IsTrue {
         use Moo;
-
         with 'Dancer2::Plugin::FormValidator::Role::Validator';
 
         sub message {
