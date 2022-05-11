@@ -6,6 +6,7 @@ use FindBin;
 use Test::More tests => 1;
 use Dancer2::Plugin::FormValidator::Config;
 use Dancer2::Plugin::FormValidator::Registry;
+use Dancer2::Plugin::FormValidator::Input;
 use Dancer2::Plugin::FormValidator::Processor;
 
 require "$FindBin::Bin/lib/validator.pl";
@@ -100,7 +101,7 @@ my $config = Dancer2::Plugin::FormValidator::Config->new(
     },
 );
 
-my $validator = Validator->new(profile_hash =>
+my $profile = Validator->new(profile_hash =>
     {
         name   => [qw(restrict is_true)],
         accept => [qw(required is_true)],
@@ -111,25 +112,25 @@ my $validator = Validator->new(profile_hash =>
 my $registry  = Dancer2::Plugin::FormValidator::Registry->new(
     extensions => [Extension->new],
 );
-my $input = {
+
+my $input = Dancer2::Plugin::FormValidator::Input->new(input => {
     name   => 0,
     accept => 0,
     email  => 'alexсpan.org',
-};
+});
 
 my $processor = Dancer2::Plugin::FormValidator::Processor->new(
-    input             => $input,
-    registry          => $registry,
-    config            => $config,
-    validator_profile => $validator,
+    input    => $input,
+    profile  => $profile,
+    config   => $config,
+    registry => $registry,
 );
-
 
 # TEST 1.
 ## Check messages(en) from extensions validator.
 
 is_deeply(
-    $processor->result->messages,
+    $processor->run->messages,
     {
         'name' => [
             'Name is restricted'
