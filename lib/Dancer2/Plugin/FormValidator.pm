@@ -580,9 +580,18 @@ Validate that field exists and not empty string.
 
     field => [ qw(required) ]
 
+=head3 required_with
+
+    required_with(String $field_name): Bool
+
+Validate that field exists and not empty string if another field is exists and not empty.
+
+    field_1 => [ qw(required) ]
+    field_2 => [ qw(required_with:field_1) ]
+
 =head3 same
 
-    same(String $field_name): bool
+    same(String $field_name): Bool
 
 Validate that field is exact value as another.
 
