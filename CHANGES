@@ -1,4 +1,7 @@
 1.00 ------ Europe/Moscow
+    [FEATURES]
+    * Implement hook_before
+
     [DOCS]
     * Styling
 

@@ -86,7 +86,6 @@ sub validate {
         registry => $self->registry,
     );
 
-
     my $result = $processor->run;
 
     if ($result->success != 1) {
