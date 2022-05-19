@@ -325,7 +325,7 @@ Template app/register:
             </div>
             <div class="py-2">
                 <label class="block font-normal text-gray-400" for="email">
-                    Name
+                    Email
                 </label>
                 <input
                         type="text"
