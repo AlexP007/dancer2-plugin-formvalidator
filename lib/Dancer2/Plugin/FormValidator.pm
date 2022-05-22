@@ -13,7 +13,7 @@ use Dancer2::Plugin::FormValidator::Input;
 use Dancer2::Plugin::FormValidator::Processor;
 use Types::Standard qw(InstanceOf);
 
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 plugin_keywords qw(validate validated errors);
 
@@ -172,7 +172,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 1.01
+version 1.02
 
 =head1 SYNOPSIS
 
