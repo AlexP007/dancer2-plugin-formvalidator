@@ -405,7 +405,7 @@ Key => values, where key is extension short name and values is its configuration
 
 =head3 validate
 
-    validate(Hash $params): HashRef|undef
+    validate(Hash %args): HashRef|undef
 
 Accept arguments as hash:
 
