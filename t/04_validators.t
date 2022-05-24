@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 use utf8::all;
-use Test::More tests => 81;
+use Test::More tests => 83;
 
 use Dancer2::Plugin::FormValidator::Validator::Accepted;
 use Dancer2::Plugin::FormValidator::Validator::Alpha;
@@ -426,6 +426,12 @@ is(
     'TEST 12: Dancer2::Plugin::FormValidator::Validator::LengthMin valid',
 );
 
+is(
+    $validator->validate('number', {number => '10045'}, '4'),
+    1,
+    'TEST 12: Dancer2::Plugin::FormValidator::Validator::LengthMin number valid',
+);
+
 # TEST 13.
 ## Check Dancer2::Plugin::FormValidator::Validators::LengthMax.
 
@@ -453,6 +459,12 @@ is(
     $validator->validate('name', {name => 'Вася'}, '4'),
     1,
     'TEST 13: Dancer2::Plugin::FormValidator::Validator::LengthMax valid',
+);
+
+is(
+    $validator->validate('number', {number => '123'}, '4'),
+    1,
+    'TEST 13: Dancer2::Plugin::FormValidator::Validator::LengthMax number string valid',
 );
 
 # TEST 14.
