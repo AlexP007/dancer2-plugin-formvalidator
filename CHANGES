@@ -1,3 +1,8 @@
+1.03 2022-05-24 19:29:31 Europe/Moscow
+    [BUGS]
+    * Validator LengthMin number bug
+    * Validator LengthMax number bug
+
 1.02 2022-05-24 15:08:03 Europe/Moscow
     [FEATURES]
     * Default input depending on request method
