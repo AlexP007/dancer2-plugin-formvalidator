@@ -1,4 +1,7 @@
 1.02 ----- Europe/Moscow
+    [FEATURES]
+    * Default input depending on request method
+
     [DOCS]
     * Typos
 
