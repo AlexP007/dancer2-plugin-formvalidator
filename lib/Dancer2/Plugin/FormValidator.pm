@@ -71,9 +71,21 @@ sub validate {
     $self->clear_valid;
 
     # Arguments.
+    # Arguments.
     my $profile = $args{profile};
-    my $input   = $args{input} // $self->dsl->body_parameters->as_hashref_mixed;
+    my $input   = $args{input};
     my $lang    = $args{lang};
+
+    if (not defined $input) {
+        my $request = $self->app->request;
+
+        if ($request->is_get) {
+            $input = $request->query_parameters->as_hashref_mixed;
+        }
+        elsif($request->is_post) {
+            $input = $request->body_parameters->as_hashref_mixed;
+        }
+    }
 
     if (defined $lang) {
         $self->_validator_language($lang);
