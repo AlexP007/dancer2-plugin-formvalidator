@@ -512,6 +512,14 @@ To set encoding to unicode you need to pass 'u' argument:
 
 Rule will be B</^\w+$/>.
 
+=head3 boolean
+
+    boolean(): Bool
+
+Validate that field is 0 or 1 scalar value.
+
+    field => [ qw(boolean) ]
+
 =head3 email
 
     email(): Bool

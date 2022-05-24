@@ -1,9 +1,11 @@
-1.02 ----- Europe/Moscow
+1.02 2022-05-24 15:08:03 Europe/Moscow
     [FEATURES]
     * Default input depending on request method
+    * Validator Boolean
 
     [DOCS]
     * Typos
+    * Validator Boolean
 
 1.01 2022-05-16 22:22:22 Europe/Moscow
     [BUGS]
