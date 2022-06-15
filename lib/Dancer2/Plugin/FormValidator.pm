@@ -44,15 +44,6 @@ has registry => (
     }
 );
 
-has plugin_deferred => (
-    is       => 'ro',
-    isa      => InstanceOf['Dancer2::Plugin::Deferred'],
-    lazy     => 1,
-    builder  => sub {
-        return $_[0]->app->with_plugin('Dancer2::Plugin::Deferred');
-    }
-);
-
 # Var for saving last success validation valid input.
 has valid => (
     is       => 'rwp',
@@ -66,6 +57,9 @@ sub BUILD {
 
 sub validate {
     my ($self, %args) = @_;
+
+    # We need to delete old data in session if it wasn't collected.
+    $self->_clear_session;
 
     # We need to unset value of this var (if there was something).
     $self->clear_valid;
@@ -101,13 +95,10 @@ sub validate {
     my $result = $processor->run;
 
     if ($result->success != 1) {
-        $self->plugin_deferred->deferred(
-            $self->validator_config->session_namespace,
-            {
-                messages => $result->messages,
-                old      => $input,
-            },
-        );
+        $self->_set_session({
+            messages => $result->messages,
+            old      => $input,
+        });
         return undef;
     }
     else {
@@ -122,7 +113,10 @@ sub validated {
 }
 
 sub errors {
-    return $_[0]->_get_deferred->{messages};
+    if (my $session = $_[0]->_get_session) {
+        return $session->{messages}
+    }
+    return undef;
 }
 
 # Register Dancer2 hook to add custom template tokens: errors, old.
@@ -138,9 +132,9 @@ sub _register_hooks {
                 my $errors   = {};
                 my $old      = {};
 
-                if (my $deferred = $tokens->{deferred}->{$self->validator_config->session_namespace}) {
-                    $errors = delete $deferred->{messages};
-                    $old    = delete $deferred->{old};
+                if (my $session = $self->_get_session) {
+                    $errors = $session->{messages};
+                    $old    = $session->{old};
                 }
 
                 $tokens->{errors} = $errors;
@@ -162,11 +156,37 @@ sub _validator_language {
     return;
 }
 
-# Returned deferred message from session storage.
-sub _get_deferred {
-    return $_[0]->plugin_deferred->deferred(
-        $_[0]->validator_config->session_namespace
+sub _set_session {
+    my ($self, $value) = @_;
+
+    $self->app->session->write(
+        $self->validator_config->session_namespace,
+        $value,
     );
+
+    return;
+}
+
+sub _get_session {
+    my ($self) = @_;
+
+    my $session = $self->app->session->read(
+        $self->validator_config->session_namespace,
+    );
+
+    $self->_clear_session;
+
+    return $session;
+}
+
+sub _clear_session {
+    my ($self) = @_;
+
+    $self->app->session->delete(
+        $self->validator_config->session_namespace,
+    );
+
+    return;
 }
 
 1;
