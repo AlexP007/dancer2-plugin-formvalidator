@@ -13,7 +13,7 @@ use Dancer2::Plugin::FormValidator::Input;
 use Dancer2::Plugin::FormValidator::Processor;
 use Types::Standard qw(InstanceOf);
 
-our $VERSION = '1.03';
+our $VERSION = '1.04';
 
 plugin_keywords qw(validate validated errors);
 
@@ -184,7 +184,7 @@ Dancer2::Plugin::FormValidator - neat and easy to start form validation plugin f
 
 =head1 VERSION
 
-version 1.03
+version 1.04
 
 =head1 SYNOPSIS
 
@@ -373,7 +373,7 @@ Template app/register:
     plugins:
         FormValidator:
             session:
-                namespace: '_form_validator'         # this is required
+                namespace: '_form_validator'         # this is default
             messages:
                 language: en                         # this is default
                 ucfirst: 1                           # this is default
